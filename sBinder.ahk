@@ -5007,6 +5007,7 @@ Sleep, 300
 chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
+	HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(4) IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
