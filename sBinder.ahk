@@ -3257,7 +3257,7 @@ else if(IsFrak(5))
 else if(IsFrak(6))
 	TextArray := ["Donut benutzen", "/m: Rechts ranfahren", "Passkontrolle", "/m: Straße räumen", "/fucku", "/m: Platz räumen", "/m: Achtung - Atommüll Konvoi", "/s: Sie sind festgenommen", "/mv + /oldmv", "/cc: Sie sind festgenommen", "/r: Betrete Base mit [Fahrzeug]", "/r: Verlasse Base mit [Fahrzeug]", "/checkwanted", "/me: Zur Zentrale funken"]
 else if(IsFrak(7))
-	TextArray := ["/use crowd", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
+	TextArray := ["/use herbs", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
 else if(IsFrak(8))
 	TextArray := ["/fare [Preis]", "/startfare", "Begrüßung des Kunden", "Ich mache mich auf den Weg", "Auftragsende", "Auftrag annehmen", "In Bereitschaft", "/flock"]
 else if(IsFrak(9))
@@ -3273,7 +3273,7 @@ else if(IsFrak(13))
 else if(IsFrak(14))
 	TextArray := ["/use gold", "/use green", "/equip", "/use lsd", "/gangfight", "/gangflag", "/gangwar", "/s: Don't fuck with the Ballas Family", "/s: Wir kommen wir sehen wir töten wir gehen", "/s Are you kidding me?"]
 else if(IsFrak(15))
-	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use crowd", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
+	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use herbs", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
 else if(IsFrak(16))
 	TextArray := ["/use lsd", "/use gold", "/dropbizflag", "/getbizflag", "/accept sex", "/s: Überfall", "/gangflag"]
 else if(IsFrak(17))
@@ -7002,7 +7002,7 @@ else if(IsFrak(5, 1))
 else if(IsFrak(6, 1))
 	SendChat("/use donut")
 else if(IsFrak(7, 1))
-	SendChat("/use crowd")
+	SendChat("/use herbs")
 else if(IsFrak(8, 1)){
 	if(A_WDay = 1 OR A_WDay = 7){
 		if A_Hour between 6 and 11
@@ -7354,7 +7354,7 @@ else if(IsFrak(12, 1))
 else if(IsFrak(14, 1))
 	SendChat("/gangwar")
 else if(IsFrak(15, 1))
-	SendChat("/use crowd")
+	SendChat("/use herbs")
 else if(IsFrak(16, 1))
 	SendChat("/gangflag")
 return
