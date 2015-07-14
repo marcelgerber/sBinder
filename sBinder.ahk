@@ -85,7 +85,7 @@ if(!FileExist(A_AppData "\sBinder\bg.png")){
 	;Progress, Off
 	InfoProgress()
 }
-if(UseAPI AND !FileExist(A_AppData "\sBinder\API.dll")){
+if(UseAPI AND !FileExist(A_AppData "\sBinder\Open-SAMP-API.dll")){
 	MsgBox, 36, API.dll herunterladen?, Die API.dll wurde nicht gefunden. Dies kann folgende Gründe haben:`n• Erster Start des sBinders`n• Löschen des AppData-Ordners`n• Aktivierung der API-Nutzung in den Einstellungen`n`nMit einem Klick auf Ja wird die API.dll heruntergeladen, wenn du auf Nein klickst, wird die API nicht genutzt. Du kannst die Nutzung der API jederzeit in den Optionen aktivieren oder deaktivieren.`n`n`nWas bringt mir die API?`nMit der API werden die zahlreichen Informationen, die der sBinder dir bietet, wirklich nur dir angezeigt. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge (wie auch die Passworteingabe) nicht gestört.
 	IfMsgBox, No
 	{
@@ -108,7 +108,7 @@ if(UseAPI AND !FileExist(A_AppData "\sBinder\API.dll")){
 		}
 		if(UseAPI){
 			;Progress, A B1 M T CB000000 CWFFFFFF, Bitte habe etwas Geduld..., API.dll wird heruntergeladen..., sBinder Download
-			InfoProgress, ("Bitte habe etwas Geduld...", "API.dll wird heruntergeladen...", "sBinder Download")
+			InfoProgress("Bitte habe etwas Geduld...", "API.dll wird heruntergeladen...", "sBinder Download")
 			URLDownloadToFile, http://saplayer.lima-city.de/l/API, %A_AppData%\sBinder\API.dll
 			;Progress, Off
 			InfoProgress()
@@ -144,38 +144,38 @@ if(!A_IsCompiled){
 }
 ;@Ahk2Exe-IgnoreEnd
 if(UseAPI){
-	hModule := DllCall("LoadLibrary", Str, A_AppData "\sBinder\API.dll")
+	hModule := DllCall("LoadLibrary", Str, A_AppData "\sBinder\Open-SAMP-API.dll")
 	if(hModule == -1 || hModule == 0){
 		MsgBox, 48, API-Fehler, Die API.dll konnte nicht gefunden werden.`nDaher wird sie nicht genutzt.
 		UseAPI := 0
 		IniWrite, %UseAPI%, %INIFile%, Settings, UseAPI
 	}
 	else{
-		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_SetParam")
-		AddChatMessage_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_AddChatMessage")
-		SendChat_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_SendChat")
-		IsDialogOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsDialogOpen")
-		IsChatOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsChatOpen")
-		IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsMenuOpen")
-		ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_ShowDialog")
-		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetVehicleModel") ;API 1.0: API_GetVehicleModel
-		ShowGameText_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_ShowGameText")
-		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_SetParam")
-		IsPlayerInAnyVehicle_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsPlayerInAnyVehicle")
-		GetPlayerPosition_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetPlayerPos") ;API 1.0: API_GetPlayerPosition
+		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "SetParam")
+		AddChatMessage_func := DllCall("GetProcAddress", UInt, hModule, Str, "AddChatMessage")
+		SendChat_func := DllCall("GetProcAddress", UInt, hModule, Str, "SendChat")
+		;IsDialogOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsDialogOpen")
+		;IsChatOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsChatOpen")
+		;IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsMenuOpen")
+		;ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowDialog")
+		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleModelId")
+		ShowGameText_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowGameText")
+		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "SetParam")
+		IsPlayerInAnyVehicle_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInAnyVehicle")
+		GetPlayerPosition_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerPosition")
 		
-		TextCreate_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextCreate")
-		TextDestroy_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextDestroy")
-		TextSetColor_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextSetColor")
-		TextSetPos_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextSetPos")
-		TextSetString_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextSetString")
-		TextSetShown_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextSetShown")
-		TextUpdate_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_TextUpdate")
-		DestroyAllVisual_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_DestroyAllVisual")
+		TextCreate_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextCreate")
+		TextDestroy_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextDestroy")
+		TextSetColor_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextSetColor")
+		TextSetPos_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextSetPos")
+		TextSetString_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextSetString")
+		TextSetShadow_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextSetShadow")
+		TextSetShown_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextSetShown")
+		TextUpdate_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextUpdate")
+		DestroyAllVisual_func := DllCall("GetProcAddress", UInt, hModule, Str, "DestroyAllVisual")
 		
-		;SetParam("windowName", "GTA:SA:MP")
-		;SetParam("isWindow", 1)
-		;DllCall(DestroyAllVisual_func)
+		SetParam("windowName", "GTA:SA:MP")
+		DllCall(DestroyAllVisual_func)
 	}
 }
 
@@ -185,8 +185,9 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	newtext := Object()
 	Colors := Object()
 	Colors[1] := color
+	in_debug_win := WinActive("ahk_class AutoHotkeyGUI")
 	i := 1
-	if(!UseAPI)
+	if(!UseAPI OR in_debug_win)
 		Text := RegExReplace(Text, "Ui)\{[a-f\d]{6}\}")
 	if(nosplit)
 		newtext[1] := Text
@@ -211,9 +212,10 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	}
 	for i, Text in newtext
 	{
-		if(UseAPI AND !WinActive("ahk_class AutoHotkeyGUI")){
+		if(UseAPI AND !in_debug_win){
 			StringReplace, Text, Text, `%, `%`%, All
-			res := DllCall(AddChatMessage_func, Int, Colors[i], Str, Text)
+			;res := DllCall(AddChatMessage_func, Int, Colors[i], Str, Text)
+			res := DllCall(AddChatMessage_func, Str, Text)
 			Sleep, 20
 		}
 		else
@@ -241,9 +243,9 @@ GetChatLine(Line, ByRef Output, timestamp=0, color=0){
 		output := RegExReplace(output, "Ui)\{[a-f0-9]{6}\}")
 	return
 }
-GetPlayerPosition(ByRef flo_posX, ByRef flo_posY, ByRef flo_posZ, ByRef flo_Rotation){
+GetPlayerPosition(ByRef flo_posX, ByRef flo_posY, ByRef flo_posZ){
 	global GetPlayerPosition_func
-	return DllCall(GetPlayerPosition_func, FloatP, flo_posX, FloatP, flo_posY, FloatP, flo_posZ,  FloatP, flo_Rotation, "Cdecl float")
+	return DllCall(GetPlayerPosition_func, FloatP, flo_posX, FloatP, flo_posY, FloatP, flo_posZ)
 }
 GetVehicleModel(){
 	global GetVehicleModelId_func, UseAPI
@@ -316,9 +318,9 @@ ShowGameText(Text, Time, Style){
 	global ShowGameText_func
 	return DllCall(ShowGameText_func, Str, Text, Int, Time, Int, Style)
 }
-TextCreate(Font, fontsize, bold, italic, x, y, color, text, show){
+TextCreate(Font, fontsize, bold, italic, x, y, color, text, shadow, show){
 	global TextCreate_func
-	return DllCall(TextCreate_func, Str, Font, Int, fontsize, UChar, bold, UChar, italic, Int, x, Int, y, UInt, color, Str, text, UChar, show)
+	return DllCall(TextCreate_func, Str, Font, Int, fontsize, UChar, bold, UChar, italic, Int, x, Int, y, UInt, color, Str, text, UChar, shadow, UChar, show)
 }
 TextDestroy(id){
 	global TextDestroy_func
@@ -331,6 +333,10 @@ TextSetColor(TextIndex, Color){
 TextSetPos(TextIndex, PosX, PosY){
 	global TextSetPos_func
 	return DllCall(TextSetPos_func, Int, TextIndex, Int, PosX, Int, PosY)
+}
+TextSetShadow(id, shadow){
+	global TextSetShadow_func
+	return DllCall(TextSetShadow_func, Int, id, UChar, shadow)
 }
 TextSetString(TextIndex, Text){
 	global TextSetString_func
@@ -1130,7 +1136,7 @@ NextNovaLocation(pos_x="", pos_y="", pos_z=""){
 	global hModule
 	static Locations, last := Object(), IsPlayerInAnyInterior_func
 	if(!Locations){
-		IsPlayerInAnyInterior_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsPlayerInAnyInterior")
+		IsPlayerInAnyInterior_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInAnyInterior")
 		Locations_raw := "Lagerverkauf|1449|2350|12|1,LV Productions|-224|2601|64|1,Adminbase|-456|2593|50|1,Toter Flughafen|214|2502|18|1,Raffinerie|264|1415|12|1,Fort Carson|-125|1101|21|1,SAM AG Base|-1943|486|34|1,Zombotech|-1954|617|35|1,SF Bank|-1808|533|35|1,Police Department SF|-1699|697|25|1,SF Bahnhof|-1984|145|28|2,Feuerwehr SF|-2023|82|28|1,TÜV|-2027|-99|35|1,Radio SF|-2520|-618|133|1,Sägewerk|-2003|-2414|31|1,Angelpine|-2164|-2392|30|1,Mount Chiliad|-2309|-1636|484|1,Angelpine Tankstelle|-1623|-2695|48|1,Funpark SF|-2112|-445|39|1,Stadthalle SF|-1498|919|7|1,Heißluftballon SF|-1494|803|7|1,SF Werkstatt|-2036|177|29|1,Flugzeugträger|-1335|483|12|1,Pier 69|-1661|1387|7|1,SF Kirche|-1985|1118|54|1,24/7 SF|-2443|754|35|1,Bootsanlegesteg SF|-2946|482|5|1,SARD Base SF|-2663|611|14|1,Verwahrplatz SF|-2603|687|28|1,Donutladen SF|-2766|789|53|1,SF Carshop|-2427|1023|50|1,Paintball Arena|-2277|2290|5|1,Las Barrancas|-824|1438|14|1,Staudamm LV|-734|2052|60|1,Big Ear|-359|1590|77|1,Army Base|61|1838|18|1,LV Airport|1538|1598|11|2.2,Otto's Autohaus|-1650|1217|7|1,SF Kran|-1547|127|3|1,Premium Autohaus|-1588|40|17|1,Carheal-Shop|-1722|-118|3|1,SF Airport|-1524|-230|13|2.2,Flyshop SF|-1262|38|14|1,Erzmine|826|851|12|1,Heißluftballon LV|926|835|13|1,FBI Base|1026|1174|11|1,Caligula's Autohaus|2436|1653|11|1,NewComer Autohaus|1652|2191|11|1,Four Dragons Casino|2031|1010|11|1,Hitmen Base|1875|701|11|1,Rebellen Base|2774|914|11|1,Oldtimer Autohaus|225|19|2|1,Farm|-65|8|3|1,Fleischberg|-119|-353|1|1,Kraftwerk SF|-1019|-662|32|1,Truckstop Autohaus|-53|-1141|1|1,Truckstop Tankstelle|-88|-1170|2|1,Wohnmobilkaufhaus|-71|-1587|3|1,OC Taufsee|-758|-2020|5|1,LCN Base|323|-1192|76|1,tripleb's Hütte|1443|-631|96|1,Xraid's Hütte|1331|-632|109|1,Vinewood Auffahrt|1376|-921|34|1,Motorradladen SF|-2591|62|4|1,Wheel Arch Angels|-2712|218|4|1,Justin's Farm|-1096|-1644|76|1,Piertreppe|399|-1792|7|0.6,LS Pier|370|-1861|8|1.6,LS Pierparkplatz|416|-2000|8|0.8,Heißluftballon LS|307|-1867|3|0.7,Strandautohaus|536|-1812|6|1,Pier PNS|488|-1739|11|1,Hafenklause|942|-1967|6|1,Busspawn|1263|-1822|13|1,24/7 Stadthalle|1353|-1758|13|1,LS Stadthalle|1478|-1745|13|1,Ornungsamt Base|1587|-1636|13|1,Police Department LS|1519|-1554|18|1,Noobspawn|1120|-1478|16|1,Taxistand|1051|-1366|13|1,Donutladen LS|1038|-1339|14|1,Verwahrplatz LS|927|-1229|17|1,Fahrschule|776|-1329|13|1,Market Station|815|-1344|13|1,Friedhof|867|-1102|24|1,Dillimore|685|-572|16|1,Dillimore Tankstelle|658|-562|16|1,Dillimore Devils Base|683|-477|16|1,Autovermietung|547|-1282|17|1,BSN PNS|1023|-1026|32|1,BSN Tankstelle|1005|-941|42|1,LS Burger Shot Nord|1213|-904|43|1.5,24/7 BSN|1316|-904|39|1,LS Bank|1464|-1013|27|1,Bankparkplatz|1577|-1030|24|1,Lottoladen|1632|-1169|24|1,Startower|1572|-1336|16|1,Straßenreinigung|1519|-1281|14|1,Glen Park|1954|-1203|18|1,LS Office|1787|-1300|13|1,Noobautohaus|2126|-1130|25|1,Noobhotel|2231|-1160|26|1,IKEA|2349|-1414|24|1,Basketballplatz|2291|-1527|27|1,Stuntpark|1917|-1427|10|1,Grove Street|2485|-1666|13|1,GS Binco|2245|-1664|15|1,Fitnesscenter|2227|-1723|13|1,LS Arena|2690|-1697|10|1,GS Autohaus|2783|-1615|11|1,Pig Pen|2421|-1223|25|1,GS Kneipe (Ten Green Bottles)|2317|-1650|14|1,Ballas Base|2511|-2009|13|1,Truck-Autohaus|2456|-2098|13|1,LS Docks|2760|-2451|13|1,LS Train Station|2186|-2277|13|1,LS Airport|1940|-2443|13|2.2,Los Vagos Base|2260|-1038|53|1,LS Bahnhof|1721|-1947|13|1,Alhambra|1834|-1683|13|1,PNS East LS|2077|-1831|13|1,GS Tankstelle|1936|-1772|13|1,SAPlayer's Hütte|-595|-1057|23|1,Ammunation LS|1369|-1280|14|1,GS Ammunation|2401|-1981|14|1,FastFood AG|-1803|908|26|1,SF Burger Shot Süd|-2335|-167|36|1,SF Cluckin' Bell Süd|-2673|260|5|1,SF Cluckin' Bell Nord|-1817|617|35|1,SF Burger Shot Mitte|-1912|830|35|1,SF Carshop Tankstelle|-2419|969|45|1,SF Burger Shot Nord|-2356|1007|51|1,SF Tankstelle Ost|-1675|431|7|1,SF PNS|-1906|285|41|1,SF Tankstelle West|-2032|161|29|1,Nova Transportlogistik GmbH|-521|-487|27|1,LS Burger Shot Süd|813|-1617|14|1,LS Cluckin' Bell West|927|-1353|13|1,TransFender LS|1041|-1026|32|1,LS Cluckin' Bell Grove|2398|-1897|14|1,Loco Low Co.|2645|-2039|14|1,TransFender LV|2387|1043|11|1,LV Tankstelle|639|1684|7|1,Heiliges Huhn|-237|2663|64|1,Heilige Kuh|-857|1536|23|1,SF Tunnel|-1019|-985|91|2.5,LS Casino|575|-1386|14|1,Yakuza Base|-2608|1354|7|1,SF Rifa Base|-2718|-320|7|1,LV West Tankstelle|-1316|2694|50|1,SF Trailerspawn|-1730|101|5|1,SARD Base LS|2024|-1425|16|1,Feuerwache San Andreas|1745|-1143|24|1"
 		Locations := Object()
 		loop, Parse, Locations_raw, `,
@@ -1146,8 +1152,9 @@ NextNovaLocation(pos_x="", pos_y="", pos_z=""){
 	if(AnyInterior := DllCall(IsPlayerInAnyInterior_func))
 		return {Name: "[Innenraum]", distance: "-"}
 	if(pos_x = "" OR pos_y = "" OR pos_z = "")
-		GetPlayerPosition(pos_x, pos_y, pos_z, pos_r)
+		GetPlayerPosition(pos_x, pos_y, pos_z)
 	x := Round(pos_x), y := Round(pos_y), z := Round(pos_z)
+	;AddChatMessage(x "  " y "  " z)
 	if((x = 1133 AND y = -2038 AND z = 69) OR (x = 2004 AND y = -1358 AND z = 24) OR (x = 363 AND y = -2052 AND z = 8) OR (x = 1205 AND y = -890 AND z = 43))
 		return {Name: "[Login]", distance: "-"}
 	for i, k in Locations
@@ -1174,20 +1181,20 @@ OverlayReplace(text, InVehicle){
 		return
 	if(!called){
 		called := 1
-		GetPlayerHealth_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetPlayerHealth")
-		GetPlayerArmor_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetPlayerArmor")
-		GetPlayerId_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetPlayerId")
-		GetPlayerMoney_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetPlayerMoney")
-		GetZoneName_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetZoneName")
-		GetCityName_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetCityName")
-		GetVehicleHealth_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetVehicleHealth")
-		GetFramerate_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetFramerate")
-		GetVehicleSpeed_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetVehicleSpeed")
-		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetVehicleModelId")
-		GetVehicleModelName_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_GetVehicleModelName")
-		IsVehicleLocked_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsVehicleLocked")
-		IsVehicleEngineEnabled_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsVehicleEngineEnabled")
-		IsVehicleLightEnabled_func := DllCall("GetProcAddress", UInt, hModule, Str, "API_IsVehicleLightEnabled")
+		GetPlayerHealth_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerHealth")
+		GetPlayerArmor_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerArmor")
+		;GetPlayerId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerId")
+		GetPlayerMoney_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerMoney")
+		GetZoneName_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetZoneName")
+		GetCityName_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetCityName")
+		GetVehicleHealth_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleHealth")
+		GetFrameRate_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetFrameRate")
+		GetVehicleSpeed_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleSpeed")
+		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleModelId")
+		GetVehicleModelName_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleModelName")
+		IsVehicleLocked_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsVehicleLocked")
+		IsVehicleEngineEnabled_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsVehicleEngineEnabled")
+		IsVehicleLightEnabled_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsVehicleLightEnabled")
 	}
 	if(InStr(text, "[HP]"))
 		StringReplace, text, text, [HP], % DllCall(GetPlayerHealth_func), All
@@ -1207,13 +1214,13 @@ OverlayReplace(text, InVehicle){
 	if(InStr(text, "[Money]"))
 		StringReplace, text, text, [Money], % number_format(DllCall(GetPlayerMoney_func)), All
 	if(InStr(text, "[Zone]"))
-		StringReplace, text, text, [Zone], % (VarSetCapacity(Zone, 32, 0) AND DllCall(GetZoneName_func, "StrP", Zone)) ? Zone : "[Fehler]", All
+		StringReplace, text, text, [Zone], % (VarSetCapacity(Zone, 32, 0) AND DllCall(GetZoneName_func, "StrP", Zone, "Int", 32)) ? Zone : "[Fehler]", All
 	if(InStr(text, "[City]"))
-		StringReplace, text, text, [City], % (VarSetCapacity(City, 32, 0) AND DllCall(GetCityName_func, "StrP", City)) ? City : "[Fehler]", All
+		StringReplace, text, text, [City], % (VarSetCapacity(City, 32, 0) AND DllCall(GetCityName_func, "StrP", City, "Int", 32)) ? City : "[Fehler]", All
 	if(InStr(text, "[CarHeal]"))
-		StringReplace, text, text, [CarHeal], % ((dl := DllCall(GetVehicleHealth_func)) > 0) ? number_format(Round(dl)) : "[Fehler]", All
+		StringReplace, text, text, [CarHeal], % ((dl := DllCall(GetVehicleHealth_func, "Cdecl Float")) > 0) ? number_format(Round(dl)) : "[Fehler]", All
 	if(InStr(text, "[CarName]"))
-		StringReplace, text, text, [CarName], % VarSetCapacity(name, 32) AND DllCall(GetVehicleModelName_func, StrP, name)	? name : "[Fehler]", All
+		StringReplace, text, text, [CarName], % VarSetCapacity(name, 32, 0) AND DllCall(GetVehicleModelName_func, StrP, name, Int, 32)	? name : "[Fehler]", All
 	if(InStr(text, "[CarModel]"))
 		StringReplace, text, text, [CarModel], % (model := DllCall(GetVehicleModelId_func)) ? model : "[Fehler]", All
 	if(InStr(text, "[CarLock]"))
@@ -1225,7 +1232,7 @@ OverlayReplace(text, InVehicle){
 	if(InStr(text, "[CarSpeed]"))
 		StringReplace, text, text, [CarSpeed], % (InVehicle AND (speed := DllCall(GetVehicleSpeed_func, Float, 1.62)) > -1) ? speed : "[Fehler]", All
 	if(InStr(text, "[FPS]"))
-		StringReplace, text, text, [FPS], % DllCall(GetFramerate_func), All
+		StringReplace, text, text, [FPS], % DllCall(GetFrameRate_func), All
 	if(InStr(text, "[Time]"))
 		StringReplace, text, text, [Time], % A_Hour ":" A_Min ":" A_Sec, All
 	if(InStr(text, "[Date]"))
@@ -2084,11 +2091,12 @@ if(OverlayActive){
 		IniRead, OvColor%A_Index%, %INIFile%, Overlay, OvColor%A_Index%, 0xFFFFFF
 		IniRead, OvFont%A_Index%, %INIFile%, Overlay, OvFont%A_Index%, Arial
 		IniRead, OvFontStyle%A_Index%, %INIFile%, Overlay, OvFontStyle%A_Index%, %A_Space%
+		IniRead, OvShadow%A_Index%, %INIFile%, Overlay, OvShadow%A_Index%, 1
 		IniRead, OvText%A_Index%, %INIFile%, Overlay, OvText%A_Index%, %A_Space%
 		StringReplace, OvText%A_Index%, OvText%A_Index%, ¶, `n, All
 		IniRead, OvPosX%A_Index%, %INIFile%, Overlay, OvPosX%A_Index%, 600
 		IniRead, OvPosY%A_Index%, %INIFile%, Overlay, OvPosY%A_Index%, 300
-		IniRead, OvOnlyInVeh%A_Index%, %INIFile%, Overlay, OnlyCar%A_Index%, 0
+		IniRead, OvOnlyInVeh%A_Index%, %INIFile%, Overlay, OvCarOnly%A_Index%, 0
 	}
 }
 return
@@ -2181,10 +2189,11 @@ loop, %MaxOverlays%
 	IniWrite, % OvColor%A_Index%, %INIFile%, Overlay, OvColor%A_Index%
 	IniWrite, % OvFont%A_Index%, %INIFile%, Overlay, OvFont%A_Index%
 	IniWrite, % OvFontStyle%A_Index%, %INIFile%, Overlay, OvFontStyle%A_Index%
+	IniWrite, % OvShadow%A_Index%, %INIFile%, Overlay, OvShadow%A_Index%
 	IniWrite, % RegExReplace(OvText%A_Index%, "`a)`n", "¶"), %INIFile%, Overlay, OvText%A_Index%
 	IniWrite, % OvPosX%A_Index%, %INIFile%, Overlay, OvPosX%A_Index%
 	IniWrite, % OvPosY%A_Index%, %INIFile%, Overlay, OvPosY%A_Index%
-	IniWrite, % OvOnlyInVeh%A_Index%, %INIFile%, Overlay, OnlyCar%A_Index%
+	IniWrite, % OvOnlyInVeh%A_Index%, %INIFile%, Overlay, OvCarOnly%A_Index%
 }
 return
 Downloads:
@@ -2381,7 +2390,7 @@ IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_S
 Binds := 52
 fBinds_max := 14
 MaxOverlays := 3
-OverlayActive := 0
+OverlayActive := 1
 Hotstrings := 26
 Notes := 8
 FrakOptions := 4
@@ -2844,7 +2853,7 @@ loop, % Hotstrings
 }
 Gui, CustomBindsGUI:Menu, MenuBar
 ;CarCalcGUI:
-car_name := ["Admiral", "Alpha", "Banshee", "Benson", "BF Injection", "BF-400", "Blade", "Blista Compact", "Bobcat", "Boxville", "Broadway", "Buccaneer", "Buffalo", "Bullet", "Burrito [Premium]", "Camper", "Cheetah", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Glendale", "Greenwood", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "NRG-500", "Oceanic", "Perenniel", "Phoenix", "Picador", "Pony", "Premier [Premium]", "Quad", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Sentinel", "Shamal", "Slamvan", "Stafford", "Stallion", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tahoma", "Tanker", "Tornado", "Tropic", "Turismo", "Uranus", "Virgo", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
+car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Blade", "Blista Compact", "Bobcat", "Boxville", "Broadway", "Buccaneer", "Buffalo", "Bullet", "Burrito [Premium]", "Camper", "Cheetah", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Glendale", "Greenwood", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Picador", "Pony", "Premier [Premium]", "Quad", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Sentinel", "Shamal", "Slamvan", "Stafford", "Stallion", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tahoma", "Tanker", "Tornado", "Tropic", "Turismo", "Uranus", "Virgo", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
 Gui, CarCalcGUI:Add, Text, x10 y10, Fahrzeug:
 Gui, CarCalcGUI:Add, Text, x130 y10, Carheal:
 Gui, CarCalcGUI:Font, s15 cRed
@@ -2954,6 +2963,7 @@ if(OverlayActive){
 		Gui, Overlay:Add, Button, x50 y%y% w100 vOvFont%A_Index% gOvFontChange, Schriftart wählen
 		Gui, Overlay:Add, Button, x160 y%y% w110 vOvColor%A_Index% gOvColorChange, Schriftfarbe wählen
 		Gui, Overlay:Add, Button, x280 y%y% w100 vOvPos%A_Index% gOvPosChange, Position wählen
+		Gui, Overlay:Add, Checkbox, % "x390 y" y " vOvShadow" A_Index " Checked" OvShadow%A_Index%, Schatten
 		Gui, Overlay:Add, Text, % "x10 y" y+25, Text:
 		Gui, Overlay:Add, Edit, % "x40 y" y+25 " w465 h60 vOvText" A_Index, % OvText%A_Index%
 	}
@@ -3086,9 +3096,9 @@ GuiControl, CarCalcGUI:, akku, %TogAll%
 GuiControl, CarCalcGUI:, kraum, %TogAll%
 Calc:
 Gui, CarCalcGUI:Submit, Nohide
-car_shop := [12, 12, 5, 13, 6, 7, 3, 0, 12, 13, 3, 14, 5, 5, 11, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 14, 14, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 3, 12, 4, 14, 13, 11, 7, 1, 13, 4, 7, 0, 14, 10, 1, 5, 14, 2, 5, 2, 1, 4, 14, 13, 14, 9, 5, 0, 14, 1, 13, 12, 7, 3, 13, 4, 12]
-car_price := [97800, 124000, 399000, 39874, 36300, 33250, 46200, 32400, 66200, 54210, 39800, 27600, 123300, 690600, 87500, 78000, 712000, 19000, 110200, 279000, 123200, 870000, 160200, 96000, 112000, 145000, 34400, 33800, 42800, 76000, 14800, 28000, 89000, 168000, 173400, 120800, 780000, 191200, 970000, 87800, 53600, 321000, 82200, 3670000, 980000, 36100, 56000, 168000, 110200, 76000, 175000, 24300, 23540, 260000, 54000, 42200, 875650, 72900, 38400, 31900, 49000, 2700000, 56600, 215600, 98800, 36000, 478200, 195000, 67200, 368000, 31900, 574000, 33300, 1780200, 620800, 68000, 23500, 41000, 6450, 143200, 42100, 118800, 125421, 19102, 301200]
-car_info := [0, 0, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
+car_shop := [12, 12, 10, 5, 13, 6, 7, 3, 0, 12, 13, 3, 14, 5, 5, 11, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 14, 14, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 3, 7, 12, 4, 14, 13, 11, 7, 1, 13, 4, 7, 0, 14, 10, 1, 5, 14, 2, 5, 2, 1, 4, 14, 13, 14, 9, 5, 0, 14, 1, 13, 12, 7, 3, 13, 4, 12]
+car_price := [97800, 124000, 12450000, 399000, 39874, 36300, 33250, 46200, 32400, 66200, 54210, 39800, 27600, 123300, 690600, 87500, 78000, 712000, 19000, 110200, 279000, 123200, 870000, 160200, 96000, 112000, 145000, 34400, 33800, 42800, 76000, 14800, 28000, 89000, 168000, 173400, 120800, 780000, 191200, 970000, 87800, 53600, 321000, 82200, 3670000, 980000, 36100, 56000, 168000, 110200, 45700, 76000, 175000, 24300, 23540, 260000, 54000, 42200, 875650, 72900, 38400, 31900, 49000, 2700000, 56600, 215600, 98800, 36000, 478200, 195000, 67200, 368000, 31900, 574000, 33300, 1780200, 620800, 68000, 23500, 41000, 6450, 143200, 42100, 118800, 125421, 19102, 301200]
+car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
 shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Truck-Autohaus", "Xoomer Autohaus in South Los Santos"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
 carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
@@ -3256,7 +3266,7 @@ else if(IsFrak(5))
 else if(IsFrak(6))
 	TextArray := ["Donut benutzen", "/m: Rechts ranfahren", "Passkontrolle", "/m: Straße räumen", "/fucku", "/m: Platz räumen", "/m: Achtung - Atommüll Konvoi", "/s: Sie sind festgenommen", "/mv + /oldmv", "/cc: Sie sind festgenommen", "/r: Betrete Base mit [Fahrzeug]", "/r: Verlasse Base mit [Fahrzeug]", "/checkwanted", "/me: Zur Zentrale funken"]
 else if(IsFrak(7))
-	TextArray := ["/use crowd", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
+	TextArray := ["/use herbs", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
 else if(IsFrak(8))
 	TextArray := ["/fare [Preis]", "/startfare", "Begrüßung des Kunden", "Ich mache mich auf den Weg", "Auftragsende", "Auftrag annehmen", "In Bereitschaft", "/flock"]
 else if(IsFrak(9))
@@ -3272,7 +3282,7 @@ else if(IsFrak(13))
 else if(IsFrak(14))
 	TextArray := ["/use gold", "/use green", "/equip", "/use lsd", "/gangfight", "/gangflag", "/gangwar", "/s: Don't fuck with the Ballas Family", "/s: Wir kommen wir sehen wir töten wir gehen", "/s Are you kidding me?"]
 else if(IsFrak(15))
-	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use crowd", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
+	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use herbs", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
 else if(IsFrak(16))
 	TextArray := ["/use lsd", "/use gold", "/dropbizflag", "/getbizflag", "/accept sex", "/s: Überfall", "/gangflag"]
 else if(IsFrak(17))
@@ -4142,7 +4152,7 @@ loop, %MaxOverlays%
 	if(Ov[A_Index] < 0){
 		if(!OvOnlyInVeh%A_Index% OR InVehicle){
 			RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
-			Ov[A_Index] := TextCreate(OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11) * 2, !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"), OvPosX%A_Index%, OvPosY%A_Index%, OvColor%A_Index% + 0xFF000000, OverlayReplace(OvText%A_Index%, InVehicle), 1)
+			Ov[A_Index] := TextCreate(OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"), OvPosX%A_Index%, OvPosY%A_Index%, OvColor%A_Index% + 0xFF000000, OverlayReplace(OvText%A_Index%, InVehicle), OvShadow%A_Index%, 1)
 			if(!A_IsCompiled)
 				AddChatMessage("Overlay " A_Index " wurde geladen. (" Ov[A_Index] ")")
 		}
@@ -4155,8 +4165,9 @@ loop, %MaxOverlays%
 		TextSetString(Ov[A_Index], OverlayReplace(OvText%A_Index%, InVehicle))
 		TextSetPos(Ov[A_Index], OvPosX%A_Index%, OvPosY%A_Index%)
 		TextSetColor(Ov[A_Index], OvColor%A_Index% + 0xFF000000)
+		TextSetShadow(Ov[A_Index], OvShadow%A_Index%)
 		RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
-		TextUpdate(Ov[A_Index], OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11) * 2, !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"))
+		TextUpdate(Ov[A_Index], OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"))
 		TextSetShown(Ov[A_Index], !(IsMenuOpen() OR IsDialogOpen()))
 	}
 }
@@ -4668,7 +4679,7 @@ return
 :b0:/fpkeep dueng::
 Suspend Permit
 if(UseAPI){
-	GetPlayerPosition(x, y, z, r)
+	GetPlayerPosition(x, y, z)
 	if(between(x, 1100, 1450) AND between(y, 80, 500))
 		zone := 0
 	else
@@ -5006,6 +5017,7 @@ Sleep, 300
 chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
+	HTTPData("http://www.sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(4) IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
@@ -5396,7 +5408,7 @@ if(LV_GetCount()){
 			trucking_places := ["Zombotech", "Raffinerie", "Kraftwerk SF", "Radio SF", "Sägewerk", "Truckstop", "LV Productions", "Lagerverkauf", "LS Train Station", "LS Docks", "Fleischberg"]
 			if(UseAPI){
 				trucking_places := [{x: -1954, y: 617, z: 35}, {x: 264, y: 1415, z: 12}, {x: -1019, y: -662, z: 32}, {x: -2520, y: -618, z: 133}, {x: -2003, y: -2414, z: 31}, {x: -53, y: -1141, z: 1}, {x: -224, y: 2601, z: 64}, {x: 1449, y: 2350, z: 12}, {x: 2186, y: -2277, z: 13}, {x: 2760, y: -2451, z: 13}, {x: -119, y: -353, z: 1}]
-				GetPlayerPosition(pos_x, pos_y, pos_z, pos_r)
+				GetPlayerPosition(pos_x, pos_y, pos_z)
 				for index, k in trucking_places
 					trucking_places[index] := Pythagoras(k["x"] - pos_x, k["y"] - pos_y, k["z"] - pos_z)
 				for index, k in Truck_LV
@@ -6211,7 +6223,7 @@ chat := GetChatLines(17)
 if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Sicherheitsschloss: (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Schloss, 9: Carheal (mit Text), 10: Handyakku, 11: Kofferraum
 	carvalue := Object()
 	;{
-	carvalues := ArrayParse("445:97800|602:124000|429:399000|499:39874|424:36300|581:33250|536:46200|496:32400|422:66200|498:54210|575:39800|518:27600|402:123300|541:690600|482:87500|483:78000|415:712000|542:19000|589:110200|480:279000|473:123200|593:870000|507:160200|562:96000|419:112000|587:145000|521:34400|533:33800|565:42800|463:76000|466:14800|492:28000|474:89000|434:168000|579:173400|545:120800|411:780000|559:191200|493:970000|508:87800|400:53600|403:321000|517:82200|484:3670000|487:980000|500:36100|418:56000|522:168000|467:110200|404:76000|603:175000|600:24300|413:23540|426:260000|471:54000|534:42200|515:875650|475:72900|468:38400|567:31900|405:49000|519:2700000|535:56600|580:215600|439:98800|561:36000|409:478200|560:195000|550:67200|506:368000|566:31900|514:574000|576:33300|454:1780200|451:620800|558:68000|491:23500|412:41000|478:6450|421:143200|586:42100|555:118800|456:125421|554:19102|477:301200")
+	carvalues := ArrayParse("445:97800|602:124000|592:12450000|429:399000|499:39874|424:36300|581:33250|536:46200|496:32400|422:66200|498:54210|575:39800|518:27600|402:123300|541:690600|482:87500|483:78000|415:712000|542:19000|589:110200|480:279000|473:123200|593:870000|507:160200|562:96000|419:112000|587:145000|521:34400|533:33800|565:42800|463:76000|466:14800|492:28000|474:89000|434:168000|579:173400|545:120800|411:780000|559:191200|493:970000|508:87800|400:53600|403:321000|517:82200|484:3670000|487:980000|500:36100|418:56000|522:168000|467:110200|461:45700|404:76000|603:175000|600:24300|413:23540|426:260000|471:54000|534:42200|515:875650|475:72900|468:38400|567:31900|405:49000|519:2700000|535:56600|580:215600|439:98800|561:36000|409:478200|560:195000|550:67200|506:368000|566:31900|514:574000|576:33300|454:1780200|451:620800|558:68000|491:23500|412:41000|478:6450|421:143200|586:42100|555:118800|456:125421|554:19102|477:301200|")
 	;}
 	carvalue["price"] := carvalue["carprice"] := carvalues[data1]
 	AddChatMessage("Neupreis (ohne Addons): {0022FF}$" number_format(carvalue["carprice"]))
@@ -6428,14 +6440,22 @@ return
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
-	List(["/bflucht (/bhzf)", "/sperrgebiet2 (/sg2)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/diebstahl", "/sdiebstahl", "/mdiebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/prüfungsstörung", "/raubwp", "/staatsgefährdung1", "/staatsgefährdung2", "/sperrgebiet (/sg)", "/schießen", "/smord", "/msmord", "/sgericht", "/lstvo", "/sstvo", "/ticketersatz", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
+	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet2 (/sg2)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/diebstahl", "/sdiebstahl", "/mdiebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/prüfungsstörung", "/raubwp", "/staatsgefährdung1", "/staatsgefährdung2", "/sperrgebiet (/sg)", "/schießen", "/smord", "/msmord", "/sgericht", "/lstvo", "/sstvo", "/ticketersatz", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (20 WPs)`n{0022FF}/sperrgebiet2 (/sg2){FFFFFF}: Betreten des Flugzeugträgers (30 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (15 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (25 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (20 WPs)`n{0022FF}/sdiebstahl{FFFFFF}: Diebstahl von Schlüsselkarten (30 WPs)`n{0022FF}/mdiebstahl{FFFFFF}: Diebstahl militärischen Equipments (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (20 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (25 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in SAPD/FBI/O-Amt/SA:RD (25 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch in Area 51/Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch ins Weiße Haus (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (20 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (40 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (61 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (30 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (60 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (20 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (20 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Starten auf öffentlichen Straßen (15 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (20 WPs)`n{0022FF}/mord{FFFFFF}: Mord (50 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/prüfungsstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (25 WPs)`n{0022FF}/staatsgefährdung1{FFFFFF}: Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken) (61 WPs)`n{0022FF}/staatsgefährdung2{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Störung eines vorübergehend ausgerufenen Sperrgebietes (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (15 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (61 WPs)`n{0022FF}/msmord{FFFFFF}: Mittäterschaft zum Serienmord (60 WPs)`n{0022FF}/sgericht{FFFFFF}: Störung eines Gerichtsverfahrens (25 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (15 WPs)`n{0022FF}/ticketersatz{FFFFFF}: Ticketersatz (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (35 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (25 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (20 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (15 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (20 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (25 WPs)`n{0022FF}/sperrgebiet2 (/sg2){FFFFFF}: Betreten des Flugzeugträgers (30 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (15 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (25 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (20 WPs)`n{0022FF}/sdiebstahl{FFFFFF}: Diebstahl von Schlüsselkarten (30 WPs)`n{0022FF}/mdiebstahl{FFFFFF}: Diebstahl militärischen Equipments (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (20 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (25 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in SAPD/FBI/O-Amt/SA:RD (25 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch in Area 51/Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch ins Weiße Haus (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (20 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (40 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (61 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (25 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (30 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (60 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (20 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (20 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (15 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (20 WPs)`n{0022FF}/mord{FFFFFF}: Mord (50 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/prüfungsstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (25 WPs)`n{0022FF}/staatsgefährdung1{FFFFFF}: Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken) (61 WPs)`n{0022FF}/staatsgefährdung2{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Störung eines vorübergehend ausgerufenen Sperrgebietes (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (15 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (61 WPs)`n{0022FF}/msmord{FFFFFF}: Mittäterschaft zum Serienmord (60 WPs)`n{0022FF}/sgericht{FFFFFF}: Störung eines Gerichtsverfahrens (25 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (15 WPs)`n{0022FF}/ticketersatz{FFFFFF}: Ticketersatz (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (35 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (25 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (20 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (15 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+return
+::/braub::
+Suspend Permit
+SendWPs("Bankraub", 40)
 return
 ::/bflucht::
 ::/bhzf::
 Suspend Permit
 SendWPs("Beihilfe zur Flucht", 20)
+return
+::/bsgen::
+Suspend Permit
+SendWPs("Beschädigung von Stromgeneratoren", 25)
 return
 ::/sperrgebiet2::
 ::/sg2::
@@ -6515,6 +6535,10 @@ return
 Suspend Permit
 SendWPs("Gruppierung gegen den Staat", 61)
 return
+::/bhack::
+Suspend Permit
+SendWPs("Hacken ins Banksystem", 25)
+return
 ::/shetze::
 Suspend Permit
 SendWPs("Hetzen gegen den Staat", 30)
@@ -6542,7 +6566,7 @@ return
 ::/öffland::
 ::/öffstart::
 Suspend Permit
-SendWPs("Landen und Starten auf öffentlichen Straßen", 15)
+SendWPs("Landen und Abheben auf öffentlichen Straßen", 15)
 return
 ::/lsd::
 Suspend Permit
@@ -7001,7 +7025,7 @@ else if(IsFrak(5, 1))
 else if(IsFrak(6, 1))
 	SendChat("/use donut")
 else if(IsFrak(7, 1))
-	SendChat("/use crowd")
+	SendChat("/use herbs")
 else if(IsFrak(8, 1)){
 	if(A_WDay = 1 OR A_WDay = 7){
 		if A_Hour between 6 and 11
@@ -7353,7 +7377,7 @@ else if(IsFrak(12, 1))
 else if(IsFrak(14, 1))
 	SendChat("/gangwar")
 else if(IsFrak(15, 1))
-	SendChat("/use crowd")
+	SendChat("/use herbs")
 else if(IsFrak(16, 1))
 	SendChat("/gangflag")
 return
@@ -7548,13 +7572,18 @@ else if(IsFrak(6, 1))
 return
 
 /*
+ö::
+AddChatMessage("xyz " DllCall(DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleHealth")))
+return
+
+/*
 *::
 arr := NextNovaLocation()
 AddChatMessage(arr["Name"] " -> " arr["Distance"] "m")
 return
 
 .::
-GetPlayerPosition(x, y, z, r)
+GetPlayerPosition(x, y, z)
 FileAppend, % (n := PlayerInput("Gib den Namen des Ortes ein: ")) "|" Round(x) "|" Round(y) "|" Round(z) "|1,", Locations.txt
 AddChatMessage(n " wurde erfolgreich gespeichert")
 AddChatMessage(Round(x) ", " Round(y) ", " Round(z))
