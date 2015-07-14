@@ -185,8 +185,9 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	newtext := Object()
 	Colors := Object()
 	Colors[1] := color
+	in_debug_win := WinActive("ahk_class AutoHotkeyGUI")
 	i := 1
-	if(!UseAPI)
+	if(!UseAPI OR in_debug_win)
 		Text := RegExReplace(Text, "Ui)\{[a-f\d]{6}\}")
 	if(nosplit)
 		newtext[1] := Text
@@ -211,7 +212,7 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	}
 	for i, Text in newtext
 	{
-		if(UseAPI AND !WinActive("ahk_class AutoHotkeyGUI")){
+		if(UseAPI AND !in_debug_win){
 			StringReplace, Text, Text, `%, `%`%, All
 			res := DllCall(AddChatMessage_func, Int, Colors[i], Str, Text)
 			Sleep, 20
