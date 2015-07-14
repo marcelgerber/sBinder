@@ -1982,36 +1982,8 @@ IniRead, HitsoundText, %INIFile%, Settings, HitsoundText, %A_Space%
 IniRead, chatlogpath, %INIFile%, Settings, ChatlogPath, %A_MyDocuments%\GTA San Andreas User Files\SAMP\chatlog.txt
 if(!FileExist(chatlogpath))
 	chatlogpath := A_MyDocuments "\GTA San Andreas User Files\SAMP\chatlog.txt"
-if(LastUsedBuild < 49){
-	SplitPath, A_MyDocuments,,,,, clDrive
-	if(FileExist(chatlogpath))
-		FileGetTime, clTime1, %chatlogpath%
-	temp := A_Now
-	temp -= clTime1, days
-	if(temp >= 7){
-		clPath2 := clDrive "\Users\Public\Documents\GTA San Andreas User Files\SAMP\chatlog.txt"
-		if(FileExist(clPath2))
-			FileGetTime, clTime2, %clPath2%
-		clPath3 := UserProfile "\Documents\GTA San Andreas User Files\SAMP\chatlog.txt"
-		if(FileExist(clPath3))
-			FileGetTime, clTime3, %clPath3%
-		
-		temparr := Object()
-		temparr[clTime1] := chatlogPath
-		temparr[clTime2] := clPath2
-		temparr[clTime3] := clPath3
-		
-		temp := clTime1 "," clTime2 "," clTime3
-		Sort, temp, R D,
-		RegExMatch(temp, "U)^(\d+),", data)
-		if(temparr[data1] != chatlogpath && FileExist(temparr[data1])){
-			chatlogpath := temparr[data1]
-			IniWrite, %chatlogpath%, %INIFile%, Settings, ChatlogPath
-			if(LastUsedBuild != 0)
-				MsgBox, % "Der Chatlog-Pfad wurde eben automatisch in " chatlogpath " geändert, da diese Datei neuer ist. Das sollte etwaige Probleme beim Auslesen des Chats beheben."
-		}
-	}
-}
+if(LastUsedBuild < 49)
+	gosub ChatlogSearch
 IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-reallife.de
 if(!IsIP(ServerIP))
 	ServerIP := "server.nes-reallife.de"
@@ -2195,13 +2167,13 @@ errortext := ""
 if(UseAPI AND !FileExist(A_WinDir "\System32\D3DX9_43.dll"))
 	errortext .= "<li>Die d3dx9_43.dll konnte auf dem Computer nicht gefunden werden. Sie gehört zu DirectX und wird von der API benötigt. <a href='http://www.microsoft.com/de-de/download/details.aspx?id=35'>DirectX-Installer herunterladen</a></li>"
 if(!(temp := FileExist(chatlogpath)) OR InStr(temp, "D"))
-	errortext .= "<li>Die chatlog.txt konnte nicht gefunden werden. <a href='sBinder://go/SelectCL'>Jetzt auswählen</a></li>"
+	errortext .= "<li>Die chatlog.txt konnte nicht gefunden werden. <a href='sBinder://go/ChatlogSearch'>Automatisch beheben</a> oder <a href='sBinder://go/SelectCL'>manuell auswählen</a></li>"
 else{
 	FileGetTime, temp2, %chatlogpath%, M
 	temp := A_Now
 	temp -= temp2, Seconds
 	if(temp > 432000) ;5 Tage
-		errortext .= "<li>Die chatlog.txt wurde vor langer Zeit geändert (zuletzt " FormatTime(temp2, "dd.MM.yyyy HH:mm") "). <a href='sBinder://go/SelectCL'>Neu auswählen</a>"
+		errortext .= "<li>Die chatlog.txt wurde vor langer Zeit geändert (zuletzt " FormatTime(temp2, "dd.MM.yyyy HH:mm") "). <a href='sBinder://go/ChatlogSearch'>Automatisch beheben</a> oder <a href='sBinder://go/SelectCL'>manuell auswählen</a>"
 }
 while(ping < 0 AND A_Index <= 3){
 	SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
@@ -2700,6 +2672,7 @@ Gui, SettingsGUI:Add, Button, x185 y%y% h20 w120 gSelectVLC, VLC-Pfad ändern
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp13, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gSelectCL, Chatlog-Pfad auswählen
+Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w150 gChatlogSearch, Chatlog automatisch suchen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectNSC vNSCSelect, NSC-Pfad ändern
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp15, ?
 y += 25
@@ -4056,6 +4029,41 @@ ToolTip
 return
 ReloadDebugGUI:
 GuiControl, DebugGUI:, Debug, % "[sBinder Debug-Informationen]`n`nNutzer: " Nickname " -- " Fraknames[Frak] " (" Frak ") <- " (IsFrak(Frak) ? "Bestätigt" : "Nicht bestätigt") "`nOS: " A_OSVersion " " (A_Is64BitOS ? "64bit" : "32bit") "`nAHK: " A_AhkVersion " " (A_IsUnicode ? "Unicode" : "ANSI") " " (A_PtrSize = 4 ? "32bit" : "64bit") ", "  (A_IsAdmin ? "A" : "Nicht a") "ls Administrator gestartet`nsBinder: Version " Version "-" Build " | Neueste gefundene Version: " vVersion "-" vBuild "`nDatum: " A_DD "." A_MM "." A_YYYY " " A_Hour ":" A_Min ":" A_Sec "`n" (A_IsCompiled ? "Kompiliert" : "Nicht kompiliert") "; " (A_IsPaused ? "Pausiert" : "Nicht pausiert") "; " (A_IsSuspended ? "Deaktiviert" : "Aktiviert") "; WaitFor: " WaitFor "ms; API " (UseAPI ? "wird genutzt" : "wird nicht genutzt") "; " (hotstringsactive ? hotstringsactive : 0) " Textbind" (hotstringsactive = 1 ? "" : "s") " aktiviert`nAFK-Box " (AFKBox ? "" : "de") "aktiviert, DownloadMode: " DownloadMode (OverlayActive ? ", Overlay " (OvText1 OR OvText2 OR OvText3 ? "wird genutzt" : "wird nicht genutzt") : "") "`nDesign: " Designs[UseDesign, "name"] (MainGuiVersion ? " Version " MainGuiVersion : "") (UseHTMLGUI ? " im IE " Round(_mainGUI.document.DocumentMode, 1) : "") "`nStartparameter: " FullArgs
+return
+ChatlogSearch:
+SplitPath, A_MyDocuments,,,,, clDrive
+clTime1 := 20000101
+if(FileExist(chatlogpath))
+	FileGetTime, clTime1, %chatlogpath%
+temp := A_Now
+temp -= clTime1, days
+if(temp >= 7){
+	clPath2 := clDrive "\Users\Public\Documents\GTA San Andreas User Files\SAMP\chatlog.txt"
+	if(FileExist(clPath2))
+		FileGetTime, clTime2, %clPath2%
+	clPath3 := UserProfile "\Documents\GTA San Andreas User Files\SAMP\chatlog.txt"
+	if(FileExist(clPath3))
+		FileGetTime, clTime3, %clPath3%
+	
+	temparr := Object()
+	temparr[clTime1] := chatlogPath
+	temparr[clTime2] := clPath2
+	temparr[clTime3] := clPath3
+	
+	temp := clTime1 "," clTime2 "," clTime3
+	Sort, temp, R D,
+	RegExMatch(temp, "U)^(\d+),", data)
+	if(temparr[data1] != chatlogpath && FileExist(temparr[data1])){
+		chatlogpath := temparr[data1]
+		IniWrite, %chatlogpath%, %INIFile%, Settings, ChatlogPath
+		if(LastUsedBuild != 0)
+			MsgBox, % "Der Chatlog-Pfad wurde eben automatisch in " chatlogpath " geändert, da diese Datei neuer ist. Das sollte etwaige Probleme beim Auslesen des Chats beheben."
+	}
+	else if(LastUsedBuild != 0)
+		ToolTip("Der Chatlog-Pfad wurde nicht geändert, da die gewählte Datei die neueste ist.", 5000)
+}
+else if(LastUsedBuild != 0)
+	ToolTip("Der Chatlog-Pfad wurde nicht geändert, da die Datei neu genug ist.", 5000)
 return
 CopyDebug:
 GuiControlGet, Debug, DebugGUI:
