@@ -154,9 +154,9 @@ if(UseAPI){
 		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "SetParam")
 		AddChatMessage_func := DllCall("GetProcAddress", UInt, hModule, Str, "AddChatMessage")
 		SendChat_func := DllCall("GetProcAddress", UInt, hModule, Str, "SendChat")
-		;IsDialogOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsDialogOpen")
-		;IsChatOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsChatOpen")
-		;IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsMenuOpen")
+		IsDialogOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsDialogOpen")
+		IsChatOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsChatOpen")
+		IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsMenuOpen")
 		;ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowDialog")
 		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleModelId")
 		ShowGameText_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowGameText")
@@ -1136,7 +1136,7 @@ NextNovaLocation(pos_x="", pos_y="", pos_z=""){
 	global hModule
 	static Locations, last := Object(), IsPlayerInAnyInterior_func
 	if(!Locations){
-		IsPlayerInAnyInterior_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInAnyInterior")
+		IsPlayerInInterior_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInInterior")
 		Locations_raw := "Lagerverkauf|1449|2350|12|1,LV Productions|-224|2601|64|1,Adminbase|-456|2593|50|1,Toter Flughafen|214|2502|18|1,Raffinerie|264|1415|12|1,Fort Carson|-125|1101|21|1,SAM AG Base|-1943|486|34|1,Zombotech|-1954|617|35|1,SF Bank|-1808|533|35|1,Police Department SF|-1699|697|25|1,SF Bahnhof|-1984|145|28|2,Feuerwehr SF|-2023|82|28|1,TÜV|-2027|-99|35|1,Radio SF|-2520|-618|133|1,Sägewerk|-2003|-2414|31|1,Angelpine|-2164|-2392|30|1,Mount Chiliad|-2309|-1636|484|1,Angelpine Tankstelle|-1623|-2695|48|1,Funpark SF|-2112|-445|39|1,Stadthalle SF|-1498|919|7|1,Heißluftballon SF|-1494|803|7|1,SF Werkstatt|-2036|177|29|1,Flugzeugträger|-1335|483|12|1,Pier 69|-1661|1387|7|1,SF Kirche|-1985|1118|54|1,24/7 SF|-2443|754|35|1,Bootsanlegesteg SF|-2946|482|5|1,SARD Base SF|-2663|611|14|1,Verwahrplatz SF|-2603|687|28|1,Donutladen SF|-2766|789|53|1,SF Carshop|-2427|1023|50|1,Paintball Arena|-2277|2290|5|1,Las Barrancas|-824|1438|14|1,Staudamm LV|-734|2052|60|1,Big Ear|-359|1590|77|1,Army Base|61|1838|18|1,LV Airport|1538|1598|11|2.2,Otto's Autohaus|-1650|1217|7|1,SF Kran|-1547|127|3|1,Premium Autohaus|-1588|40|17|1,Carheal-Shop|-1722|-118|3|1,SF Airport|-1524|-230|13|2.2,Flyshop SF|-1262|38|14|1,Erzmine|826|851|12|1,Heißluftballon LV|926|835|13|1,FBI Base|1026|1174|11|1,Caligula's Autohaus|2436|1653|11|1,NewComer Autohaus|1652|2191|11|1,Four Dragons Casino|2031|1010|11|1,Hitmen Base|1875|701|11|1,Rebellen Base|2774|914|11|1,Oldtimer Autohaus|225|19|2|1,Farm|-65|8|3|1,Fleischberg|-119|-353|1|1,Kraftwerk SF|-1019|-662|32|1,Truckstop Autohaus|-53|-1141|1|1,Truckstop Tankstelle|-88|-1170|2|1,Wohnmobilkaufhaus|-71|-1587|3|1,OC Taufsee|-758|-2020|5|1,LCN Base|323|-1192|76|1,tripleb's Hütte|1443|-631|96|1,Xraid's Hütte|1331|-632|109|1,Vinewood Auffahrt|1376|-921|34|1,Motorradladen SF|-2591|62|4|1,Wheel Arch Angels|-2712|218|4|1,Justin's Farm|-1096|-1644|76|1,Piertreppe|399|-1792|7|0.6,LS Pier|370|-1861|8|1.6,LS Pierparkplatz|416|-2000|8|0.8,Heißluftballon LS|307|-1867|3|0.7,Strandautohaus|536|-1812|6|1,Pier PNS|488|-1739|11|1,Hafenklause|942|-1967|6|1,Busspawn|1263|-1822|13|1,24/7 Stadthalle|1353|-1758|13|1,LS Stadthalle|1478|-1745|13|1,Ornungsamt Base|1587|-1636|13|1,Police Department LS|1519|-1554|18|1,Noobspawn|1120|-1478|16|1,Taxistand|1051|-1366|13|1,Donutladen LS|1038|-1339|14|1,Verwahrplatz LS|927|-1229|17|1,Fahrschule|776|-1329|13|1,Market Station|815|-1344|13|1,Friedhof|867|-1102|24|1,Dillimore|685|-572|16|1,Dillimore Tankstelle|658|-562|16|1,Dillimore Devils Base|683|-477|16|1,Autovermietung|547|-1282|17|1,BSN PNS|1023|-1026|32|1,BSN Tankstelle|1005|-941|42|1,LS Burger Shot Nord|1213|-904|43|1.5,24/7 BSN|1316|-904|39|1,LS Bank|1464|-1013|27|1,Bankparkplatz|1577|-1030|24|1,Lottoladen|1632|-1169|24|1,Startower|1572|-1336|16|1,Straßenreinigung|1519|-1281|14|1,Glen Park|1954|-1203|18|1,LS Office|1787|-1300|13|1,Noobautohaus|2126|-1130|25|1,Noobhotel|2231|-1160|26|1,IKEA|2349|-1414|24|1,Basketballplatz|2291|-1527|27|1,Stuntpark|1917|-1427|10|1,Grove Street|2485|-1666|13|1,GS Binco|2245|-1664|15|1,Fitnesscenter|2227|-1723|13|1,LS Arena|2690|-1697|10|1,GS Autohaus|2783|-1615|11|1,Pig Pen|2421|-1223|25|1,GS Kneipe (Ten Green Bottles)|2317|-1650|14|1,Ballas Base|2511|-2009|13|1,Truck-Autohaus|2456|-2098|13|1,LS Docks|2760|-2451|13|1,LS Train Station|2186|-2277|13|1,LS Airport|1940|-2443|13|2.2,Los Vagos Base|2260|-1038|53|1,LS Bahnhof|1721|-1947|13|1,Alhambra|1834|-1683|13|1,PNS East LS|2077|-1831|13|1,GS Tankstelle|1936|-1772|13|1,SAPlayer's Hütte|-595|-1057|23|1,Ammunation LS|1369|-1280|14|1,GS Ammunation|2401|-1981|14|1,FastFood AG|-1803|908|26|1,SF Burger Shot Süd|-2335|-167|36|1,SF Cluckin' Bell Süd|-2673|260|5|1,SF Cluckin' Bell Nord|-1817|617|35|1,SF Burger Shot Mitte|-1912|830|35|1,SF Carshop Tankstelle|-2419|969|45|1,SF Burger Shot Nord|-2356|1007|51|1,SF Tankstelle Ost|-1675|431|7|1,SF PNS|-1906|285|41|1,SF Tankstelle West|-2032|161|29|1,Nova Transportlogistik GmbH|-521|-487|27|1,LS Burger Shot Süd|813|-1617|14|1,LS Cluckin' Bell West|927|-1353|13|1,TransFender LS|1041|-1026|32|1,LS Cluckin' Bell Grove|2398|-1897|14|1,Loco Low Co.|2645|-2039|14|1,TransFender LV|2387|1043|11|1,LV Tankstelle|639|1684|7|1,Heiliges Huhn|-237|2663|64|1,Heilige Kuh|-857|1536|23|1,SF Tunnel|-1019|-985|91|2.5,LS Casino|575|-1386|14|1,Yakuza Base|-2608|1354|7|1,SF Rifa Base|-2718|-320|7|1,LV West Tankstelle|-1316|2694|50|1,SF Trailerspawn|-1730|101|5|1,SARD Base LS|2024|-1425|16|1,Feuerwache San Andreas|1745|-1143|24|1"
 		Locations := Object()
 		loop, Parse, Locations_raw, `,
@@ -1149,7 +1149,7 @@ NextNovaLocation(pos_x="", pos_y="", pos_z=""){
 	max := Object()
 	if(A_TickCount - last["call"] < 100 AND last["call"])
 		return {Name: last["Name"], Distance: last["Distance"]}
-	if(AnyInterior := DllCall(IsPlayerInAnyInterior_func))
+	if(AnyInterior := DllCall(IsPlayerInInterior_func))
 		return {Name: "[Innenraum]", distance: "-"}
 	if(pos_x = "" OR pos_y = "" OR pos_z = "")
 		GetPlayerPosition(pos_x, pos_y, pos_z)
@@ -7586,7 +7586,7 @@ return
 
 /*
 ö::
-AddChatMessage("xyz " DllCall(DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleHealth")))
+AddChatMessage(IsChatOpen())
 return
 
 /*
