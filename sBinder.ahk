@@ -1244,6 +1244,9 @@ OverlayReplace(text, InVehicle){
 	}
 	if(InStr(text, "[Name]"))
 		StringReplace, text, text, [Name], % Nickname ? Nickname : SAMPName, All
+	charMap := {"Ä": "Ae", "ä": "ae", "Ö": "oe", "ö": "oe", "Ü": "Ue", "ü": "ue", "ß": "ss"}
+	for char in charMap
+		text := RegExReplace(text, "i)" char, charMap[char])
 	return text
 }
 Overlay_SaveData(get, func="", p1=""){
