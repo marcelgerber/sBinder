@@ -4151,6 +4151,7 @@ if(!WinActive("GTA:SA:MP") OR WinActive("ahk_class AutoHotkeyGUI")){
 	return
 }
 InVehicle := IsPlayerInAnyVehicle()
+OverlayShown := !(IsMenuOpen() OR IsDialogOpen())
 loop, %MaxOverlays%
 {
 	if(OvText%A_Index% = ""){
@@ -4179,7 +4180,7 @@ loop, %MaxOverlays%
 		TextSetShadow(Ov[A_Index], OvShadow%A_Index%)
 		RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
 		TextUpdate(Ov[A_Index], OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"))
-		TextSetShown(Ov[A_Index], !(IsMenuOpen() OR IsDialogOpen()))
+		TextSetShown(Ov[A_Index], OverlayShown)
 	}
 }
 return
