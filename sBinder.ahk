@@ -1802,7 +1802,7 @@ URLEncode(raw){
 }
 WaitFor(){
 	global WaitFor
-	ping("server.nes-reallife.de", 32, 400)
+	ping("server.nes-newlife.de", 32, 400)
 	Sleep, % WaitFor
 }
 wb_BeforeNavigate2(wb, url, flags, frame, postdata, headers, cancel){ ;AHK-Installer //Lexikos
@@ -1984,12 +1984,12 @@ if(!FileExist(chatlogpath))
 	chatlogpath := A_MyDocuments "\GTA San Andreas User Files\SAMP\chatlog.txt"
 if(LastUsedBuild < 49)
 	gosub ChatlogSearch
-IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-reallife.de
+IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-newlife.de
 if(!IsIP(ServerIP))
-	ServerIP := "server.nes-reallife.de"
-IniRead, TSIP, %INIFile%, IPs, TS, ts.nes-reallife.de
+	ServerIP := "server.nes-newlife.de"
+IniRead, TSIP, %INIFile%, IPs, TS, ts.nes-newlife.de
 if(!IsIP(TSIP))
-	TSIP := "ts.nes-reallife.de"
+	TSIP := "ts.nes-newlife.de"
 IniRead, WaitFor, %INIFile%, Settings, WaitFor, 90
 IniRead, xBind1, %INIFile%, Binds, xBind1, %A_Space%
 IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
@@ -3490,7 +3490,7 @@ else
 	ToolTip("TS³ ist bereits aktiv`nBeende es erst`, bevor du es neu startest!", 4000)
 return
 Forum:
-Run, http://forum.nes-reallife.de
+Run, http://forum.nes-newlife.de
 return
 RunOtherProgram:
 SetTimer, RunOtherProgram, Off
@@ -4484,9 +4484,9 @@ return
 ::/inettest::
 Suspend Permit
 AddChatMessage("Ein Test der Internetverbindung wird durchgeführt...")
-AddChatMessage("Ping nes-reallife Gameserver: {0022FF}" clearping("server.nes-reallife.de", 400))
-AddChatMessage("Ping nes-reallife Homepage: {0022FF}" clearping("nes-reallife.de", 400))
-AddChatMessage("Ping nes-reallife Forum: {0022FF}" clearping("forum.nes-reallife.de", 400))
+AddChatMessage("Ping nes-reallife Gameserver: {0022FF}" clearping("server.nes-newlife.de", 400))
+AddChatMessage("Ping nes-reallife Homepage: {0022FF}" clearping("nes-newlife.de", 400))
+AddChatMessage("Ping nes-reallife Forum: {0022FF}" clearping("forum.nes-newlife.de", 400))
 AddChatMessage("Ping google.com (Referenz): {0022FF}" clearping("google.com", 400))
 return
 ::/kdonut::
@@ -6063,7 +6063,7 @@ if(FileExist(chatlogpath)){
 	{
 	}
 	temp2 := A_TickCount - start + 30
-	temp2 -= ping("nes-reallife.de")
+	temp2 -= ping("nes-newlife.de")
 	if(chat AND between(temp2, 20, 300)){
 		WaitFor := temp2
 		AddChatMessage("Die Zeit zum Warten auf den Chatlog wurde auf {0022FF}" WaitFor " ms{FF6600} gesetzt.")
