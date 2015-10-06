@@ -57,7 +57,7 @@ if(LastUsedBuild < 40){
 		{
 			FileSelectFolder, newfolder,, 3, Wähle den neuen Ordner des sBinders:
 			if(!ErrorLevel){
-				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by SAPlayer
+				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by IcedWave
 				FileCreateDir, %musicfolder%
 				FileDelete, sBinder_move.bat
 				FileAppend, @echo off`nping 127.0.0.1 -n 1`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
@@ -138,9 +138,9 @@ if(!A_IsCompiled){
 	FileDelete, lines.ahk
 	FileAppend, % "script_lines := " script_lines "`nscript_chars := " script_chars, lines.ahk
 	FileDelete, VersionInfo.ahk
-	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by SAPlayer`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports Reallife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2015 SAPlayer`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
+	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports Reallife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2015 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
 	;FileDelete, VersionInfo_sUpdate.ahk
-	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by SAPlayer`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2015 SAPlayer`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
+	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2015 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
 }
 ;@Ahk2Exe-IgnoreEnd
 if(UseAPI){
@@ -2565,7 +2565,7 @@ else
 if(A_IsCompiled)
 	Menu, Tray, NoStandard
 Menu, Tray, Color, FFFFFF
-Menu, Tray, Tip, sBinder %Version%-%Build% by SAPlayer
+Menu, Tray, Tip, sBinder %Version%-%Build% by IcedWave
 Menu, Tray, Add, &Öffnen, GuiShow
 Menu, Tray, Add, B&eenden, 1GuiClose
 Menu, Tray, Default, &Öffnen
@@ -2608,7 +2608,7 @@ return
 BuildGUIs:
 ;AboutGUI
 Gui, AboutGUI:Add, Picture, x0 y5, %A_AppData%\sBinder\bg.png
-Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: SAPlayer`nCopyright © 2012-2015 SAPlayer`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion "`n`nAktuelle Länge des Quellcodes: " number_format(script_chars) " Zeichen in " number_format(script_lines) " Zeilen"
+Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: IcedWave`nCopyright © 2012-2015 IcedWave`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion "`n`nAktuelle Länge des Quellcodes: " number_format(script_chars) " Zeichen in " number_format(script_lines) " Zeilen"
 Gui, AboutGUI:Menu, MenuBar
 ;SettingsGUI
 Gui, SettingsGUI:Add, Tab2, -Background +Theme -Wrap x5 y5 w525 h340 vSettingsTab, Seite 1|Seite 2|Seite 3|Erweiterte Optionen
@@ -2756,12 +2756,12 @@ Gui, SettingsGUI:Add, Button, x15 y%y% h20 gUpdateDesign, Aktuelles Design manue
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp30, ?
 y += 30
 Gui, SettingsGUI:Tab
-Gui, SettingsGUI:Add, Text, x5, sBinder %Version%-%Build% by SAPlayer
+Gui, SettingsGUI:Add, Text, x5, sBinder %Version%-%Build% by IcedWave
 Gui, SettingsGUI:Add, ListBox, x535 y25 w150 h320 gSettingsChangeTab vSettingsListBox AltSubmit Choose1 0x100, Allgemeine Einstellungen|Ingame-Einstellungen|   Telefontexte|Pfade|/trucking|/radio-Slots|Programme mitstarten|Erweiterte Optionen
 Gui, SettingsGUI:Menu, MenuBar
 ;CreditsGUI
 Gui, CreditsGUI:Font, S15 bold
-Gui, CreditsGUI:Add, Link, cRed, Entwickler: <a href="http://forum.nes-reallife.de/index.php/User/7208-SAPlayer/">SAPlayer</a>`nDanke an folgende Personen:
+Gui, CreditsGUI:Add, Link, cRed, Entwickler: <a href="https://forum.nes-newlife.de/user/810-icedwave/">IcedWave</a>`nDanke an folgende Personen:
 Gui, CreditsGUI:Font
 Gui, CreditsGUI:Font, S10
 Gui, CreditsGUI:Add, Link,, <a href="http://forum.nes-reallife.de/index.php/User/5371-Muffle/">Muffle</a> (Alter Schriftzug)`n<a href="http://forum.nes-reallife.de/index.php/User/6642-ChackN0rris/">ChackN0rris</a> (Viele tolle Ideen)`n<a href="http://forum.nes-reallife.de/index.php/User/8679-[L]ucius/">[L]ucius</a> (Icon, Schriftzug)`n`nAus dem AHK-Forum: <a href="http://www.autohotkey.com/board/user/7194-bentschi/">Bentschi</a>, <a href="http://www.autohotkey.com/board/user/19424-jnizm/">jNizM</a>, <a href="http://www.autohotkey.com/board/user/932-shimanov/">shimanov</a>, <a href="http://www.autohotkey.com/board/user/331-toralf/">toralf</a>, Brainside, <a href="http://www.autohotkey.com/board/user/1-polyethene/">polyethene</a>
@@ -4291,7 +4291,7 @@ if(FadeOut){
 ExitApp
 return
 GuiShow:
-Gui, 1:Show,, sBinder %Version%-%Build% by SAPlayer
+Gui, 1:Show,, sBinder %Version%-%Build% by IcedWave
 return
 
 
@@ -5955,7 +5955,7 @@ if(A_IsSuspended){
 chat := ""
 fishes := wait := currindex := 0
 IniRead, AutoReleaseFishes, %INIFile%, Settings, AutoReleaseFishes, 0
-if(AutoReleaseFishes AND !inOR(Nickname, "SAPlayer", "AudRay", "Sundosia", "[L]ucius", "Definitiv", "ChackN0rris"))
+if(AutoReleaseFishes AND !inOR(Nickname, "IcedWave", "AudRay", "Sundosia", "[L]ucius", "Definitiv", "ChackN0rris"))
 	AutoReleaseFishes := 0
 if(AutoReleaseFishes)
 	fishprices := [["Pike", "Seebarsch", "Thunfisch", "Schildkröte", "Aal", "Penisfisch", "Makrele", "Dorsch", "Forelle", "Lachs", "Schwertfisch", "Roter Snapper", "Zackenbarsch", "Katzenfisch", "Blauer Marlin", "Amberjack"], [7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 1]]
