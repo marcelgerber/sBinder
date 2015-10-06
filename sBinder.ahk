@@ -2186,7 +2186,7 @@ if(pingsuccessful || FileExist(datacachefile)){
 	SB_SetTextEx("Daten werden heruntergeladen...")
 	
 	if(pingsuccessful)
-		data := LTrim(HTTPData("http://saplayer.lima-city.de/sBinder/logon.php?u=" URLEncode(Nickname) "&v=" URLEncode(Version "-" Build (InStr(A_ScriptName, ".ahk") ? "-dev" : (A_ScriptName = "sBinder_Beta.exe" ? "-beta" : ""))), "Die Daten konnten nicht heruntergeladen werden", "UTF-8"), " ?")
+		data := LTrim(HTTPData("http://saplayer.lima-city.de/sBinder/logon.php?nl&u=" URLEncode(Nickname) "&v=" URLEncode(Version "-" Build (InStr(A_ScriptName, ".ahk") ? "-dev" : (A_ScriptName = "sBinder_Beta.exe" ? "-beta" : ""))), "Die Daten konnten nicht heruntergeladen werden", "UTF-8"), " ?")
 	else
 		data := ""
 	if(vBuild := RegExFileRead(data, "B", 0)){
@@ -3090,7 +3090,7 @@ TruckReload:
 GuiControlGet, temp, TruckerGUI:, TruckReloaded
 GuiControl, TruckerGUI:, TruckReloaded, % SubStr(temp, 1, 31) " (Wird aktualisiert...)"
 TruckDDOS := 0
-if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
 	TruckDDOS := 1
 	if(WinActive("GTA:SA:MP"))
 		AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
@@ -5446,7 +5446,7 @@ GuiControlGet, TruckLevelLimit, SettingsGUI:
 if(TruckEPUpload AND TruckEP != ""){
 	StringReplace, TruckEP, TruckEP, .,, All
 	if(temp := (SAMPName ? SAMPName : Nickname)){
-		if(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=trucking-ep&name=" URLEncode(temp) "&ep=" TruckEP "&check=" SSMD5(TruckEP*2 temp TruckEP))){
+		if(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-ep&name=" URLEncode(temp) "&ep=" TruckEP "&check=" SSMD5(TruckEP*2 temp TruckEP))){
 			RegExMatch(data, "^(\d+)\|(\d+)$", data)
 			AddChatMessage("Du bist derzeit Platz " data1 " von " data2 " der Trucker Top 50.")
 		}
@@ -5599,7 +5599,7 @@ return
 ::/wetter::
 Suspend Permit
 AddChatMessage("Wetterdaten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=weather",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=weather",,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5643,7 +5643,7 @@ if(num2 = 8){
 	return
 }
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5689,7 +5689,7 @@ num2 := leaderonline := leader := members := online := 0
 if(!num2 := FrakNums[Frak])
 	return
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5822,7 +5822,7 @@ if(num2 = 8){
 	return
 }
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5881,7 +5881,7 @@ if(is(id, "integer") AND (between(StrLen(id), 1, 3))){
 if(SubStr(id, -5, 6) = "_[AFK]")
 	id := SubStr(id, 1, -6)
 AddChatMessage("Spielerdaten werden geladen...")
-if((data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=player-v2.3&p=" URLEncode(id), "")) = -1){
+if((data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=player-v2.3&p=" URLEncode(id), "")) = -1){
 	AddChatMessage("Kein Spieler mit " (is(id, "integer") ? "der Nummer" : "dem Namen") " {0022FF}" id "{FF6600} gefunden")
 	return
 }
@@ -6142,7 +6142,7 @@ return
 Suspend Permit
 members := online := fraks := 0
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=fraks",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=fraks",,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -6183,7 +6183,7 @@ if(num2 = 8){
 	return
 }
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
