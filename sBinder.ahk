@@ -1995,7 +1995,11 @@ IniRead, xBind1, %INIFile%, Binds, xBind1, %A_Space%
 IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
 IniRead, wBind2, %INIFile%, Binds, wBind2, %A_Space%
-IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 2
+IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 1
+if (LastUsedBuild < 58 && DownloadMode = 2) {
+	DownloadMode := 1
+	IniWrite, %DownloadMode%, %INIFile%, Settings, DownloadMode
+}
 IniRead, AFKBox, %INIFile%, Settings, AFKBox, 0
 IniRead, Tel, %INIFile%, Telefon, Active, 0
 IniRead, pText, %INIFile%, Telefon, p, Guten Tag, mein Name ist [Name].~Was kann ich für Sie tun?
@@ -2346,8 +2350,8 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "1.3.13"
-Build := 57
+Version := "2.0.0"
+Build := 58
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
@@ -2818,7 +2822,7 @@ loop, % Hotstrings
 }
 Gui, CustomBindsGUI:Menu, MenuBar
 ;CarCalcGUI:
-car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Blade", "Blista Compact", "Bobcat", "Boxville", "Broadway", "Buccaneer", "Buffalo", "Bullet", "Burrito [Premium]", "Camper", "Cheetah", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Glendale", "Greenwood", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Picador", "Pony", "Premier [Premium]", "Quad", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Sentinel", "Shamal", "Slamvan", "Stafford", "Stallion", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tahoma", "Tanker", "Tornado", "Tropic", "Turismo", "Uranus", "Virgo", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
+car_name := ["Admiral", "Alpha", "Andromeda", "Banshee", "Benson", "BF Injection", "BF-400", "Blade", "Blista Compact", "Bobcat", "Boxville", "Broadway", "Buffalo", "Bullet", "Burrito [Premium]", "Cabbie", "Camper", "Cheetah [Premium]", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Mountain Bike", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Pony", "Premier [Premium]", "Quad", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Shamal", "Slamvan", "Stafford", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tanker", "Taxi", "Towtruck", "Tropic", "Turismo", "Uranus", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "ZR-350"]
 Gui, CarCalcGUI:Add, Text, x10 y10, Fahrzeug:
 Gui, CarCalcGUI:Add, Text, x130 y10, Carheal:
 Gui, CarCalcGUI:Font, s15 cRed
@@ -2833,7 +2837,7 @@ for i, v in car_name
 }
 Gui, CarCalcGUI:Add, DDL, AltSubmit vcar gCalc x10 y30 w110, % SubStr(ddl, 2)
 ddl := ""
-Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250|Stufe 2: 1.500|Stufe 3: 1.750|Stufe 4: 2.000|Stufe 5: 2.250 [Premium]|Stufe 6: 2.500 [Premium]|Stufe 7: 2.750 [Premium]|Stufe 8: 3.000 [Premium]
+Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250
 Gui, CarCalcGUI:Add, Checkbox, vTogAll gTogAll x280 y40, Alle auswählen
 Gui, CarCalcGUI:Add, Checkbox, vOnlyAddons gCalc x375 y40, Nur Addonpreise
 Gui, CarCalcGUI:Add, Checkbox, x10 y70 vpeilsender gCalc, Peilsender
@@ -3060,12 +3064,13 @@ GuiControl, CarCalcGUI:, akku, %TogAll%
 GuiControl, CarCalcGUI:, kraum, %TogAll%
 Calc:
 Gui, CarCalcGUI:Submit, Nohide
-car_shop := [12, 12, 10, 5, 13, 6, 7, 3, 0, 12, 13, 3, 14, 5, 5, 11, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 14, 14, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 10, 7, 3, 7, 12, 4, 14, 13, 11, 7, 1, 13, 4, 7, 0, 14, 10, 1, 5, 14, 2, 5, 2, 1, 4, 14, 13, 14, 9, 5, 0, 14, 1, 13, 12, 7, 3, 13, 4, 12]
-car_price := [97800, 124000, 12450000, 399000, 39874, 36300, 33250, 46200, 32400, 66200, 54210, 39800, 27600, 123300, 690600, 87500, 78000, 712000, 19000, 110200, 279000, 123200, 870000, 160200, 96000, 112000, 145000, 34400, 33800, 42800, 76000, 14800, 28000, 89000, 168000, 173400, 120800, 780000, 191200, 970000, 87800, 53600, 321000, 82200, 3670000, 980000, 36100, 56000, 9450000, 168000, 110200, 45700, 76000, 175000, 24300, 23540, 260000, 54000, 42200, 875650, 72900, 38400, 31900, 49000, 2700000, 56600, 215600, 98800, 36000, 478200, 195000, 67200, 368000, 31900, 574000, 33300, 1780200, 620800, 68000, 23500, 41000, 6450, 143200, 42100, 118800, 125421, 19102, 301200]
-car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
-shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Truck-Autohaus", "Xoomer Autohaus in South Los Santos"]
+car_shop := [12, 12, 10, 5, 13, 6, 7, 3, 0, 12, 13, 3, 5, 5, 11, 13, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 7, 3, 7, 12, 4, 13, 11, 7, 1, 13, 4, 7, 0, 10, 1, 5, 2, 5, 2, 1, 4, 13, 13, 13, 9, 5, 0, 1, 13, 12, 7, 3, 13, 12]
+car_price := [31500, 34000, 5000000, 125000, 12000, 19900, 13900, 42500, 7500, 27500, 14000, 22700, 89000, 175000, 56000, 29000, 34000, 274000, 4999, 54000, 220000, 12500, 299000, 28500, 27900, 24500, 42500, 15000, 19500, 24500, 21000, 28500, 78000, 52000, 43000, 275000, 58900, 240000, 28000, 12900, 49000, 34500, 220000, 1700000, 24999, 18000, 2000000, 44900, 23999, 18000, 6800, 125000, 8500, 65000, 9000, 37500, 69000, 38000, 12900, 26400, 2400000, 16500, 48000, 23500, 112000, 39999, 23999, 98000, 59000, 35000, 145780, 79999, 144000, 16500, 27400, 4260, 32500, 36000, 54000, 17000, 59000]
+car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0]
+shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Gewerbliches Autohaus East Los Santos"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
-carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
+;carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
+carhealprices := [0, 10000]
 GuiControl, % "CarCalcGUI:" (Diesel ? "Disable" : "Enable"), LPG
 GuiControl, % "CarCalcGUI:" (LPG ? "Disable" : "Enable"), Diesel
 /*if(value){
@@ -3079,7 +3084,8 @@ if(value)
 	price := "Wert: $" number_format(Floor(car_price[car]*0.25))
 else{
 	;GuiControl, CarCalcGUI:Hide, km
-	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*3200+funkfernbedienung*8500+alarmanlage*4500+versicherung*8000+waffenlager*12000+unlimited_respawn*105000+neon*8200+kennzeichenfarbe*60+Ceil(schloss*(car_price[car]*0.25))+akku*16000+kraum*5000+Diesel*32500+LPG*38450)
+	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*2000+funkfernbedienung*899+alarmanlage*500+versicherung*800+waffenlager*2700+unlimited_respawn*12000+neon*8200+kennzeichenfarbe*60+Ceil(schloss*(car_price[car]*0.25))+akku*750+kraum*2500+Diesel*32500+LPG*38450)
+	;  Neon? Schloss?
 }
 GuiControl, CarCalcGUI:, price, %price%
 shop := car_shop[car] + 1
@@ -6221,21 +6227,21 @@ chat := GetChatLines(17)
 if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Sicherheitsschloss: (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Schloss, 9: Carheal (mit Text), 10: Handyakku, 11: Kofferraum
 	carvalue := Object()
 	;{
-	carvalues := ArrayParse("445:97800|602:124000|592:12450000|429:399000|499:39874|424:36300|581:33250|536:46200|496:32400|422:66200|498:54210|575:39800|518:27600|402:123300|541:690600|482:87500|483:78000|415:712000|542:19000|589:110200|480:279000|473:123200|593:870000|507:160200|562:96000|419:112000|587:145000|521:34400|533:33800|565:42800|463:76000|466:14800|492:28000|474:89000|434:168000|579:173400|545:120800|411:780000|559:191200|493:970000|508:87800|400:53600|403:321000|517:82200|484:3670000|487:980000|500:36100|418:56000|553:9450000|522:168000|467:110200|461:45700|404:76000|603:175000|600:24300|413:23540|426:260000|471:54000|534:42200|515:875650|475:72900|468:38400|567:31900|405:49000|519:2700000|535:56600|580:215600|439:98800|561:36000|409:478200|560:195000|550:67200|506:368000|566:31900|514:574000|576:33300|454:1780200|451:620800|558:68000|491:23500|412:41000|478:6450|421:143200|586:42100|555:118800|456:125421|554:19102|477:301200|")
+	carvalues := ArrayParse("445:31500|602:34000|592:5000000|429:125000|499:12000|424:19900|581:13900|536:42500|496:7500|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:29000|483:34000|415:274000|542:4999|589:54000|480:220000|473:12500|593:299000|507:28500|562:27900|419:24500|587:42500|521:15000|533:19500|565:24500|463:21000|474:28500|434:78000|579:52000|545:43000|411:275000|559:58900|493:240000|508:28000|400:12900|403:49000|517:34500|484:220000|487:1700000|500:24999|418:18000|510:2000000|522:44900|467:23999|461:18000|404:6800|603:125000|413:8500|426:65000|471:9000|534:37500|515:69000|475:38000|468:12900|567:26400|519:2400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:35000|425:145780|454:79999|451:144000|558:16500|412:27400|478:4260|421:32500|586:36000|555:54000|456:17000|477:59000|")
 	;}
 	carvalue["price"] := carvalue["carprice"] := carvalues[data1]
 	AddChatMessage("Neupreis (ohne Addons): {0022FF}$" number_format(carvalue["carprice"]))
-	carvalue["price"] += var1 = "Vorhanden" ? 3200 : 0
-	carvalue["price"] += var2 = "Vorhanden" ? 8500 : 0
-	carvalue["price"] += var3 = "Vorhanden" ? 4500 : 0
-	carvalue["price"] += var4 = "Vorhanden" ? 8200 : 0
-	carvalue["price"] += var5 = "Vorhanden" ? 12000 : 0
-	carvalue["price"] += RegExMatch(var6, "-> (\d+)", data) ? data1 * 800 : 0
-	carvalue["price"] += var7 = "Vorhanden" ? 105000 : 0
-	carvalue["price"] += var8 = "Vorhanden" ? Ceil(carvalue["carprice"] * 0.25) : 0
-	carvalue["price"] += RegExMatch(var9, "Stufe -> (\d+)", data) ? [258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500][data1] : 0
-	carvalue["price"] += var10 = "Vorhanden" ? 16000 : 0
-	carvalue["price"] += var11 = "Vorhanden" ? 5000 : 0
+	carvalue["price"] += var1 = "Vorhanden" ? 2000 : 0
+	carvalue["price"] += var2 = "Vorhanden" ? 899 : 0
+	carvalue["price"] += var3 = "Vorhanden" ? 500 : 0
+	carvalue["price"] += var4 = "Vorhanden" ? 8200 : 0 ; ?
+	carvalue["price"] += var5 = "Vorhanden" ? 2700 : 0
+	carvalue["price"] += RegExMatch(var6, "-> (\d+)", data) ? data1 * 80 : 0
+	carvalue["price"] += var7 = "Vorhanden" ? 12000 : 0
+	carvalue["price"] += var8 = "Vorhanden" ? Ceil(carvalue["carprice"] * 0.25) : 0 ; ?
+	carvalue["price"] += RegExMatch(var9, "Stufe -> (\d+)", data) ? [10000][data1] : 0
+	carvalue["price"] += var10 = "Vorhanden" ? 750 : 0
+	carvalue["price"] += var11 = "Vorhanden" ? 2500 : 0
 	AddChatMessage("Neupreis (mit Addons): {0022FF}$" number_format(carvalue["price"]))
 	AddChatMessage("Fahrzeugwert (/car sell): {0022FF}$" number_format(Round(carvalue["carprice"] * 0.25)))
 	AddChatMessage("Hinweis: Kennzeichenfarbe sowie Umrüstungen auf Diesel/LPG werden nicht berücksichtigt.", 0xFF1100)
