@@ -2843,16 +2843,14 @@ Gui, CarCalcGUI:Add, Checkbox, vOnlyAddons gCalc x375 y40, Nur Addonpreise
 Gui, CarCalcGUI:Add, Checkbox, x10 y70 vpeilsender gCalc, Peilsender
 Gui, CarCalcGUI:Add, Checkbox, x170 y70 vfunkfernbedienung gCalc, Funkfernbedienung
 Gui, CarCalcGUI:Add, Checkbox, x330 y70 valarmanlage gCalc, Alarmanlage
-Gui, CarCalcGUI:Add, Checkbox, x10 y90 vversicherung gCalc, Versicherung
-Gui, CarCalcGUI:Add, Checkbox, x170 y90 vwaffenlager gCalc, Waffenlager
-Gui, CarCalcGUI:Add, Checkbox, x330 y90 vunlimited_respawn gCalc, Unlimited Respawn
-Gui, CarCalcGUI:Add, Checkbox, x10 y110 vneon gCalc, Neon
-Gui, CarCalcGUI:Add, Checkbox, x170 y110 vkennzeichenfarbe gCalc, Kennzeichenfarbe
-Gui, CarCalcGUI:Add, Checkbox, x330 y110 vschloss gCalc, Schloss
-Gui, CarCalcGUI:Add, Checkbox, x10 y130 vakku gCalc, Handyakku
-Gui, CarCalcGUI:Add, Checkbox, x170 y130 vkraum gCalc, Kofferraum
+Gui, CarCalcGUI:Add, Checkbox, x10 y90 vkennzeichenfarbe gCalc, Kennzeichenfarbe
+Gui, CarCalcGUI:Add, Checkbox, x170 y90 vkraum gCalc, Kofferraum
+Gui, CarCalcGUI:Add, Checkbox, x330 y90 vwaffenlager gCalc, Waffenlager
+Gui, CarCalcGUI:Add, Checkbox, x10 y110 vversicherung gCalc, Versicherung
+Gui, CarCalcGUI:Add, Checkbox, x170 y110 vunlimited_respawn gCalc, Unlimited Respawn
+Gui, CarCalcGUI:Add, Checkbox, x330 y110 vakku gCalc, Handyakku
+Gui, CarCalcGUI:Add, Checkbox, x10 y130 vneon gCalc, Neon
 Gui, CarCalcGUI:Add, Checkbox, x330 y130 vvalue gCalc, Wert (/car sell)
-;Gui, CarCalcGUI:Add, Edit, Hidden x250 y128 h20 w100 vkm gCalc, KM-Stand
 Gui, CarCalcGUI:Add, Checkbox, x10 y150 vDiesel gCalc, Umbau auf Diesel
 Gui, CarCalcGUI:Add, Checkbox, x330 y150 vLPG gCalc, Umbau auf LPG
 Gui, CarCalcGUI:Add, Button, x170 y150 h20 gOnlineCarCalc, Online-Fahrzeugrechner
@@ -3054,14 +3052,13 @@ GuiControlGet, TogAll, CarCalcGUI:
 GuiControl, CarCalcGUI:, peilsender, %TogAll%
 GuiControl, CarCalcGUI:, funkfernbedienung, %TogAll%
 GuiControl, CarCalcGUI:, alarmanlage, %TogAll%
-GuiControl, CarCalcGUI:, versicherung, %TogAll%
-GuiControl, CarCalcGUI:, waffenlager, %TogAll%
-GuiControl, CarCalcGUI:, unlimited_respawn, %TogAll%
-GuiControl, CarCalcGUI:, neon, %TogAll%
 GuiControl, CarCalcGUI:, kennzeichenfarbe, %TogAll%
-GuiControl, CarCalcGUI:, schloss, %TogAll%
-GuiControl, CarCalcGUI:, akku, %TogAll%
 GuiControl, CarCalcGUI:, kraum, %TogAll%
+GuiControl, CarCalcGUI:, waffenlager, %TogAll%
+GuiControl, CarCalcGUI:, versicherung, %TogAll%
+GuiControl, CarCalcGUI:, unlimited_respawn, %TogAll%
+GuiControl, CarCalcGUI:, akku, %TogAll%
+GuiControl, CarCalcGUI:, neon, %TogAll%
 Calc:
 Gui, CarCalcGUI:Submit, Nohide
 car_shop := [12, 12, 10, 5, 13, 6, 7, 3, 0, 12, 13, 3, 5, 5, 11, 13, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 7, 3, 7, 12, 4, 13, 11, 7, 1, 13, 4, 7, 0, 10, 1, 5, 2, 5, 2, 1, 4, 13, 13, 13, 9, 5, 0, 1, 13, 12, 7, 3, 13, 12]
@@ -3084,8 +3081,7 @@ if(value)
 	price := "Wert: $" number_format(Floor(car_price[car]*0.25))
 else{
 	;GuiControl, CarCalcGUI:Hide, km
-	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*2000+funkfernbedienung*899+alarmanlage*500+versicherung*800+waffenlager*2700+unlimited_respawn*12000+neon*8200+kennzeichenfarbe*60+Ceil(schloss*(car_price[car]*0.25))+akku*750+kraum*2500+Diesel*32500+LPG*38450)
-	;  Neon? Schloss?
+	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*2000+funkfernbedienung*899+alarmanlage*500+kennzeichenfarbe*60+kraum*2500+waffenlager*2700+versicherung*800+unlimited_respawn*12000+akku*750+neon*2500+Diesel*2250+LPG*4500)
 }
 GuiControl, CarCalcGUI:, price, %price%
 shop := car_shop[car] + 1
@@ -6224,7 +6220,7 @@ SendChat("/vehinfo")
 SendChat("/addoninfo")
 WaitFor()
 chat := GetChatLines(17)
-if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Sicherheitsschloss: (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Schloss, 9: Carheal (mit Text), 10: Handyakku, 11: Kofferraum
+if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Carheal (mit Text), 9: Handyakku, 10: Kofferraum
 	carvalue := Object()
 	;{
 	carvalues := ArrayParse("445:31500|602:34000|592:5000000|429:125000|499:12000|424:19900|581:13900|536:42500|496:7500|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:29000|483:34000|415:274000|542:4999|589:54000|480:220000|473:12500|593:299000|507:28500|562:27900|419:24500|587:42500|521:15000|533:19500|565:24500|463:21000|474:28500|434:78000|579:52000|545:43000|411:275000|559:58900|493:240000|508:28000|400:12900|403:49000|517:34500|484:220000|487:1700000|500:24999|418:18000|510:2000000|522:44900|467:23999|461:18000|404:6800|603:125000|413:8500|426:65000|471:9000|534:37500|515:69000|475:38000|468:12900|567:26400|519:2400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:35000|425:145780|454:79999|451:144000|558:16500|412:27400|478:4260|421:32500|586:36000|555:54000|456:17000|477:59000|")
@@ -6234,14 +6230,13 @@ if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(cha
 	carvalue["price"] += var1 = "Vorhanden" ? 2000 : 0
 	carvalue["price"] += var2 = "Vorhanden" ? 899 : 0
 	carvalue["price"] += var3 = "Vorhanden" ? 500 : 0
-	carvalue["price"] += var4 = "Vorhanden" ? 8200 : 0 ; ?
+	carvalue["price"] += var4 = "Vorhanden" ? 2500 : 0
 	carvalue["price"] += var5 = "Vorhanden" ? 2700 : 0
 	carvalue["price"] += RegExMatch(var6, "-> (\d+)", data) ? data1 * 80 : 0
 	carvalue["price"] += var7 = "Vorhanden" ? 12000 : 0
-	carvalue["price"] += var8 = "Vorhanden" ? Ceil(carvalue["carprice"] * 0.25) : 0 ; ?
-	carvalue["price"] += RegExMatch(var9, "Stufe -> (\d+)", data) ? [10000][data1] : 0
-	carvalue["price"] += var10 = "Vorhanden" ? 750 : 0
-	carvalue["price"] += var11 = "Vorhanden" ? 2500 : 0
+	carvalue["price"] += RegExMatch(var8, "Stufe -> (\d+)", data) ? [10000][data1] : 0
+	carvalue["price"] += var9 = "Vorhanden" ? 750 : 0
+	carvalue["price"] += var10 = "Vorhanden" ? 2500 : 0
 	AddChatMessage("Neupreis (mit Addons): {0022FF}$" number_format(carvalue["price"]))
 	AddChatMessage("Fahrzeugwert (/car sell): {0022FF}$" number_format(Round(carvalue["carprice"] * 0.25)))
 	AddChatMessage("Hinweis: Kennzeichenfarbe sowie Umrüstungen auf Diesel/LPG werden nicht berücksichtigt.", 0xFF1100)
