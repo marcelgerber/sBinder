@@ -2306,7 +2306,7 @@ if(pingsuccessful || FileExist(datacachefile)){
 	data := ""
 }
 if(!inetconn){
-	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a>" (Frak > 1 ? "<br><b>Fraktionsbinds können nicht genutzt werden!</b>" : "") (vBuild ? "<i>Es werden gecachte Daten genutzt.</i>" : "") "<br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
+	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a>" (Frak > 1 && !vBuild ? "<br><b>Fraktionsbinds können nicht genutzt werden!</b>" : "") (vBuild ? "<br><i>Es werden gecachte Daten genutzt.</i>" : "") "<br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
 	SetWB(Inf, "<span style='color:#F10'>Es sind Fehler aufgetreten!</span><br><ul>" errortext "</ul><br><b>Hinweis:</b> <div class='hint'>Diese Seite aktualisiert sich nicht automatisch. <a href='sBinder://g/Downloads'>Jetzt aktualisieren</a></div>",, InfoColor)
 	GuiControl, 1:Disable, LastInfo
 	GuiControl, 1:Disable, NextInfo
