@@ -1953,6 +1953,25 @@ IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
 IniRead, Frak, %INIFile%, Settings, Fraktion, 1
 if (LastUsedBuild < 60 && Frak != 1) {
+	/*
+	1"Keine Fraktion"
+	2"Ordnungsamt"x
+	3"Police Department"2
+	4"Rettungsdienst"3
+	5"FBI"x
+	6"Bundeswehr"x
+	7"Dillimore Devils"4
+	8"Taxiteam"x
+	9"La Cosa Nostra"5
+	10"Yakuza"6
+	11"Grove Street"7
+	12"San Fierro Rifa"x
+	13"San Andreas Media AG"8
+	14"Ballas Family"9
+	15"Los Vagos"10
+	16"Korsakow Familie"x
+	17"Hitmen"x
+	*/
 	;Before: "Keine Fraktion", "Ordnungsamt", "Police Department", "Rettungsdienst", "FBI", "Bundeswehr", "Dillimore Devils", "Taxiteam", "La Cosa Nostra", "Yakuza", "Grove Street", "San Fierro Rifa", "San Andreas Media AG", "Ballas Family", "Los Vagos", "Korsakow Familie", "Hitmen"
 	;After: "Keine Fraktion", "Los Santos Polizei", "Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos"
 	Frak := [1, 1, 2, 3, 1, 1, 4, 1, 5, 6, 7, 1, 8, 9, 10, 1, 1][Frak]
