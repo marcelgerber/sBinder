@@ -4942,48 +4942,6 @@ loop{
 		break
 }
 return
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(4) OR IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
-::/übungen::
-Suspend Permit
-if(IsFrak(2)){
-	Übung_time := 19
-	Übung := ["Fahrübung", "Ortskunde", "Wantedquiz", "Waffenkunde"]
-}
-else if(IsFrak(3)){
-	Übung_time := 18
-	Übung := ["Ortskunde/Schussübung", "Fahrübung/Roleplay"]
-}
-else if(IsFrak(4)){
-	Übung_time := 19
-	Übung :=  ["Roleplay", "Flugübung", "Ortskunde", "Fahrübung"]
-}
-else if(IsFrak(5)){
-	Übung_time := 18
-	Übung := ["Roleplay", "Bombenalarm", "Kommunikations-/Fahrübung"]
-}
-else if(IsFrak(6)){
-	Übung_time := 19
-	Übung := ["Streife und RP-Kontrolle", "Waffentheorie", "Patriotenübung", "Ortskenntnisse und Fragestunde", "Einzelprüfung", "Gruppenprüfung"]
-}
-if(Übung){
-	AddChatMessage("Dies sind die Wochenübungen (jeweils um " Übung_time " Uhr):")
-	if(Übung[1])
-		AddChatMessage("Montag" (A_WDay = 2 ? " (Heute)" : "") ": {0022FF}" Übung[1])
-	if(Übung[2])
-		AddChatMessage("Dienstag" (A_WDay = 3 ? " (Heute)" : "") ": {0022FF}" Übung[2])
-	if(Übung[3])
-		AddChatMessage("Mittwoch" (A_WDay = 4 ? " (Heute)" : "") ": {0022FF}" Übung[3])
-	if(Übung[4])
-		AddChatMessage("Donnerstag" (A_WDay = 5 ? " (Heute)" : "") ": {0022FF}" Übung[4])
-	if(Übung[5])
-		AddChatMessage("Freitag" (A_WDay = 6 ? " (Heute)" : "") ": {0022FF}" Übung[5])
-	if(Übung[6])
-		AddChatMessage("Samstag" (A_WDay = 7 ? " (Heute)" : "") ": {0022FF}" Übung[6])
-	if(Übung[7])
-		AddChatMessage("Sonntag" (A_WDay = 1 ? " (Heute)" : "") ": {0022FF}" Übung[7])
-}
-Übung := Übung_time := ""
-return
 #if IsFrak(4) AND WinActive("GTA:SA:MP") AND UseAPI
 :b0:/czone::
 Suspend Permit
