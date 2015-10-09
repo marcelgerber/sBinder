@@ -5640,10 +5640,6 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
 	return
 }
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
-	return
-}
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
@@ -5817,10 +5813,6 @@ if(!num1 := PlayerInput("Gib den Namen der Fraktion ein: ")){
 }
 if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
-	return
-}
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
 	return
 }
 AddChatMessage("Daten werden geladen...")
@@ -6163,8 +6155,7 @@ else{
 	AddChatMessage(online "/" members " Mitglieder von " fraks " Fraktionen online:")
 	for i, k in FrakWebsite
 	{
-		if(k[1] != "Hitmen")
-			AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) "%)")
+		AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) "%)")
 	}
 }
 FrakWebsite := ""
@@ -6178,10 +6169,6 @@ if(!num1 := PlayerInput("Gib den Namen der Fraktion ein: ")){
 }
 if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
-	return
-}
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
 	return
 }
 AddChatMessage("Daten werden geladen...")
