@@ -4221,8 +4221,11 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen())
 	return
 KeyWait, h
 KeyWait, h, D T0.2
-if(!ErrorLevel)
+if(!ErrorLevel){
 	BindReplace("/mv~/oldmv")
+	if(IsFrak(2))
+		SendChat("/towopen")
+}
 return
 #IfWinActive GTA:SA:MP
 
