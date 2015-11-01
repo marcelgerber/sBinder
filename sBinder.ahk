@@ -2386,7 +2386,7 @@ MaxOverlays := 3
 OverlayActive := 0
 Hotstrings := 26
 Notes := 8
-FrakOptions := 4
+FrakOptions := 5
 frakbinds := 1
 savemsg := 1
 Drugsystem := 1
@@ -3284,6 +3284,8 @@ if(IsFrak(3)){
 	Gui, FrakGui:Add, Edit, % "vFrakoption1 x175 y" fBinds*25+60 " w100 h20", %Frakoption1%
 	Gui, FrakGui:Add, Edit, % "vFrakoption2 x175 y" fBinds*25+85 " w100 h20", %Frakoption2%
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
+	Gui, FrakGui:Add, Checkbox, % "vFrakoption5 x10 y" fBinds*25+140 " Checked" !!FrakOption5, Übermittlung von Daten ans SARD Interface zulassen
+	Gui, FrakGui:Add, Button, % "x300 y" fBinds*25+140 " h20 w12 gHelp32", ?
 }
 TextArray := ""
 Gui, FrakGUI:Menu, MenuBar
@@ -3712,6 +3714,7 @@ Help28:
 Help29:
 Help30:
 Help31:
+Help32:
 helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova eSports RealLife bietet (Teamspeak, NSC & SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
@@ -3742,8 +3745,9 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
-, "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + NSC-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: NSC & SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;31
+, "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."
+, "Hiermit wird die Übermittlung von Daten an das von ThomasTailor93 verwaltete SARD Interface (sard-interface.tk) in diesen Fällen zugelassen:`n• Eingabe von ""/mpdrop"", bei erfolgreichem Abliefern: Übermittlung deines Namens und des neuen Lagerstandes`n• Benutzung des Binds ""/accept medic -- Status 3"", bei erfolgreicher Annahme eines Auftrags: Übermittlung deines Namens und des Namens vom Auftraggeber"]
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + NSC-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: NSC & SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50", "SARD: Zulassen zur Übermittlung von Daten an das SARD Interface"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
@@ -4935,7 +4939,8 @@ Sleep, 300
 chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
-	HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
+	if (FrakOption5)
+		HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
 #if (IsFrak(2) OR IsFrak(3)) AND WinActive("GTA:SA:MP")
@@ -6944,7 +6949,8 @@ else if(IsFrak(3, 1)){
 		}
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
-		HTTPData("http://sard-interface.tk/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
+		if (FrakOption5)
+			HTTPData("http://sard-interface.tk/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
 	}
 }
 else if(IsFrak(4, 1))
