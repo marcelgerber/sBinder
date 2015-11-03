@@ -1183,7 +1183,7 @@ OverlayReplace(text, InVehicle){
 		called := 1
 		GetPlayerHealth_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerHealth")
 		GetPlayerArmor_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerArmor")
-		;GetPlayerId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerId")
+		GetPlayerId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerId")
 		GetPlayerMoney_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerMoney")
 		GetZoneName_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetZoneName")
 		GetCityName_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetCityName")
