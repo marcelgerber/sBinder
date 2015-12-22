@@ -2411,11 +2411,11 @@ return
 Arrays:
 loop, %MaxOverlay%
 	Ov[A_Index] := -1
-Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos"]
+Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI"]
 Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Fahrzeughändler", "Farmer", "Geldtransport", "Getreidelieferant", "Hure", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
 FrakRegEx := ["^\s*PD|^\s*Police|^\s*Polizei|LS|Los Santos", "SFPD|SF|San Fierro",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter",, "Scarfo|Racing|Auto|Car|Rifa",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
-FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19]
+FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_1.html", version: "1.1"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_0.html", version: "1.0"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
 CarModels := {400:"Landstalker",402:"Buffalo",403:"Linerunner",404:"Perenniel",405:"Sentinel",406:"Dumper",407:"Feuerwehr",408:"Müllwagen",409:"Stretch",411:"Infernus",412:"Voodoo",413:"Pony",415:"Cheetah",416:"Rettungswagen",417:"Leviathan",418:"Moonbeam",419:"Esperanto",420:"Taxi",421:"Washington",422:"Bobcat",424:"BF Injection",425:"Hunter",426:"Premier",427:"Enforcer",428:"Bankwagen",429:"Banshee",430:"Polizeischiff",431:"Bus",432:"Panzer",433:"Barracks",434:"Hotknife",437:"Coach",440:"Rumpo",445:"Admiral",451:"Turismo",454:"Tropic",456:"Yankee",457:"Golf-Caddy",459:"Drogenvan",461:"PCJ-600",462:"Faggio",463:"Freeway",467:"Oceanic",468:"Sanchez",470:"Patriot",471:"Quad",472:"Coastguard",473:"Dinghy",474:"Hermes",475:"Sabre",476:"Rustler",477:"ZR-350",478:"Walton",480:"Comet",482:"Burrito",483:"Camper",484:"Marquis",487:"Maverick",489:"Rancher",490:"FBI Rancher",493:"Jetmax",494:"Hotring Racer",495:"Sandking",496:"Blista Compact",497:"Polizei Maverick",498:"Boxville",499:"Benson",500:"Mesa",502:"Hotring Racer",503:"Hotring Racer",504:"Bloodring Banger",505:"Rancher",506:"Super GT",507:"Elegant",508:"Journey",514:"Tanker",515:"Roadtrain",517:"Majestic",519:"Shamal",520:"Hydra",521:"FCR-900",522:"NRG-500",523:"Polizei Bike",524:"Betonmischer",525:"Towtruck",528:"FBI Truck",532:"Mähdrescher",533:"Feltzer",534:"Remington",535:"Slamvan",536:"Blade",541:"Bullet",542:"Clover",544:"Feuerwehr mit Leiter",545:"Hustler",548:"Cargobob",550:"Sunrise",554:"Yosemite",555:"Windsor",558:"Uranus",559:"Jester",560:"Sultan",561:"Stratum",562:"Elegy",563:"Medicopter",565:"Flash",566:"Tahoma",567:"Savanna",568:"Bandito",573:"Dune",574:"Sweeper",575:"Broadway",579:"Huntley",580:"Stafford",581:"BF-400",585:"Emperor",586:"Wayfarer",587:"Euros",589:"Club",593:"Dodo",596:"Polizei (LS)",597:"Polizei (SF)",598:"Army Car",599:"Noteinsatzfahrzeug",601:"Wasserwerfer",602:"Alpha",603:"Phoenix"}
@@ -3264,6 +3264,8 @@ else if(IsFrak(9))
 	TextArray := ["/use gold", "/use green", "/equip", "/use lsd", "/gangfight", "/gangflag", "/gangwar", "/s: Don't fuck with the Ballas Family", "/s: Wir kommen wir sehen wir töten wir gehen", "/s Are you kidding me?"]
 else if(IsFrak(10))
 	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use herbs", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
+else if(IsFrak(11))
+	TextArray := ["/m: Straße räumen", "/m: Rechts ranfahren", "/m: Drogenkontrolle", "/s: Stehen bleiben"]
 fBinds := TextArray._maxIndex()
 if(TextArray AND IsFrak(Frak)){
 	Gui, FrakGUI:Font, underline
@@ -4943,7 +4945,7 @@ if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt
 		HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
-#if (IsFrak(2) OR IsFrak(3)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/vs::
 Suspend Permit
 if(UseAPI){
@@ -4977,13 +4979,13 @@ if((location := PlayerInput("Gib den Ort ein, an dem du Verstärkung brauchst: "
 else
 	AddChatMessage("Der /vs-Modus wird verlassen, da du nichts eingegeben hast.")
 return
-#if IsFrak(2) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/showstaat::
 Suspend Permit
 chat1 := GetPlayerId()
 BindReplace("/oos /showperso " chat1 "~/oos /showlicenses " chat1 "~/oos /showvisum " chat1)
 return
-#if IsFrak(2) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/takedrogenall::
 Suspend Permit
 SendChat("/knastmember")
@@ -5066,6 +5068,8 @@ else if(IsFrak(7))
 	FrakCmd := ["/fpkeep wasser", "/fpkeep dueng", "/plants"]
 else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
+else if(IsFrak(11))
+	FrakCmd := ["/showstaat", "/takedrogenall", "/wpbinds", "/vs"]
 if(FrakCmd AND A_ThisLabel = "::/textbinds")
 	List(FrakCmd, Fraknames[Frak] ": ", 1)
 if(A_ThisLabel = "::/textbinds")
@@ -6339,7 +6343,7 @@ Suspend Permit
 BindReplace("/wank~/me holt sich einen runter.")
 return
 ;WPs
-#if IsFrak(2) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
@@ -6929,6 +6933,8 @@ else if(IsFrak(9, 1))
 	SendChat("/use gold")
 else if(IsFrak(10, 1))
 	BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Federal Bureau of Investigation im Einsatz «««~/m [»»» Machen Sie unverzüglich den Weg frei! «««")
 return
 fBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6967,6 +6973,8 @@ else if(IsFrak(9, 1))
 	SendChat("/use green")
 else if(IsFrak(10, 1))
 	BindReplace("/s LV²² | Überfall! Bleib sofort stehen!~/s LV²² | Geld her dann passiert dir nichts!")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Federal Bureau of Investigation «««~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 return
 fBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6991,6 +6999,8 @@ else if(IsFrak(9, 1))
 	SendChat("/equip")
 else if(IsFrak(10, 1))
 	SendChat("/ad LV²² | Mobiler Tequilaverkäufer on Tour | LV²² Call/SMS")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Drug Enforcement Administration «««~/m [» Person- und Güterkontrolle im Bezug auf Drogenkriminalität «~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 return
 fBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7033,6 +7043,8 @@ else if(IsFrak(9, 1))
 	SendChat("/use lsd")
 else if(IsFrak(10, 1))
 	SendChat("/gangflag")
+else if(IsFrak(11, 1))
+	BindReplace("/s » Federal Bureau of Investigation «~/s Stehen bleiben und Hände hoch~/oos Befehl: /handsup")
 return
 fBind5:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
