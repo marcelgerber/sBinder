@@ -4580,16 +4580,16 @@ return
 Suspend Permit
 SendChat("/oldstats")
 WaitFor()
-chat := ChatLine(3, "Nächstes Level:[")
+chat := ChatLine(3, "Respekt:[")
 num := ChatLine(6, "Level:[")
 stat := ChatLine(5, "Status:[")
-RegExMatch(chat, "Nächstes Level:\[\$(.*?)\] Respekt:\[(.*)/(.*?)\]", chat)
-RegExMatch(num, "Level:\[(\d*?)\] Geschlecht:\[", num)
-chat4 := chat3 - chat2
-if(chat2 < chat3)
-	AddChatMessage("Du benötigst noch {0022FF}" chat4 " Respektpunkt" (chat4 = 1 ? "" : "e") "{FF6600}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat4 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {0022FF}Level " num1 + 1 "{FF6600}. {A6A6A6}[" chat2 "/" chat3 "]")
-else
-	AddChatMessage("Du kannst dir {0022FF}Level " num1 + 1 "{FF6600} für {0022FF}$" number_format(chat1) "{FF6600} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
+RegExMatch(chat, "Respekt:\[(\d+)/(\d+)\]", chat)
+RegExMatch(num, "Level:\[(\d+)\] Geschlecht:\[", num)
+chat3 := chat2 - chat1
+;if(chat1 < chat2)
+AddChatMessage("Du benötigst noch {0022FF}" chat3 " Respektpunkt" (chat3 = 1 ? "" : "e") "{FF6600}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat3 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {0022FF}Level " num1 + 1 "{FF6600}. {A6A6A6}[" chat1 "/" chat2 "]")
+;else
+;	AddChatMessage("Du kannst dir {0022FF}Level " num1 + 1 "{FF6600} für {0022FF}$" number_format(chat1) "{FF6600} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
 return
 ::/kcall::
 Suspend Permit
