@@ -6345,13 +6345,13 @@ return
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
-	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet2 (/sg2)", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/diebstahl", "/sdiebstahl", "/mdiebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/prüfungsstörung", "/raubwp", "/staatsgefährdung1", "/staatsgefährdung2", "/ssperrgebiet (/ssg)", "/schießen", "/smord", "/sgericht", "/lstvo", "/sstvo", "/ticketersatz", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
+	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/craub", "/diebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/raubwp", "/üraub", "/staatsgefährdung", "/schießen", "/lstvo", "/sstvo", "/smord", "/mittäter (/smordm)", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (30 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet2 (/sg2){FFFFFF}: Betreten des Flugzeugträgers (30 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/sdiebstahl{FFFFFF}: Diebstahl von Schlüsselkarten (30 WPs)`n{0022FF}/mdiebstahl{FFFFFF}: Diebstahl militärischen Equipments (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (15 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in SAPD/FBI/O-Amt/SA:RD (20 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch in Area 51/Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch ins Weiße Haus (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (50 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (20 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (10 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/prüfungsstörung{FFFFFF}: Prüfungsstörung (15 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/staatsgefährdung1{FFFFFF}: Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken) (61 WPs)`n{0022FF}/staatsgefährdung2{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/ssperrgebiet (/ssg){FFFFFF}: Störung eines vorübergehend ausgerufenen Sperrgebietes (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (50 WPs)`n{0022FF}/sgericht{FFFFFF}: Störung eines Gerichtsverfahrens (20 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/ticketersatz{FFFFFF}: Ticketersatz (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (20 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Stören eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (15 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch in den Regierungssitz (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (50 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (20 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (10 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/üraub{FFFFFF}: Raubüberfall (30 WPs)`n{0022FF}/staatsgefährdung{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (50 WPs)`n{0022FF}/mittäter (/smordm){FFFFFF}: Serienmord Mittäterschaft (50 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (20 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
 return
 ::/braub::
 Suspend Permit
-SendWPs("Bankraub", 30)
+SendWPs("Bankraub", 40)
 return
 ::/bflucht::
 ::/bhzf::
@@ -6362,15 +6362,10 @@ return
 Suspend Permit
 SendWPs("Beschädigung von Stromgeneratoren", 20)
 return
-::/sperrgebiet2::
-::/sg2::
-Suspend Permit
-SendWPs("Betreten des Flugzeugträgers", 30)
-return
 ::/sperrgebiet::
 ::/sg::
 Suspend Permit
-SendWPs("Betreten eines vorübergehend ausgerufenen Sperrgebietes", 40)
+SendWPs("Stören eines vorübergehend ausgerufenen Sperrgebietes", 40)
 return
 ::/beleidigung::
 Suspend Permit
@@ -6391,17 +6386,13 @@ return
 Suspend Permit
 SendWPs("Behinderung von Löscharbeiten", 20)
 return
+::/craub::
+Suspend Permit
+SendWPs("Casinoraub", 40)
+return
 ::/diebstahl::
 Suspend Permit
 SendWPs("Diebstahl", 15)
-return
-::/sdiebstahl::
-Suspend Permit
-SendWPs("Diebstahl von Schlüsselkarten", 30)
-return
-::/mdiebstahl::
-Suspend Permit
-SendWPs("Diebstahl militärischen Equipments", 61)
 return
 ::/drohung::
 Suspend Permit
@@ -6423,15 +6414,15 @@ SendWPs("Drogentransport", 20)
 return
 ::/einbruch1::
 Suspend Permit
-SendWPs("Einbruch in SAPD/FBI/O-Amt/SA:RD", 20)
+SendWPs("Einbruch in staatliche Institutionen", 20)
 return
 ::/einbruch2::
 Suspend Permit
-SendWPs("Einbruch in Area 51/Alkatraz", 61)
+SendWPs("Einbruch Alkatraz", 61)
 return
 ::/einbruchwh::
 Suspend Permit
-SendWPs("Einbruch ins Weiße Haus", 61)
+SendWPs("Einbruch in den Regierungssitz", 61)
 return
 ::/flucht::
 Suspend Permit
@@ -6491,38 +6482,21 @@ return
 Suspend Permit
 SendWPs("Mord des Kanzlers", 61)
 return
-::/prüfungsstörung::
-Suspend Permit
-SendWPs("Prüfungsstörung", 15)
-return
 ::/raubwp::
 Suspend Permit
 SendWPs("Raub", 20)
 return
-::/staatsgefährdung1::
+::/üraub::
 Suspend Permit
-SendWPs("Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken)", 61)
+SendWPs("Raubüberfall", 30)
 return
-::/staatsgefährdung2::
+::/staatsgefährdung::
 Suspend Permit
 SendWPs("Staatsgefährdung (Beschuss beim Passverkauf)", 40)
-return
-::/ssperrgebiet::
-::/ssg::
-Suspend Permit
-SendWPs("Störung eines vorübergehend ausgerufenen Sperrgebietes", 61)
 return
 ::/schießen::
 Suspend Permit
 SendWPs("Schießen in der Öffentlichkeit", 10)
-return
-::/smord::
-Suspend Permit
-SendWPs("Serienmord", 50)
-return
-::/sgericht::
-Suspend Permit
-SendWPs("Störung eines Gerichtsverfahrens", 20)
 return
 ::/lstvo::
 Suspend Permit
@@ -6532,9 +6506,14 @@ return
 Suspend Permit
 SendWPs("Schweres StVO-Vergehen", 10)
 return
-::/ticketersatz::
+::/smord::
 Suspend Permit
-SendWPs("Ticketersatz", 10)
+SendWPs("Serienmord", 50)
+return
+::/mittäter::
+::/smordm::
+Suspend Permit
+SendWPs("Serienmord Mittäterschaft", 50)
 return
 ::/vmord::
 Suspend Permit
