@@ -1825,7 +1825,7 @@ wb_BeforeNavigate2(wb, url, flags, frame, postdata, headers, cancel){ ;AHK-Insta
 	if(m1 = "go" OR m1 = "g"){
 		loop, Parse, m2, `;
 		{
-			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^NSC$|^SimpleSAM$|^Feedback$|.*Online$")))
+			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^SimpleSAM$|^Feedback$|.*Online$")))
 				gosub %A_LoopField%
 		}
 	}
@@ -1922,7 +1922,7 @@ if(Startup_Fraps)
 if(Startup_TS)
 	SetTimer, TSConnect, % Abs(Startup_TS_Delay) * -1000
 if(Startup_SAMP)
-	SetTimer, NSC, % Abs(Startup_SAMP_Delay) * -1000
+	SetTimer, Connect, % Abs(Startup_SAMP_Delay) * -1000
 if(Startup_Other)
 	SetTimer, RunOtherProgram, % Abs(Startup_Other_Delay) * -1000
 if(AutoHitsound)
@@ -1948,7 +1948,6 @@ Open:
 RegRead, SAMPName, HKCU, Software\SAMP, playername
 RegRead, Fp, HKCU, Software\sBinder, Fp
 IniRead, samppath, %INIFile%, Settings, SAMPPath, 0
-IniRead, nscpath, %INIFile%, Settings, NSCPath, 0
 IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
 IniRead, Frak, %INIFile%, Settings, Fraktion, 1
@@ -2433,7 +2432,7 @@ if(UseDesign = 1){
 	;height: 478
 	Gui, Add, Picture, x104 y0, %A_AppData%\sBinder\bg.png
 	Gui, Add, Button, x10 y30 w120 h20 gTSConnect, TS³ Connect
-	Gui, Add, Button, x140 y30 w120 h20 gNSC, NSC && SAMP starten
+	Gui, Add, Button, x140 y30 w120 h20 gConnect, SAMP starten
 	Gui, Add, Button, x270 y30 w120 h20 gForum, Nova Forum
 	Gui, Add, Button, x395 y30 h20 w12 gHelp1, ?
 	Gui, Add, Button, x140 y80 w120 h20 gCustomBindsGUI, Eigene Binds
@@ -2566,7 +2565,7 @@ Menu, SonstigesMenu, Add, Nach &Updates suchen, Downloads
 Menu, SonstigesMenu, Add
 Menu, SonstigesMenu, Add, &Debug-Informationen anzeigen, DebugGUI
 Menu, SonstigesMenu, Add, Keybinder &testen (Debug), TestGUI
-Menu, ConnectMenu, Add, NSC && SAMP sta&rten, NSC
+Menu, ConnectMenu, Add, SAMP sta&rten, Connect
 Menu, ConnectMenu, Add, &TeamSpeak³, TSConnect
 Menu, ConnectMenu, Add, Nova &Forum, Forum
 Menu, MenuBar, Add, &Datei, :DateiMenu
@@ -2616,7 +2615,7 @@ Menu, SonstigesMenu, Icon, &Über, shell32.dll, 225
 Menu, SonstigesMenu, Icon, &Debug-Informationen anzeigen, shell32.dll, 222
 Menu, SonstigesMenu, Icon, Keybinder &testen (Debug), shell32.dll, 217
 try
-	Menu, ConnectMenu, Icon, NSC && SAMP sta&rten, %nscpath%
+	Menu, ConnectMenu, Icon, SAMP sta&rten, %samppath%
 try{
 	RegRead, ts3_temp, HKCR, ts3server\shell\open\command
 	RegExMatch(ts3_temp, "UO)^""(.+)""", ts3_temp)
@@ -2702,7 +2701,7 @@ Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp13, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gSelectCL, Chatlog-Pfad auswählen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w150 gChatlogSearch, Chatlog automatisch suchen
-Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectNSC vNSCSelect, NSC-Pfad ändern
+Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectSAMP vSAMPSelect, SAMP-Pfad ändern
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp15, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gOpenINI, INI-Datei öffnen
@@ -2736,7 +2735,7 @@ Gui, SettingsGUI:Tab, 3
 ;Tab 3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h140 w510 vStartupProgramSettings c000000", Programme mitstarten
-Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vStartup_SAMP Checked%Startup_SAMP% gStartupSettingsChange, NSC && SAMP mitstarten
+Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vStartup_SAMP Checked%Startup_SAMP% gStartupSettingsChange, SAMP mitstarten
 Gui, SettingsGUI:Add, Text, x190 y%y% vStartup_SAMP_Disable1, Verzögerung:
 Gui, SettingsGUI:Add, Edit, x260 y%y% w45 h20 vStartup_SAMP_Disable2
 Gui, SettingsGUI:Add, UpDown, vStartup_SAMP_Delay Range0-60, %Startup_SAMP_Delay%
@@ -3717,7 +3716,7 @@ Help29:
 Help30:
 Help31:
 Help32:
-helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova eSports RealLife bietet (Teamspeak, NSC & SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
+helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova eSports RealLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
 , "In den Fraktionsbinds kannst du Tasten für vordefinierte, einheitliche Aktionen setzen.`nDafür musst du erst deine Fraktion auswählen und mit dem Passwort, das du normalerweise vom Leader bekommst, bestätigen.`n`nWenn deine Fraktion noch nicht vertreten ist, kannst du, oder z.B. einer eurer Leader, mich kontaktieren, dass auch deine Fraktion integriert wird."
@@ -3731,7 +3730,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden."
 , "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
 , "Du kannst ingame /trucking nutzen, um dir die aktuell verfügbaren Aufträge anzeigen zu lassen.`n`n`nNur Aufträge für Level anzeigen:`nDamit kannst du einstellen, bis zu welcher Grenze des Truckerlevels du die Aufträge angezeigt bekommst. Es gibt im Grunde diese Werte:`n-1: Zeigt ALLE Werte an, auch, wenn du das Level für diese Aufträge noch gar nicht erreicht hast.`n0: Zeigt nur die Aufträge deines aktuellen Levels an.`n1-10: Zeigt auch Aufträge von n niedrigeren Leveln an. Wenn du es also auf 2 stellst und du aktuell Truckerlevel 5 bist, zeigt es dir Aufträge von Level 3, 4 und 5 an. Der Wert 1 ist bei dieser Einstellung empfehlenswert (Standardwert)."
-, "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nNSC-Pfad ändern:`nDu kannst den Pfad zum Nova Social Client angeben, um ihn vom sBinder starten zu lassen und daraufhin auf den Server zu verbinden (mit dem Button ""NSC & SAMP starten"")."
+, "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nSAMP-Pfad ändern:`nDu kannst den Pfad zu SAMP angeben, um direkt im sBinder auf den Server zu verbinden (mit dem Button ""SAMP starten"")."
 , "Diesen Wert solltest du nur ändern, wenn es wirklich nötig ist!`n`nDiese Zeit bestimmt, wie lange (in Millisekunden) zusätzlich zum aktuellen Ping zum Server auf eine neue Zeile im Chatlog gewartet werden soll.`nStandardwert ist 90, falls der Chatlog nicht ausgelesen werden kann (z.B. bei /paydaytime), solltest du diese Zeit erhöhen.`nEs sind Werte zwischen 20 und 200 möglich."
 , "Hier findest du einige Möglichkeiten zum Löschen der Daten/Dateien, die der sBinder erzeugt.`nEs ist also ähnlich wie eine Deinstallation."
 , "API nutzen:`nDie API.dll wird benutzt, um Daten, die für dich bestimmt sind, auch nur dir anzuzeigen. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge nicht gestört.`nAllerdings funktioniert die API nicht bei jedem richtig, deshalb ist ihre Nutzung optional. Du kannst sie jederzeit aktivieren und deaktivieren.`nHINWEIS: Nach einer Änderung dieser Option wird der sBinder evtl. neu gestartet!`n`n`nOverlay-Einstellungen:`nDu kannst im sBinder ein komplett konfigurierbares Overlay nutzen, das dir im Spiel wichtige Daten anzeigt.`nDabei kannst du den Text mit einigen Variablen gestalten, außerdem sind dir bei der Wahl der Farbe, Schriftart, Schriftgröße und Position keine Grenzen gesetzt.`nMehr Informationen dazu findest du beim Klick auf den ?-Button in den Overlay-Einstellungen."
@@ -3739,7 +3738,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du eigene Radiosender definieren (bzw. deren URL angeben), die du später mit /radio aufrufen kannst.`nDu musst dafür als Name Slot 1, Slot 2 oder Slot 3 eingeben.`n`nHINWEIS: Die URL muss mit http:// oder https:// beginnen!"
 , "Beim Login automatisch eingeben:`nWenn du diese Funktion aktivierst, wird nach dem Login automatisch der in dem nebenstehenden Textfeld angegebene Befehl eingegeben.`nDu kannst zum Beispiel /togphone oder /hitsound nutzen (oder eine Kombination aus beiden).`nHINWEIS: Damit die Funktion korrekt arbeitet, muss der Keybinder VOR dem Start von SAMP gestartet werden!"
 , "INI-Datei öffnen:`nIn der INI-Datei werden alle deine Einstellungen gespeichert. Du kannst sie dir mit diesem Button ansehen.`nHINWEIS: Falls du Daten in der INI-Datei geändert hast, musst du den sBinder neu starten, damit sie ausgelesen werden. Wenn du davor im Keybinder speicherst gehen deine Änderungen verloren.`n`n`nsBinder-Ordner öffnen:`nMit diesem Button kannst du den Ordner öffnen, in dem der sBinder gespeichert ist."
-, "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit der NSC gestartet werden soll. Dabei wird auch SAMP automatisch mitgestartet."
+, "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den TS-Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit Fraps gestartet werden soll.`nEventuell musst du dazu den Pfad von Fraps angeben."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit ein weiteres Programm gestartet werden soll.`nDu musst den Pfad dieses Programms angeben."
@@ -3749,7 +3748,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
 , "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."
 , "Hiermit wird die Übermittlung von Daten an das von ThomasTailor93 verwaltete SARD Interface (sard-interface.tk) in diesen Fällen zugelassen:`n• Eingabe von ""/mpdrop"", bei erfolgreichem Abliefern: Übermittlung deines Namens und des neuen Lagerstandes`n• Benutzung des Binds ""/accept medic -- Status 3"", bei erfolgreicher Annahme eines Auftrags: Übermittlung deines Namens und des Namens vom Auftraggeber"]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + NSC-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: NSC & SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50", "SARD: Zulassen zur Übermittlung von Daten an das SARD Interface"] ;32
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50", "SARD: Zulassen zur Übermittlung von Daten an das SARD Interface"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
@@ -3774,7 +3773,6 @@ if(!ErrorLevel){
 }
 Thread, NoTimers, false
 return
-;Unused
 SelectSAMP:
 Thread, NoTimers
 FileSelectFile, temp, 1, % (FileExist(samppath) ? samppath : A_Desktop), Wähle die samp.exe aus, *.exe
@@ -3785,6 +3783,7 @@ if(!ErrorLevel){
 }
 Thread, NoTimers, false
 return
+;Unused
 SelectNSC:
 Thread, NoTimers
 FileSelectFile, temp, 1, % (FileExist(nscpath) ? nscpath : A_Desktop), Wähle den Nova Social Client aus, *.exe
@@ -3867,7 +3866,6 @@ if(!ErrorLevel){
 		IniWrite, %chatlogpath%, %INIFile%, Settings, ChatlogPath
 		IniWrite, %Job%, %INIFile%, Settings, Job
 		IniWrite, %samppath%, %INIFile%, Settings, SAMPPath
-		IniWrite, %nscpath%, %INIFile%, Settings, NSCPath
 		savemsg := 1
 		ToolTip("Deine Daten wurden gespeichert.`nSpeicherort: " INIFile "`n`nHINWEIS:`nBeim nächsten Start wird wieder folgende ini-Datei verwendet:`n" OldIni "`nDu kannst die andere ini-Datei aber per Datei->Öffnen auswählen.", 12000)
 		INIFile := OldIni
@@ -4307,7 +4305,7 @@ GuiShow:
 Gui, 1:Show,, sBinder %Version%-%Build% by IcedWave
 return
 
-
+;Unused
 NSC:
 SetTimer, StartNSC, -1 ;prevent hanging on WinWait
 return
@@ -4364,9 +4362,9 @@ Suspend Permit
 Critical
 reconnected := 1
 WinClose, GTA:SA:MP,, 3
-gosub NSC
+gosub Connect
 return
-;Unused
+
 Connect:
 SetTimer, %A_ThisLabel%, Off
 if(WinExist("GTA:SA:MP"))
