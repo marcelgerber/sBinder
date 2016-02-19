@@ -945,7 +945,7 @@ InfoProgress(text="", title="", windowName=""){
 		Gui, InfoProgress:Show, NA, %windowName%
 	}
 	else
-		GUIs["InfoProgress"] := ""
+		GUIs.Delete("InfoProgress")
 }
 IniSave(section, key, value, default, ini=""){
 	global INIFile
