@@ -6345,9 +6345,9 @@ return
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
-	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/craub", "/diebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/raubwp", "/üraub", "/staatsgefährdung", "/schießen", "/lstvo", "/sstvo", "/smord", "/mittäter (/smordm)", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
+	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/craub", "/diebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/raubwp", "/üraub", "/staatsgefährdung", "/schießen", "/lstvo", "/sstvo", "/smord", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Stören eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (15 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch in den Regierungssitz (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (50 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (20 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (10 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/üraub{FFFFFF}: Raubüberfall (30 WPs)`n{0022FF}/staatsgefährdung{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (50 WPs)`n{0022FF}/mittäter (/smordm){FFFFFF}: Serienmord Mittäterschaft (50 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (20 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Stören eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (15 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch in den Regierungssitz (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (40 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (10 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/üraub{FFFFFF}: Raubüberfall (30 WPs)`n{0022FF}/staatsgefährdung{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (45 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (20 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
 return
 ::/braub::
 Suspend Permit
@@ -6434,11 +6434,11 @@ SendWPs("Geiselnahme", 30)
 return
 ::/ggs::
 Suspend Permit
-SendWPs("Gruppierung gegen den Staat", 50)
+SendWPs("Gruppierung gegen den Staat", 40)
 return
 ::/bhack::
 Suspend Permit
-SendWPs("Hacken ins Banksystem", 20)
+SendWPs("Hacken ins Banksystem", 40)
 return
 ::/shetze::
 Suspend Permit
@@ -6492,7 +6492,7 @@ SendWPs("Raubüberfall", 30)
 return
 ::/staatsgefährdung::
 Suspend Permit
-SendWPs("Staatsgefährdung (Beschuss beim Passverkauf)", 40)
+SendWPs("Staatsgefährdung (Beschuss beim Passverkauf)", 45)
 return
 ::/schießen::
 Suspend Permit
@@ -6508,12 +6508,7 @@ SendWPs("Schweres StVO-Vergehen", 10)
 return
 ::/smord::
 Suspend Permit
-SendWPs("Serienmord", 50)
-return
-::/mittäter::
-::/smordm::
-Suspend Permit
-SendWPs("Serienmord Mittäterschaft", 50)
+SendWPs("Serienmord", 40)
 return
 ::/vmord::
 Suspend Permit
