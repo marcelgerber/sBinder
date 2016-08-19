@@ -2324,7 +2324,7 @@ Gui, TempGUI:Color, FFFFFF, 282828
 Gui, TempGUI:Add, Text, w290, % (UpdateAvailable ? "Die neue Version " vVersion "-" vBuild " ist zum Download verfügbar.`nWillst du jetzt ein Update ausführen?" : "Es ist kein Update verfügbar, die aktuellste Version ist " vVersion "-" vBuild ". Du kannst trotzdem ein manuelles Update ausführen.")
 Gui, TempGUI:Add, Button, x160 y40 w120 gVT, Virustotal-Link öffnen
 Gui, TempGUI:Add, Button, x200 y65 w80 gChangelogOnline, Changelog
-Gui, TempGUI:Add, CheckBox, x10 y90 vDoUpdate Checked, Update durchführen (empfohlen)
+Gui, TempGUI:Add, CheckBox, % "x10 y90 vDoUpdate" + (UpdateAvailable ? " Checked" : ""), % "Update durchführen" + (UpdateAvailable ? " (empfohlen)" : "")
 Gui, TempGUI:Add, Button, x220 w60 y90 gUpdate Default, Weiter »»
 Gui, TempGUI:Add, Text, vStatus x10 y110 w200
 Gui, TempGUI:Show, w290, sBinder: Update
