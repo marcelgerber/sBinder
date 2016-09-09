@@ -2075,6 +2075,16 @@ if(LastUsedBuild < 53 && LastUsedBuild > 0 && fBinds_reassign := {7: 3, 9: 3, 12
 		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
 	}
 }
+if (LastUsedBuild < 66 && Frak = 3)
+{
+	loop, % fBinds_max - 10
+	{
+		temp := 9 + A_Index
+		temp2 := temp + 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+}
 Loop, 4
 	IniRead, jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%, %A_Space%
 loop, %Notes%
@@ -3248,7 +3258,7 @@ Gui, FrakGUI:Add, Button, y5 h20 w120 gFrakChangeGUI, Fraktion ändern
 if(IsFrak(2))
 	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Rechts ranfahren", "/m: Straße räumen", "Allgemeine Verkehrskontrolle", "/s: Sie sind verhaftet", "Alkoholtest", "Drogentest", "/frisk", "/swapgun", "/mv + /oldmv", "/me: Zur Zentrale funken"]
 else if(IsFrak(3))
-	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Straße räumen", "/m: Medicopter startet/landet", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "/mv + /oldmv", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
+	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Straße räumen", "/m: Medicopter startet/landet", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
 	TextArray := ["/use herbs", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
 else if(IsFrak(5))
@@ -7159,8 +7169,13 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1))
 	BindReplace("Ich werde Sie nun auf illegale Drogen und Materialien untersuchen (/accept frisk).~/frisk " PlayerInput("Gib die ID des Spielers ein: "))
-else if(IsFrak(3, 1))
-	BindReplace("/mv~/oldmv")
+else if(IsFrak(3, 1)){
+	FrakOption4 := Mod(FrakOption4, 3) + 1
+	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
+	IniWrite, %FrakOption4%, %INIFile%, Settings, FrakOption4
+	GuiControl, FrakGUI:, Funkrufnummer %FrakOption4%, 1
+	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption4 "{FF6600} ({00AA00}" FrakOption%FrakOption4% "{FF6600}) genutzt.")
+}
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
 else if(IsFrak(10, 1))
@@ -7173,13 +7188,8 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1))
 	SendChat("/swapgun")
-else if(IsFrak(3, 1)){
-	FrakOption4 := Mod(FrakOption4, 3) + 1
-	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
-	IniWrite, %FrakOption4%, %INIFile%, Settings, FrakOption4
-	GuiControl, FrakGUI:, Funkrufnummer %FrakOption4%, 1
-	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption4 "{FF6600} ({00AA00}" FrakOption%FrakOption4% "{FF6600}) genutzt.")
-}
+if(IsFrak(3, 1))
+	BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
 else if(IsFrak(10, 1))
 	SendChat("/bl")
 return
@@ -7190,8 +7200,6 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1))
 	BindReplace("/mv~/oldmv")
-if(IsFrak(3, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
 return
 fBind13:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
