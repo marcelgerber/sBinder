@@ -3757,7 +3757,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
 , "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."
-, "Hiermit wird die Übermittlung von Daten an das von ThomasTailor93 verwaltete SARD Interface (sard-interface.tk) in diesen Fällen zugelassen:`n• Eingabe von ""/mpdrop"", bei erfolgreichem Abliefern: Übermittlung deines Namens und des neuen Lagerstandes`n• Benutzung des Binds ""/accept medic -- Status 3"", bei erfolgreicher Annahme eines Auftrags: Übermittlung deines Namens und des Namens vom Auftraggeber"]
+, "Hiermit wird die Übermittlung von Daten an das von ThomasTailor93 verwaltete SARD Interface (sard-interface.de) in diesen Fällen zugelassen:`n• Eingabe von ""/mpdrop"", bei erfolgreichem Abliefern: Übermittlung deines Namens und des neuen Lagerstandes`n• Benutzung des Binds ""/accept medic -- Status 3"", bei erfolgreicher Annahme eines Auftrags: Übermittlung deines Namens und des Namens vom Auftraggeber"]
 helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50", "SARD: Zulassen zur Übermittlung von Daten an das SARD Interface"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
@@ -4950,7 +4950,7 @@ chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
 	if (FrakOption5)
-		HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
+		HTTPData("https://sard-interface.de/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
@@ -6970,7 +6970,7 @@ else if(IsFrak(3, 1)){
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
 		if (FrakOption5)
-			HTTPData("http://sard-interface.tk/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
+			HTTPData("https://sard-interface.de/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
 	}
 }
 else if(IsFrak(4, 1))
