@@ -4974,7 +4974,7 @@ chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
 	if (FrakOption7)
-		HTTPData("https://sard-interface.de/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
+		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
@@ -6994,7 +6994,7 @@ else if(IsFrak(3, 1)){
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 		if (FrakOption7)
-			HTTPData("https://sard-interface.de/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
+			HTTPData("http://sard-interface.de/activity/index.php?get=services&var=8Ycz1YADg1cN0IkXnbFKBIwheBV49opo4JL1d1K&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
 	}
 }
 else if(IsFrak(4, 1))
