@@ -7060,7 +7060,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1))
-	BindReplace("[SA:PD] Fahren Sie rechts ran und stellen Sie den Motor ab.~/m Warten Sie auf weitere Anweisungen der Beamten! [SA:PD]")
+	BindReplace("/m [SA:PD] Fahren Sie rechts ran und stellen Sie den Motor ab.~/m Warten Sie auf weitere Anweisungen der Beamten! [SA:PD]")
 else if(IsFrak(3, 1)){
 	SendChat("/revive")
 	WaitFor()
