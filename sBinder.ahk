@@ -3311,9 +3311,9 @@ if(IsFrak(3)){
 	FrakOption6 := between(FrakOption6, 1, 5) AND is(FrakOption6, "integer") ? FrakOption6 : 1
 	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+60 " vFrakOption6 gFRNChange Checked" !!(FrakOption6 = 1), Funkrufnummer 1 (mit / und -):
 	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+85 " gFRNChange Checked" !!(FrakOption6 = 2), Funkrufnummer 2 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+135 " gFRNChange Checked" !!(FrakOption6 = 3), Funkrufnummer 3 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+160 " gFRNChange Checked" !!(FrakOption6 = 4), Funkrufnummer 4 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption6 = 5), Funkrufnummer 5 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption6 = 3), Funkrufnummer 3 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+135 " gFRNChange Checked" !!(FrakOption6 = 4), Funkrufnummer 4 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+160 " gFRNChange Checked" !!(FrakOption6 = 5), Funkrufnummer 5 (mit / und -):
 	Gui, FrakGui:Add, Edit, % "vFrakoption1 x175 y" fBinds*25+60 " w100 h20", %Frakoption1%
 	Gui, FrakGui:Add, Edit, % "vFrakoption2 x175 y" fBinds*25+85 " w100 h20", %Frakoption2%
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
