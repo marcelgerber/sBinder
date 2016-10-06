@@ -4977,6 +4977,17 @@ if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt
 		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
+:b0:/mpdelete::
+Suspend Permit
+WaitFor()
+Sleep, 300
+chat := ChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
+if(RegExMatch(chat, "Du hast (\d+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
+	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
+	if (FrakOption7)
+		HTTPData("http://sard-interface.de/activity/index.php?get=medivernichtung&var=emy87EbVXB3oDq9SeNQtufdqHBkKSL5bXI1eoNGD7e2YmSZyie&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
+}
+return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/vs::
 Suspend Permit
