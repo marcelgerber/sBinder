@@ -6986,6 +6986,9 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
+		WaitFor()
+		Sleep, 50
+		SendInput, {enter}
 		while(!chat := ChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.", 3)){
 			if(A_Index > 35)
 				return
