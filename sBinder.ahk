@@ -1993,6 +1993,16 @@ if(Frak = 3 AND LastUsedBuild < 47){
 	IniWrite, %Frakoption3%, %INIFile%, Settings, Frakoption3
 	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
 }
+if (Frak = 3 AND LastUsedBuild < 68) {
+	Frakoption6 := Frakoption4
+	Frakoption7 := Frakption5
+	Frakoption4 := ""
+	Frakoption5 := ""
+	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
+	IniWrite, %Frakoption5%, %INIFile%, Settings, Frakoption5
+	IniWrite, %Frakoption6%, %INIFile%, Settings, Frakoption6
+	IniWrite, %Frakoption7%, %INIFile%, Settings, Frakoption7
+}
 IniRead, JobOption1, %INIFile%, Settings, JobOption1, 0
 IniRead, TrayMinimize, %INIFile%, Settings, MinimizeToTray, 0
 IniRead, FadeOut, %INIFile%, Settings, FadeOut, 1
@@ -2405,7 +2415,7 @@ MaxOverlays := 3
 OverlayActive := 0
 Hotstrings := 26
 Notes := 8
-FrakOptions := 5
+FrakOptions := 7
 frakbinds := 1
 savemsg := 1
 Drugsystem := 1
@@ -3298,15 +3308,19 @@ if(TextArray AND IsFrak(Frak)){
 	}
 }
 if(IsFrak(3)){
-	FrakOption4 := between(FrakOption4, 1, 3) AND is(FrakOption4, "integer") ? FrakOption4 : 1
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+60 " vFrakOption4 gFRNChange Checked" !!(FrakOption4 = 1), Funkrufnummer 1 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+85 " gFRNChange Checked" !!(FrakOption4 = 2), Funkrufnummer 2 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption4 = 3), Funkrufnummer 3 (mit / und -):
+	FrakOption6 := between(FrakOption6, 1, 5) AND is(FrakOption6, "integer") ? FrakOption6 : 1
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+60 " vFrakOption6 gFRNChange Checked" !!(FrakOption6 = 1), Funkrufnummer 1 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+85 " gFRNChange Checked" !!(FrakOption6 = 2), Funkrufnummer 2 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+135 " gFRNChange Checked" !!(FrakOption6 = 3), Funkrufnummer 3 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+160 " gFRNChange Checked" !!(FrakOption6 = 4), Funkrufnummer 4 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption6 = 5), Funkrufnummer 5 (mit / und -):
 	Gui, FrakGui:Add, Edit, % "vFrakoption1 x175 y" fBinds*25+60 " w100 h20", %Frakoption1%
 	Gui, FrakGui:Add, Edit, % "vFrakoption2 x175 y" fBinds*25+85 " w100 h20", %Frakoption2%
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
-	Gui, FrakGui:Add, Checkbox, % "vFrakoption5 x10 y" fBinds*25+140 " Checked" !!FrakOption5, Übermittlung von Daten ans SARD Interface zulassen
-	Gui, FrakGui:Add, Button, % "x300 y" fBinds*25+140 " h20 w12 gHelp32", ?
+	Gui, FrakGui:Add, Edit, % "vFrakoption4 x175 y" fBinds*25+135 " w100 h20", %Frakoption4%
+	Gui, FrakGui:Add, Edit, % "vFrakoption5 x175 y" fBinds*25+160 " w100 h20", %Frakoption5%
+	Gui, FrakGui:Add, Checkbox, % "vFrakoption7 x10 y" fBinds*25+190 " Checked" !!FrakOption7, Übermittlung von Daten ans SARD Interface zulassen
+	Gui, FrakGui:Add, Button, % "x300 y" fBinds*25+190 " h20 w12 gHelp32", ?
 }
 TextArray := ""
 Gui, FrakGUI:Menu, MenuBar
@@ -4959,7 +4973,7 @@ Sleep, 300
 chat := ChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
 	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
-	if (FrakOption5)
+	if (FrakOption7)
 		HTTPData("https://sard-interface.de/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
 }
 return
@@ -6937,11 +6951,11 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	chat := ChatLine(0, "Du bist n", 2)
 	if(InStr(chat, "Du bist nun als Arzt im Dienst und wirst Einsätze bekommen."))
-		BindReplace("/equip~/takku~/r " FrakOption%FrakOption4% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 1")
+		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
 	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 1")
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
 	else if(InStr(chat, "Du bist nun nicht mehr als Arzt im Dienst."))
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 6")
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 }
 else if(IsFrak(4, 1))
 	SendChat("/use herbs")
@@ -6978,8 +6992,8 @@ else if(IsFrak(3, 1)){
 			Sleep, 100
 		}
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
-		if (FrakOption5)
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+		if (FrakOption7)
 			HTTPData("https://sard-interface.de/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
 	}
 }
@@ -7008,7 +7022,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	SendChat("/checkwanted " PlayerInput("Gib die ID des Spielers ein: "))
 else if(IsFrak(3, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 4")
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
 else if(IsFrak(4, 1))
 	SendChat("/use gold")
 else if(IsFrak(5, 1))
@@ -7144,7 +7158,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	SendChat("/swapgun")
 else if(IsFrak(3, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 6")
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 else if(IsFrak(6, 1))
 	SendChat("/materials getammo")
 else if(IsFrak(7, 1))
@@ -7180,11 +7194,11 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	SendChat("/me funkt zur Zentrale")
 else if(IsFrak(3, 1)){
-	FrakOption4 := Mod(FrakOption4, 3) + 1
+	FrakOption6 := Mod(FrakOption6, 5) + 1
 	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
-	IniWrite, %FrakOption4%, %INIFile%, Settings, FrakOption4
-	GuiControl, FrakGUI:, Funkrufnummer %FrakOption4%, 1
-	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption4 "{FF6600} ({00AA00}" FrakOption%FrakOption4% "{FF6600}) genutzt.")
+	IniWrite, %FrakOption6%, %INIFile%, Settings, FrakOption6
+	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
+	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
 }
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
@@ -7211,7 +7225,7 @@ if(IsFrak(2, 1)){
 	SendInput, {down 9}{enter}
 }
 if(IsFrak(3, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 else if(IsFrak(10, 1))
 	SendChat("/bl")
 return
