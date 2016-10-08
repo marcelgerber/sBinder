@@ -4971,10 +4971,12 @@ Suspend Permit
 WaitFor()
 Sleep, 300
 chat := ChatLine(0, "Du hast das Lager mit")
-if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
-	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
+if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
+	regex1 := StrReplace(regex1, ".")
+	regex2 := StrReplace(regex2, ".")
+	SendChat("/r Das Lager wurde mit " number_format(regex1) "/" number_format(regex2) " Medikamenten befüllt.")
 	if (FrakOption7)
-		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
+		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
 }
 return
 :b0:/mpdelete::
@@ -4982,7 +4984,8 @@ Suspend Permit
 WaitFor()
 Sleep, 300
 chat := ChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
-if(RegExMatch(chat, "Du hast (\d+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
+if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
+	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
 	if (FrakOption7)
 		HTTPData("http://sard-interface.de/activity/index.php?get=medivernichtung&var=emy87EbVXB3oDq9SeNQtufdqHBkKSL5bXI1eoNGD7e2YmSZyie&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
