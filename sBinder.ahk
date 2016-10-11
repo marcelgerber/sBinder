@@ -295,9 +295,9 @@ SendChat(Text, spamcount=3){
 		SendInput, {enter}
 	}
 	if(Drugsystem AND inOr(Text, "/use gold", "/use green", "/use lsd"))
-		gosub :b0:%Text%
+		gosub :?b0:%Text%
 	if(IsFrak(7) AND inOr(Text, "/fpkeep wasser", "/fpkeep dueng"))
-		gosub :b0:%Text%
+		gosub :?b0:%Text%
 	return res
 }
 SetParam(str_Name, str_Value){
@@ -474,6 +474,10 @@ BindReplace(String){
 					gosub, % "::/" textbind2
 					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
 				}
+				else if(IsLabel(":b0:/" textbind2)){
+					gosub, % ":b0:/" textbind2
+					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
+				}
 			}
 			KeyWait, Enter
 			SendInput, %BindOutput%
@@ -492,6 +496,8 @@ BindReplace(String){
 			}
 			if(IsLabel("::" currentPart) AND !A_IsSuspended)
 				gosub % "::" currentPart
+			else if(IsLabel(":b0:" currentPart) AND !A_IsSuspended)
+				gosub % ":b0:" currentPart
 			else if(!A_IsSuspended AND currentPart != "")
 				SendChat(Trim(currentPart))
 		}
@@ -4680,8 +4686,8 @@ AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
 #If IsFrak(7) AND WinActive("GTA:SA:MP")
-:b0:/fpkeep wasser::
-:b0:/fpkeep dueng::
+:?b0:/fpkeep wasser::
+:?b0:/fpkeep dueng::
 Suspend Permit
 if(UseAPI){
 	GetPlayerPosition(x, y, z, r)
@@ -6248,143 +6254,143 @@ return
 
 ;/me-Texte
 #If meTexte && active && WinActive("GTA:SA:MP")
-:b0:/handsup::
+:?b0:/handsup::
 Suspend Permit
 SendChat("/me hebt die Hände hoch.")
 return
-:b0:/drunk::
+:?b0:/drunk::
 Suspend Permit
 SendChat("/me torkelt betrunken durch die Gegend.")
 return
-:b0:/bomb::
+:?b0:/bomb::
 Suspend Permit
 SendChat("/me montiert etwas.")
 return
-:b0:/getarrested::
+:?b0:/getarrested::
 Suspend Permit
 SendChat("/me wird festgenommen.")
 return
-:b0:/lachen::
+:?b0:/lachen::
 Suspend Permit
 SendChat("/me lacht.")
 return
-:b0:/lookout::
+:?b0:/lookout::
 Suspend Permit
 SendChat("/me schaut sich um.")
 return
-:b0:/raub::
+:?b0:/raub::
 Suspend Permit
 SendChat("/me überfällt eine Person.")
 return
-:b0:/schreien::
+:?b0:/schreien::
 Suspend Permit
 SendChat("/me schreit.")
 return
-:b0:/denken::
+:?b0:/denken::
 Suspend Permit
 SendChat("/me denkt nach.")
 return
-:b0:/crossarms::
+:?b0:/crossarms::
 Suspend Permit
 SendChat("/me verschränkt die Arme.")
 return
-:b0:/lay::
-:b0:/lay2::
-:b0:/lay3::
+:?b0:/lay::
+:?b0:/lay2::
+:?b0:/lay3::
 Suspend Permit
 SendChat("/me legt sich hin.")
 return
-:b0:/hide::
-:b0:/hi::
+:?b0:/hide::
+:?b0:/hi::
 Suspend Permit
 SendChat("/me duckt sich.")
 return
-:b0:/kotzen::
+:?b0:/kotzen::
 Suspend Permit
 SendChat("/me erbricht.")
 return
-:b0:/eat::
+:?b0:/eat::
 Suspend Permit
 SendChat("/me isst etwas.")
 return
-:b0:/winken::
+:?b0:/winken::
 Suspend Permit
 SendChat("/me winkt.")
 return
-:b0:/taichi::
+:?b0:/taichi::
 Suspend Permit
 SendChat("/me meditiert.")
 return
-:b0:/anfeuern::
+:?b0:/anfeuern::
 Suspend Permit
 SendChat("/me feuert dich an.")
 return
-:b0:/sprung::
+:?b0:/sprung::
 Suspend Permit
 SendChat("/me springt zur Seite.")
 return
-:b0:/handstand::
+:?b0:/handstand::
 Suspend Permit
 SendChat("/me macht einen Handstand.")
 return
-:b0:/deal::
+:?b0:/deal::
 Suspend Permit
 SendChat("/me bietet etwas an.")
 return
-:b0:/crack::
+:?b0:/crack::
 Suspend Permit
 SendChat("/me krümmt sich.")
 return
-:b0:/smoke::
+:?b0:/smoke::
 Suspend Permit
 SendChat("/me raucht.")
 return
-:b0:/groundsit::
-:b0:/gro::
-:b0:/sit::
+:?b0:/groundsit::
+:?b0:/gro::
+:?b0:/sit::
 Suspend Permit
 SendChat("/me setzt sich.")
 return
-:b0:/chat::
+:?b0:/chat::
 Suspend Permit
 SendChat("/me erklärt etwas.")
 return
-:b0:/dance 1::
-:b0:/dance 2::
-:b0:/dance 3::
-:b0:/dance 4::
+:?b0:/dance 1::
+:?b0:/dance 2::
+:?b0:/dance 3::
+:?b0:/dance 4::
 Suspend Permit
 SendChat("/me tanzt.")
 return
-:b0:/fucku::
+:?b0:/fucku::
 Suspend Permit
 SendChat("/me ist wütend.")
 return
-:b0:/medic::
+:?b0:/medic::
 Suspend Permit
 SendChat("/me tut alles, um die Person wiederzubeleben.")
 return
-:b0:/verletzt::
+:?b0:/verletzt::
 Suspend Permit
 SendChat("/me ist verletzt.")
 return
-:b0:/prefight::
+:?b0:/prefight::
 Suspend Permit
 SendChat("/me bereitet sich auf den Kampf vor.")
 return
-:b0:/afun::
+:?b0:/afun::
 Suspend Permit
 BindReplace("/afun~/me krault seine Eier.")
 return
-:b0:/piss::
+:?b0:/piss::
 Suspend Permit
 SendChat("/me pinkelt.")
 return
-:b0:/dinfo::
+:?b0:/dinfo::
 Suspend Permit
 SendChat("/me schaut nach, wer gestorben ist.")
 return
-:b0:/wank::
+:?b0:/wank::
 Suspend Permit
 BindReplace("/wank~/me holt sich einen runter.")
 return
@@ -6616,7 +6622,7 @@ SendWPs("Würfeln außerhalb des Casinos", 10)
 return
 ;Ende der WPs
 #If Tel AND pText AND active AND WinActive("GTA:SA:MP")
-:b0:/p::
+:?b0:/p::
 Suspend Permit
 WaitFor()
 BindReplace(pText)
@@ -6648,11 +6654,11 @@ loop, 4
 	AddChatMessage(drugs[A_Index] ": Zuletzt benutzt: " (DrugLastUsed%A_Index% ? "vor " date(temp) " (" FormatTime(DrugLastUsed%A_Index%, "HH:mm:ss") ")" : "Nie"))
 }
 return
-:b0:/use Green::
-:b0:/use Gold::
-:b0:/use LSD::
+:?b0:/use Green::
+:?b0:/use Gold::
+:?b0:/use LSD::
 Suspend Permit
-RegExMatch(A_ThisLabel, ":b0:/use (.+)$", chat)
+RegExMatch(A_ThisLabel, ":?b0:/use (.+)$", chat)
 drugs := ArrayMatch(chat1, ["Green", "Widow", "Gold", "LSD"])
 DrugLastUsed%drugs% := A_Now
 /*
