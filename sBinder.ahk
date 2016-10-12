@@ -512,6 +512,15 @@ ChatLine(firstline, instr, lines=5){
 	}
 	return
 }
+WaitForChatLine(firstline, instr, lines=5, iterations=25){
+	loop, %iterations%
+	{
+		chat := ChatLine(firstline, instr, lines)
+		if (chat != "")
+			return chat
+		Sleep, 75
+	}
+}
 clearping(host, timeout=500){
 	if host is number
 		ping := host
@@ -2410,7 +2419,7 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "2.0.10"
+Version := "2.0.10-sard"
 Build := 68.2
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
@@ -4974,9 +4983,7 @@ return
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-WaitFor()
-Sleep, 300
-chat := ChatLine(0, "Du hast das Lager mit")
+chat := WaitForChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	regex2 := StrReplace(regex2, ".")
@@ -4987,9 +4994,7 @@ if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten 
 return
 :b0:/mpdelete::
 Suspend Permit
-WaitFor()
-Sleep, 300
-chat := ChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
 if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
