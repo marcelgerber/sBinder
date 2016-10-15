@@ -512,6 +512,15 @@ ChatLine(firstline, instr, lines=5){
 	}
 	return
 }
+WaitForChatLine(firstline, instr, lines=5, iterations=25){
+	loop, %iterations%
+	{
+		chat := ChatLine(firstline, instr, lines)
+		if (chat != "")
+			return chat
+		Sleep, 75
+	}
+}
 clearping(host, timeout=500){
 	if host is number
 		ping := host
@@ -730,8 +739,7 @@ GetPlayerId(){
 }
 GetPlayerIdByName(name){
 	SendChat("/id " name)
-	WaitFor()
-	GetChatLine(0, chat)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -739,8 +747,7 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	WaitFor()
-	GetChatLine(0, chat)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
@@ -1478,16 +1485,16 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		WaitFor()
-		RegExMatch(ChatLine(0, "ID: (", 3), "U)ID: \((\d*)\) ", chat)
+		chat := WaitForChatLine(0, "ID:")
+		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
 	}
 	/*
 	if(wps < 0){
 		SendChat("/checkwanted " data3)
-		WaitFor()
-		RegExMatch(ChatLine(0, "Wantedpunkte und somit Wantedlevel: ", 3), "U)HQ: .+ hat (\d+) Wantedpunkte und somit Wantedlevel:", wp)
+		chat := WaitForChatLine(0, "Wantedpunkte und somit Wantedlevel:")
+		RegExMatch(chat, "U)HQ: .+ hat (\d+) Wantedpunkte und somit Wantedlevel:", wp)
 		if(wps = -1){
 			if(wp1){
 				wps := 15
@@ -2036,6 +2043,7 @@ IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
 IniRead, wBind2, %INIFile%, Binds, wBind2, %A_Space%
 IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 1
+IniRead, SkipPing, %INIFile%, Settings, SkipPing, 0
 if (LastUsedBuild < 58 && DownloadMode = 2) {
 	DownloadMode := 1
 	IniWrite, %DownloadMode%, %INIFile%, Settings, DownloadMode
@@ -2239,13 +2247,17 @@ else{
 	if(temp > 432000) ;5 Tage
 		errortext .= "<li>Die chatlog.txt wurde vor langer Zeit geändert (zuletzt " FormatTime(temp2, "dd.MM.yyyy HH:mm") "). <a href='sBinder://go/ChatlogSearch'>Automatisch beheben</a> oder <a href='sBinder://go/SelectCL'>manuell auswählen</a>"
 }
-while(ping < 0 AND A_Index <= 3){
-	SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
-	ping := ping("saplayer.lima-city.de",, 450)
-	if(ping < 0)
-		Sleep, 500
+if(!SkipPing){
+	while(ping < 0 AND A_Index <= 3){
+		SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
+		ping := ping("saplayer.lima-city.de",, 450)
+		if(ping < 0)
+			Sleep, 500
+	}
+	pingsuccessful := ping >= 0
+} else {
+	pingsuccessful := 1
 }
-pingsuccessful := ping >= 0
 if(pingsuccessful || FileExist(datacachefile)){
 	SB_SetTextEx("Daten werden heruntergeladen...")
 	
@@ -2410,7 +2422,7 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "2.0.10"
+Version := "2.0.10-sard"
 Build := 68.2
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
@@ -4539,8 +4551,7 @@ return
 ::/kdonut::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(3, "Donuts: [")
+chat := WaitForChatLine(3, "Donuts: [")
 RegExMatch(chat, "Donuts: \[(.*)\]", chat)
 if(chat1 < 20)
 	SendChat("/get donut " 20 - chat1)
@@ -4604,8 +4615,7 @@ return
 ::/paydaytime::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(1, "Spielzeit seit Payday: [")
+chat := WaitForChatLine(1, "Spielzeit seit Payday: [")
 RegExMatch(chat, "Spielzeit seit Payday: \[(.*) Minuten\]", chat)
 chat1 := 60 - chat1
 AddChatMessage("Du musst noch {0022FF}" chat1 " Minute" (chat1 = 1 ? "" : "n") "{FF6600} bis zum Payday warten.")
@@ -4613,8 +4623,7 @@ return
 ::/respekt::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(3, "Respekt:[")
+chat := WaitForChatLine(3, "Respekt:[")
 num := ChatLine(6, "Level:[")
 stat := ChatLine(5, "Status:[")
 RegExMatch(chat, "Respekt:\[(\d+)/(\d+)\]", chat)
@@ -4632,8 +4641,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	WaitFor()
-	chat := ChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4651,8 +4659,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	WaitFor()
-	chat := ChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4667,14 +4674,12 @@ if(is(num1, "integer") AND StrLen(num1) >= 5){
 	SendInput, %num1%
 	WaitFor()
 	SendInput, {enter}
-
 }
 return
 ::/kgeld::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(6, "Bank:[$")
+chat := WaitForChatLine(6, "Bank:[$")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Bargeld:\[\$(.*?)\] Bank:\[\$(.*?)\] Handynummer:", chat)
 AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
@@ -4697,7 +4702,7 @@ else{
 	KeyWait, J, D T3
 	zone := ErrorLevel
 }
-WaitFor()
+WaitForChatLine(0, "gewässert")
 chat := GetChatLines(2)
 if(InStr(chat, "gewässert"))
 	chat1 := "water"
@@ -4893,8 +4898,8 @@ return
 ::/slsdme::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-RegExMatch(ChatLine(2, " LSD:["), "U)\] LSD:\[(\d+)\] Eisen:", chat)
+chat := WaitForChatLine(2, " LSD:[")
+RegExMatch(chat, "U)\] LSD:\[(\d+)\] Eisen:", chat)
 loop, % 6 - chat1
 	SendChat("/sellpizza speziale " Nickname)
 return
@@ -4970,22 +4975,21 @@ return
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-WaitFor()
-Sleep, 300
-chat := ChatLine(0, "Du hast das Lager mit")
-if(RegExMatch(chat, "Du hast das Lager mit (\d+) von 50.000 Medikamenten befüllt\.", regex)){
-	SendChat("/r Es wurde ein Medikamentenlager befüllt [" number_format(regex1) "/50.000]")
+chat := WaitForChatLine(0, "Du hast das Lager mit")
+if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
+	regex1 := StrReplace(regex1, ".")
+	regex2 := StrReplace(regex2, ".")
+	SendChat("/r Das Lager wurde mit " number_format(regex1) "/" number_format(regex2) " Medikamenten befüllt.")
 	if (FrakOption7)
 		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
 }
 return
 :b0:/mpdelete::
 Suspend Permit
-WaitFor()
-Sleep, 300
-chat := ChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
-if(RegExMatch(chat, "Du hast (\d+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
-	SendChat("/r Es wurden " number_format(regex1) " Medikamente zu einer Vernichtungsanlage gebracht.")
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
+if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
+	regex1 := StrReplace(regex1, ".")
+	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
 	if (FrakOption7)
 		HTTPData("http://sard-interface.de/activity/index.php?get=medivernichtung&var=emy87EbVXB3oDq9SeNQtufdqHBkKSL5bXI1eoNGD7e2YmSZyie&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
 }
@@ -5034,7 +5038,7 @@ return
 ::/takedrogenall::
 Suspend Permit
 SendChat("/knastmember")
-WaitFor()
+WaitForChatLine(0, "Ort: ")
 chat_Arr := Object()
 while(A_Index < 30){
 	GetChatLine(A_Index-1, chat)
@@ -5054,8 +5058,7 @@ return
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
-WaitFor()
-chat := ChatLine(1, " in deiner Hauskasse.")
+chat := WaitForChatLine(1, " in deiner Hauskasse.")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Du hast aktuell \$(\d*) in deiner Hauskasse", chat)
 if(chat1)
@@ -5528,8 +5531,7 @@ if(num1 < 0 OR num1 = ""){
 	return
 }
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(6, "Bank:[$")
+chat := WaitForChatLine(6, "Bank:[$")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Bargeld:\[\$(.*?)\] Bank:\[\$(.*?)\] Handynummer:", chat)
 num1 -= chat1
@@ -5680,7 +5682,7 @@ else{
 			SendChat("/id " k[1])
 	}
 	WaitFor()
-	Sleep, 30
+	Sleep, 50
 	active := online
 	leaderactive := leaderonline
 	i2 := 0
@@ -6171,7 +6173,7 @@ return
 Suspend Permit
 SendChat("/vehinfo")
 SendChat("/addoninfo")
-WaitFor()
+WaitForChatLine(0, "Kofferraumerweiterung:")
 chat := GetChatLines(17)
 if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Carheal (mit Text), 9: Handyakku, 10: Kofferraum
 	carvalue := Object()
@@ -6934,8 +6936,8 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1)){
 	SendChat("/duty")
-	WaitFor()
-	if(ChatLine(0, " nimmt seine Marke aus dem Spint.", 4)){
+	chat := WaitForChatLine(0, " nimmt seine Marke aus dem Spint.", 4)
+	if(chat){
 		BindReplace("/takku~/equip")
 		WaitFor()
 		SendInput, {enter}
@@ -6943,8 +6945,7 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1)){
 	SendChat("/duty")
-	WaitFor()
-	chat := ChatLine(0, "Du bist n", 2)
+	chat := WaitForChatLine(0, "Du bist n", 2)
 	if(InStr(chat, "Du bist nun als Arzt im Dienst und wirst Einsätze bekommen."))
 		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
 	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
@@ -6981,11 +6982,9 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		while(!chat := ChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.", 3)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
+		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
+		if (!chat)
+			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 		if (FrakOption7)
@@ -7063,8 +7062,8 @@ else if(IsFrak(5, 1))
 	SendChat("/equip")
 else if(IsFrak(6, 1)){
 	SendChat("/nummer " Nickname)
-	WaitFor()
-	if(!RegExMatch(ChatLine(0, ", Ph: ", 2), "U)Name: .*, Ph: (\d+)$", chat) OR !chat1)
+	chat := WaitForChatLine(0, ", Ph: ", 2)
+	if(!RegExMatch(chat, "U)Name: .*, Ph: (\d+)$", chat) OR !chat1)
 		chat1 := "me"
 	BindReplace("Yakuza - feinste Ware aus dem fernen Osten~Du brauchst was? /call " chat1 " | Yakuza~Nur bei mir, einfach aufsteigen~Munition der Klasse 1 & Klasse 2.~Waffen der Klasse 1 & Klasse 2.")
 }
