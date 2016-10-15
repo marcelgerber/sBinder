@@ -1,8 +1,6 @@
 /*
 AddChatMessage-Farbe: 0xFF6600
 AddChatMessage-Akzentfarbe: 0x0022FF
-
-Free Job ID: 8
 */
 #Include Versioninfo.ahk
 
@@ -6812,9 +6810,9 @@ else if(Job = 7){
 	if(jobvar := PlayerInput("Gib die Erzmenge ein: "))
 		SendChat("/erzload " jobvar)
 }
-else if(Job = 9)
+else if(Job = 8)
 	SendChat("/startfarm")
-else if(Job = 10){
+else if(Job = 9){
 	SendChat("/moneyload 100")
 	if(JobOption1){
 		while(!IsDialogOpen() AND A_Index < 10)
@@ -6823,31 +6821,31 @@ else if(Job = 10){
 			SendInput, {Escape}
 	}
 }
-else if(Job = 11){
+else if(Job = 10){
 	if(jobvar := PlayerInput("Gib die Menge an Getreide an, die du einladen willst (25/50/75/100): "))
 		SendChat("/cornload " jobvar)
 }
-else if(Job = 12){
+else if(Job = 11){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "")
 		SendChat("/sex " jobvar)
 }
-else if(Job = 13){
+else if(Job = 12){
 	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst: "))
 		SendChat("/buyprods " jobvar)
 }
-else if(Job = 14){
+else if(Job = 13){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Verkäufers ein: ")) != "" AND Trim(jobvar1 := PlayerInput("Gib die ID des Käufers ein: ")) != "" AND Trim(jobvar2 := PlayerInput("Gib den Preis für die Immobilie ein: ")) != "")
 		SendChat("/angebot " jobvar " " jobvar1 " " jobvar2)
 }
-else if(Job = 15){
+else if(Job = 14){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Reparieren ein: ")))
 		SendChat("/repair car " jobvar " " jobvar1)
 }
-else if(Job = 16)
+else if(Job = 15)
 	SendChat("/startclean")
-else if(Job = 17)
+else if(Job = 16)
 	SendChat("/filljob")
-else if(Job = 18)
+else if(Job = 17)
 	SendChat("/get ersatzteil")
 return
 jBind2:
@@ -6871,27 +6869,27 @@ else if(Job = 6)
 	SendChat("/stopgeterz")
 else if(Job = 7)
 	SendChat("/releaseerz")
-else if(Job = 10)
+else if(Job = 9)
 	SendChat("/moneydrop")
-else if(Job = 11)
+else if(Job = 10)
 	SendChat("/releasecorn")
-else if(Job = 12){
+else if(Job = 11){
 	if(jobvar := PlayerInput("Gib die Nummer des Strips ein: "))
 		SendChat("/strip " jobvar)
 }
-else if(Job = 13)
+else if(Job = 12)
 	SendChat("/sellprods")
-else if(Job = 14)
+else if(Job = 13)
 	SendChat("/sellhouse")
-else if(Job = 15){
+else if(Job = 14){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auftanken ein: ")))
 		SendChat("/refill " jobvar " " jobvar1)
 }
-else if(Job = 16)
+else if(Job = 15)
 	SendChat("/stopclean")
-else if(Job = 17)
+else if(Job = 16)
 	SendChat("/fillstation")
-else if(Job = 18){
+else if(Job = 17){
 	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
 		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
 		SendChat("/repair " jobvar1)
@@ -6913,19 +6911,19 @@ else if(Job = 5)
 	SendChat("/rob vehicle")
 else if(Job = 7)
 	SendChat("/einfo")
-else if(Job = 10)
+else if(Job = 9)
 	SendChat("/moneyloadstatus")
-else if(Job = 11)
+else if(Job = 10)
 	SendChat("/pinfo")
-else if(Job = 13)
+else if(Job = 12)
 	SendChat("/load")
-else if(Job = 15){
+else if(Job = 14){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Wechseln der Reifen ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
-else if(Job = 16)
+else if(Job = 15)
 	SendChat("/exit")
-else if(Job = 18)
+else if(Job = 17)
 	SendChat("/tzinfo")
 return
 jBind4:
@@ -6935,7 +6933,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 5)
 	SendChat("/printkey")
-else if(Job = 15)
+else if(Job = 14)
 	SendChat("/duty")
 return
 
