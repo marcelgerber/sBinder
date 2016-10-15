@@ -2448,7 +2448,7 @@ loop, %MaxOverlay%
 	Ov[A_Index] := -1
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Farmer", "Geldtransport", "Getreidelieferant", ""Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Farmer", "Geldtransport", "Getreidelieferant", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
