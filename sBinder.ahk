@@ -1,6 +1,8 @@
 /*
 AddChatMessage-Farbe: 0xFF6600
 AddChatMessage-Akzentfarbe: 0x0022FF
+
+Free Job ID: 8
 */
 #Include Versioninfo.ahk
 
@@ -2448,7 +2450,7 @@ loop, %MaxOverlay%
 	Ov[A_Index] := -1
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Fahrzeughändler", "Farmer", "Geldtransport", "Getreidelieferant", "Hure", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Farmer", "Geldtransport", "Getreidelieferant", "Hure", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
@@ -3354,8 +3356,6 @@ else if(Job = 6)
 	TextArray := ["/startgeterz", "/stopgeterz"]
 else if(Job = 7)
 	TextArray := ["/erzload", "/releaseerz", "/einfo"]
-else if(Job = 8)
-	TextArray := ["/givecar", "/vertrag"]
 else if(Job = 9)
 	TextArray := ["/startfarm"]
 else if(Job = 10)
@@ -6812,10 +6812,6 @@ else if(Job = 7){
 	if(jobvar := PlayerInput("Gib die Erzmenge ein: "))
 		SendChat("/erzload " jobvar)
 }
-else if(Job = 8){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib die Vehicle-ID (/vehicles) ein: ")))
-		SendChat("/givecar " jobvar " " jobvar1)
-}
 else if(Job = 9)
 	SendChat("/startfarm")
 else if(Job = 10){
@@ -6875,10 +6871,6 @@ else if(Job = 6)
 	SendChat("/stopgeterz")
 else if(Job = 7)
 	SendChat("/releaseerz")
-else if(Job = 8){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein, mit dem du einen Vertrag aufstellen willst: ")) != "" AND (jobvar1 := PlayerInput("Gib die Vertragsbedingung ein: ")))
-		SendChat("/vertrag " jobvar " " jobvar1)
-}
 else if(Job = 10)
 	SendChat("/moneydrop")
 else if(Job = 11)
