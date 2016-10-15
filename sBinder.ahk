@@ -2043,6 +2043,7 @@ IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
 IniRead, wBind2, %INIFile%, Binds, wBind2, %A_Space%
 IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 1
+IniRead, SkipPing, %INIFile%, Settings, SkipPing, 0
 if (LastUsedBuild < 58 && DownloadMode = 2) {
 	DownloadMode := 1
 	IniWrite, %DownloadMode%, %INIFile%, Settings, DownloadMode
@@ -2246,13 +2247,17 @@ else{
 	if(temp > 432000) ;5 Tage
 		errortext .= "<li>Die chatlog.txt wurde vor langer Zeit geändert (zuletzt " FormatTime(temp2, "dd.MM.yyyy HH:mm") "). <a href='sBinder://go/ChatlogSearch'>Automatisch beheben</a> oder <a href='sBinder://go/SelectCL'>manuell auswählen</a>"
 }
-while(ping < 0 AND A_Index <= 3){
-	SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
-	ping := ping("saplayer.lima-city.de",, 450)
-	if(ping < 0)
-		Sleep, 500
+if(!SkipPing){
+	while(ping < 0 AND A_Index <= 3){
+		SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
+		ping := ping("saplayer.lima-city.de",, 450)
+		if(ping < 0)
+			Sleep, 500
+	}
+	pingsuccessful := ping >= 0
+} else {
+	pingsuccessful := 1
 }
-pingsuccessful := ping >= 0
 if(pingsuccessful || FileExist(datacachefile)){
 	SB_SetTextEx("Daten werden heruntergeladen...")
 	
