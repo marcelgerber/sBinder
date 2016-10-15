@@ -3345,7 +3345,7 @@ Gui, JobGUI:Add, DDL, y5 x+10 AltSubmit Choose%Job% gJobChange vNewJob, %num%
 if(Job = 2)
 	TextArray := ["/knastmember", "/free", "/checkjailtime"]
 else if(Job = 3)
-	TextArray := ["/fare", "/bus", "/buslock"]
+	TextArray := ["/bus", "/buslock", "/delbus"]
 else if(Job = 4)
 	TextArray := ["/find", "/findcar"]
 else if(Job = 5)
@@ -6800,8 +6800,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(Job = 2)
 	SendChat("/knastmember")
 else if(Job = 3){
-	if(jobvar := PlayerInput("Gib den Preis ein: "))
-		SendChat("/fare " jobvar)
+		SendChat("/bus" jobvar)
 }
 else if(Job = 4)
 	SendChat("/find")
@@ -6865,7 +6864,7 @@ if(Job = 2){
 		SendChat("/free " jobvar)
 }
 else if(Job = 3)
-	SendChat("/bus")
+	SendChat("/buslock")
 else if(Job = 4){
 	if(jobvar := PlayerInput("Gib die ID des Fahrzeuges ein, das du suchen willst (/vehicles): "))
 		SendChat("/findcar " jobvar)
@@ -6917,7 +6916,7 @@ if(Job = 2){
 		SendChat("/checkjailtime " jobvar)
 }
 else if(Job = 3)
-	SendChat("/buslock")
+	SendChat("/delbus")
 else if(Job = 5)
 	SendChat("/rob vehicle")
 else if(Job = 7)
