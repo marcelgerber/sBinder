@@ -6795,9 +6795,8 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 2)
 	SendChat("/knastmember")
-else if(Job = 3){
-		SendChat("/bus" jobvar)
-}
+else if(Job = 3)
+	SendChat("/bus")
 else if(Job = 4)
 	SendChat("/find")
 else if(Job = 5)
