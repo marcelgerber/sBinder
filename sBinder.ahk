@@ -3368,21 +3368,19 @@ else if(Job = 7)
 	TextArray := ["/erzload", "/releaseerz", "/einfo"]
 else if(Job = 8)
 	TextArray := ["/startfarm"]
-else if(Job = 9)
-	TextArray := ["/moneyload 100", "/moneydrop", "/moneyloadstatus"]
-else if(Job = 10)
+else if(Job = 8)
 	TextArray := ["/cornload", "/releasecorn", "/pinfo"]
-else if(Job = 11)
+else if(Job = 10)
 	TextArray := ["/buyprods", "/sellprods", "/load"]
-else if(Job = 12)
+else if(Job = 11)
 	TextArray := ["/angebot", "/sellhouse"]
-else if(Job = 13)
+else if(Job = 12)
 	TextArray := ["/repair car", "/refill", "/tirechange", "/duty"]
-else if(Job = 14)
+else if(Job = 13)
 	TextArray := ["/startclean", "/stopclean", "/exit"]
-else if(Job = 15)
+else if(Job = 14)
 	TextArray := ["/filljob", "/fillstation"]
-else if(Job = 16)
+else if(Job = 15)
 	TextArray := ["/get ersatzteil", "/repair", "/tzinfo"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
@@ -3395,8 +3393,9 @@ if(TextArray){
 		Gui, JobGUI:Add, Hotkey, % "x10 y" A_Index * 25 + 25 " w120 h20 vjBind" A_Index, % jBind%A_Index%
 		Gui, JobGUI:Add, Text, % "x150 y" A_Index * 25 + 25 " h20", % k
 	}
-	if(Job = 10)
+	/*if(Job = 10)
 		Gui, JobGUI:Add, Checkbox, % "x10 y" TextArray._maxIndex() * 25 + 50 " h20 vJobOption1 Checked" JobOption1, Dialog bei /moneyload automatisch schließen
+	*/
 }
 TextArray := ""
 Gui, JobGUI:Menu, MenuBar
