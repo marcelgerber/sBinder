@@ -6139,7 +6139,7 @@ else{
 	AddChatMessage(online "/" members " Mitglieder von " fraks " Fraktionen online:")
 	for i, k in FrakWebsite
 	{
-		AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) "%)")
+		AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) " Prozent)")
 	}
 }
 FrakWebsite := ""
@@ -6181,7 +6181,7 @@ else if(!members)
 else{
 	for i, k in FrakWebsite
 		AddChatMessage(k[1] "{FF6600} [Rang " k[3] "; Level " k[2] (k[5] ? "; Leader" : "") "]" (k[4] ? ": online" : ""), k[4] ? 0x00AA00 : 0xFF1100)
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) "%), davon " leaderonline "/" leader " Leader.")
+	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader.")
 }
 FrakWebsite := ""
 return
