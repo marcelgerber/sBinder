@@ -2483,7 +2483,7 @@ loop, %MaxOverlay%
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
 Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer"]
-FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
+FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
@@ -5650,7 +5650,7 @@ else if(!members)
 else if(!online)
 	AddChatMessage("0/" members " der Fraktion {0022FF}" data1 "{FF6600} online.")
 else{
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) "%), davon " leaderonline "/" leader " Leader:")
+	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader:")
 	for i, k in FrakWebsite
 	{
 		if(k[4]){
@@ -5875,7 +5875,7 @@ if(RegExMatch(data, "U)^(.+);(\d);(\d+);(\d+);(\d{5,6});(.+);(\d{1,2});(\d+)(;.+
 	AddChatMessage("--- [sBinder] Spieler-Informationen ---")
 	AddChatMessage("Name: {0022FF}" data1 "{FF6600} -- Status: " (data2 ? "{00AA00}on" : "{FF1100}off") "line{FF6600} -- Level: " data3)
 	AddChatMessage("Alter: " data4 " -- Fraktion: " num1 (InStr(data6, "[") ? " (Rang " num2 (num3 ? ", Leader" : "") ")" : ""))
-	AddChatMessage("Handynummer: " data5 " -- Achievements: " data7 "/" data8 " (" RoundEx(data7/data8*100) "%)")
+	AddChatMessage("Handynummer: " data5 " -- Achievements: " data7 "/" data8 " (" RoundEx(data7/data8*100) " Prozent)")
 	if(data9)
 		AddChatMessage("Verheiratet mit {E809B4}" SubStr(data9, 2))
 	if(data10)
@@ -6972,11 +6972,11 @@ else if(IsFrak(8, 1))
 else if(IsFrak(9, 1))
 	SendChat("/use gold")
 else if(IsFrak(10, 1))
-	BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
+	BindReplace("/dropbizflag~/getbizflag~/getflagpos")
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Federal Bureau of Investigation im Einsatz «««~/m [»»» Machen Sie unverzüglich den Weg frei! «««")
 else if(IsFrak(12, 1))
-	BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
+	BindReplace("/dropbizflag~/getbizflag~/getflagpos")
 return
 fBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
