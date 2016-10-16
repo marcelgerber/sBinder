@@ -6970,7 +6970,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")))
-		SendChat("/showcolors " jobvar ")
+		SendChat("/showcolors " jobvar "")
 }
 
 ;fBinds
