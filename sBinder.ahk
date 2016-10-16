@@ -6943,7 +6943,7 @@ if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für den Reifenwechsel ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
-else if(Job = 14
+else if(Job = 14)
     SendChat("/cancel taxi")
 return
 jBind6:
