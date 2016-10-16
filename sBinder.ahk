@@ -7072,6 +7072,8 @@ else if(IsFrak(10, 1))
 	SendChat("/gangflag")
 else if(IsFrak(11, 1))
 	BindReplace("/s » Federal Bureau of Investigation «~/s Stehen bleiben und Hände hoch~/oos Befehl: /handsup")
+else if(IsFrak(12, 1))
+	SendChat("/use lsd")
 return
 fBind5:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7097,7 +7099,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/use lsd")
 else if(IsFrak(12, 1))
-	SendChat("/use lsd")
+	SendChat("/use gold")
 return
 fBind6:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7119,7 +7121,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/use gold")
 else if(IsFrak(12, 1))
-	SendChat("/use gold")
+	SendChat("/fpkeep wasser")
 return
 fBind7:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7141,7 +7143,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/fpkeep wasser")
 else if(IsFrak(12, 1))
-	SendChat("/fpkeep wasser")
+	SendChat("/fpkeep dueng")
 return
 fBind8:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7161,7 +7163,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/fpkeep dueng")
 else if(IsFrak(12, 1))
-	SendChat("/fpkeep dueng")
+	SendChat("/swapgun")
 return
 fBind9:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7181,7 +7183,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/swapgun")
 else if(IsFrak(12, 1))
-	SendChat("/swapgun")
+	SendChat("/bl")
 return
 fBind10:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7194,8 +7196,6 @@ else if(IsFrak(3, 1))
 	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
-else if(IsFrak(12, 1))
-	SendChat("/bl")
 return
 fBind11:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
