@@ -7216,7 +7216,7 @@ if(IsFrak(2, 1)){
 	}
 	SendInput, {down 9}{enter}
 }
-if(IsFrak(3, 1)){
+else if(IsFrak(3, 1)){
     FrakOption6 := Mod(FrakOption6, 5) + 1
 	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
 	IniWrite, %FrakOption6%, %INIFile%, Settings, FrakOption6
