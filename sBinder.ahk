@@ -3377,7 +3377,7 @@ for i, k in Jobnames
 		num .= "|"
 	num .= k
 }
-Gui, JobGUI:Add, DDL, y5 x+10 AltSubmit Choose%Job% gJobChange vNewJob, %num%
+Gui, JobGUI:Add, DDL, y5 x+10 w150 AltSubmit Choose%Job% gJobChange vNewJob, %num%
 if(Job = 2)
 	TextArray := ["/knastmember", "/free", "/checkjailtime"]
 else if(Job = 3)
