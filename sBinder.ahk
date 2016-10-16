@@ -2119,6 +2119,28 @@ if (LastUsedBuild < 67 && Frak = 2)
 		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
 	}
 }
+if(LastUsedBuild < 69 && fBinds_reassign := {4: 1, 10: 9}[Frak])
+{
+	loop, % fBinds_max - fBinds_reassign
+	{
+		temp := fBinds_reassign + A_Index - 1
+		temp2 := temp + 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+}
+if (LastUsedBuild < 69 && Frak = 3)
+{
+	loop, % fBinds_max - 7
+	{
+		temp := fBinds_max - A_Index + 1
+		temp2 := temp - 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+	fBind7 := ""
+	IniWrite, %fBind7%, %INIFile%, Keys, fBind7
+}
 Loop, 4
 	IniRead, jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%, %A_Space%
 loop, %Notes%
