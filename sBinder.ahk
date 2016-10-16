@@ -3298,7 +3298,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Kastortransport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
-	TextArray := ["/use herbs", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
+	TextArray := ["/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
 else if(IsFrak(5))
 	TextArray := ["/use lsd", "/use gold", "/use green", "/equip", "/s: Überfall", "/gangflag", "/me: Pizza anbieten"]
 else if(IsFrak(6))
@@ -6943,7 +6943,7 @@ else if(IsFrak(3, 1)){
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 }
 else if(IsFrak(4, 1))
-	SendChat("/use herbs")
+	SendChat("/use green")
 else if(IsFrak(5, 1))
 	SendChat("/use lsd")
 else if(IsFrak(6, 1))
@@ -6983,7 +6983,7 @@ else if(IsFrak(3, 1)){
 	}
 }
 else if(IsFrak(4, 1))
-	SendChat("/use green")
+	SendChat("/use gold")
 else if(IsFrak(5, 1))
 	SendChat("/use gold")
 else if(IsFrak(6, 1))
@@ -7011,7 +7011,7 @@ if(IsFrak(2, 1))
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
 else if(IsFrak(4, 1))
-	SendChat("/use gold")
+	SendChat("/use lsd")
 else if(IsFrak(5, 1))
 	SendChat("/use green")
 else if(IsFrak(6, 1))
@@ -7052,7 +7052,7 @@ else if(IsFrak(3, 1)){
 		SendChat("/ame »» Im Revive ««")
 }
 else if(IsFrak(4, 1))
-	SendChat("/use lsd")
+	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
 else if(IsFrak(5, 1))
 	SendChat("/equip")
 else if(IsFrak(6, 1)){
@@ -7083,7 +7083,7 @@ if(IsFrak(2, 1))
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Dienstfahrzeug im Einsatz!!~/m SARD | Bitte räumen Sie die Straße frei!!")
 else if(IsFrak(4, 1))
-	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
+	SendChat("/gangflag")
 else if(IsFrak(5, 1))
 	BindReplace("/s | LCN | Sofort stehen bleiben!~/s »» Dann passiert dir auch nichts! ««")
 else if(IsFrak(6, 1))
@@ -7108,8 +7108,6 @@ if(IsFrak(2, 1))
 	BindReplace("/m [SA:PD] Fahren Sie sofort rechts ran und stellen Sie den Motor ab.~/m Steigen Sie aus und legen sich auf den Boden!~/m Sollten Sie Widerstand leisten, wird dies Folgen haben! [SA:PD]~/oos /verletzt")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Rettungshelikopter startet / landet!!~/m SARD | Bitte räumen Sie die Landefläche frei!!")
-else if(IsFrak(4, 1))
-	SendChat("/gangflag")
 else if(IsFrak(5, 1))
 	SendChat("/gangflag")
 else if(IsFrak(6, 1))
