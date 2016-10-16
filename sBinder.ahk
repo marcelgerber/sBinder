@@ -2460,7 +2460,7 @@ loop, %MaxOverlay%
 	Ov[A_Index] := -1
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Getreidelieferant", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer"]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
@@ -5881,7 +5881,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erzarbeiter", "Erzlieferant|Erzfahrer", "Getreide", "Liefer", "Makler|Haus", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erzarbeiter", "Erzlieferant|Erzfahrer", "Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
@@ -6817,20 +6817,16 @@ else if(Job = 9){
 		SendChat("/buyprods " jobvar)
 }
 else if(Job = 10){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Verkäufers ein: ")) != "" AND Trim(jobvar1 := PlayerInput("Gib die ID des Käufers ein: ")) != "" AND Trim(jobvar2 := PlayerInput("Gib den Preis für die Immobilie ein: ")) != "")
-		SendChat("/angebot " jobvar " " jobvar1 " " jobvar2)
-}
-else if(Job = 11){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Reparieren ein: ")))
 		SendChat("/repair car " jobvar " " jobvar1)
 }
-else if(Job = 12)
+else if(Job = 11)
 	SendChat("/startclean")
-else if(Job = 13)
+else if(Job = 12)
 	SendChat("/filljob")
-else if(Job = 14)
+else if(Job = 13)
 	SendChat("/get ersatzteil")
-else if(Job = 15)
+else if(Job = 14)
     if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
         SendChat("/fare " jobvar)
 return
@@ -6859,23 +6855,21 @@ else if(Job = 8)
 	SendChat("/releasecorn")
 else if(Job = 9)
 	SendChat("/sellprods")
-else if(Job = 10)
-	SendChat("/sellhouse")
-else if(Job = 11){
+else if(Job = 10){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auftanken ein: ")))
 		SendChat("/refill " jobvar " " jobvar1)
 }
-else if(Job = 12)
+else if(Job = 11)
 	SendChat("/stopclean")
-else if(Job = 13)
+else if(Job = 12)
 	SendChat("/fillstation")
-else if(Job = 14){
+else if(Job = 13){
 	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
 		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
 		SendChat("/repair " jobvar1)
 	}
 }
-else if(Job = 15)
+else if(Job = 14)
     SendChat("/fare")
 return
 jBind3:
@@ -6897,15 +6891,15 @@ else if(Job = 8)
 	SendChat("/pinfo")
 else if(Job = 9)
 	SendChat("/load")
-else if(Job = 11){
+else if(Job = 10){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Wechseln der Reifen ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
-else if(Job = 12)
+else if(Job = 11)
 	SendChat("/exit")
-else if(Job = 14)
+else if(Job = 13)
 	SendChat("/tzinfo")
-else if(Job = 15)
+else if(Job = 14)
     SendChat("/accept taxi")
 return
 jBind4:
@@ -6915,9 +6909,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 5)
 	SendChat("/printkey")
-else if(Job = 12)
+else if(Job = 10)
 	SendChat("/duty")
-else if(Job = 16)
+else if(Job = 14)
     SendChat("/cancel taxi")
 return
 
