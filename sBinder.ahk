@@ -7079,7 +7079,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	BindReplace("/m »»»» Polizeieinsatz ««««~/m Bitte machen Sie den Weg frei und ermöglichen die Durchfahrt!")
 else if(IsFrak(3, 1))
-	BindReplace("/m + ::::::::  S.A.R.D.  :::::::: +~/m + »» Vorsicht, Rettungsdienst im Einsatz! «« +~/m + Bitte räumen Sie die Straßen/Kreuzung! +")
+	BindReplace("/m SARD | ACHTUNG: Dienstfahrzeug im Einsatz!!~/m SARD | Achtung:: Bitte räumen Sie die Straße frei!!")
 else if(IsFrak(4, 1))
 	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
 else if(IsFrak(5, 1))
