@@ -6841,9 +6841,10 @@ else if(Job = 12)
 	SendChat("/filljob")
 else if(Job = 13)
 	SendChat("/get ersatzteil")
-else if(Job = 14)
+else if(Job = 14){
 	if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
 		SendChat("/fare " jobvar)
+}
 return
 jBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6885,7 +6886,7 @@ else if(Job = 13){
 	}
 }
 else if(Job = 14){
-	if(jobvar := PlayerInput("Gib die ID des Fahrtgastes ein: "))
+	if(jobvar := PlayerInput("Gib die ID des Fahrgastes ein: "))
 		SendChat("/startfare " jobvar)
 }
 return
@@ -6978,7 +6979,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")))
-		SendChat("/showcolors " jobvar "")
+		SendChat("/showcolors " jobvar)
 }
 return
 
