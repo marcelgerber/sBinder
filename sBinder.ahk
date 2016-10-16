@@ -3314,7 +3314,7 @@ else if(IsFrak(10))
 else if(IsFrak(11))
 	TextArray := ["/m: Straße räumen", "/m: Rechts ranfahren", "/m: Drogenkontrolle", "/s: Stehen bleiben"]
 else if(IsFrak(12))
-    TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/gangflag", "/use lsd", "/use gold", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
+	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/gangflag", "/use lsd", "/use gold", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
 fBinds := TextArray._maxIndex()
 if(TextArray AND IsFrak(Frak)){
 	Gui, FrakGUI:Font, underline
@@ -3381,7 +3381,7 @@ else if(Job = 12)
 else if(Job = 13)
 	TextArray := ["/get ersatzteil", "/repair", "/tzinfo"]
 else if(Job = 14)
-    TextArray := ["/fare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
+	TextArray := ["/fare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
 	Gui, JobGUI:Font, underline
@@ -6809,7 +6809,7 @@ else if(Job = 7){
 		SendChat("/erzload " jobvar)
 }
 else if(Job = 8)
-    SendChat("/startfarm")
+	SendChat("/startfarm")
 else if(Job = 9){
 	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst: "))
 		SendChat("/buyprods " jobvar)
@@ -6825,8 +6825,8 @@ else if(Job = 12)
 else if(Job = 13)
 	SendChat("/get ersatzteil")
 else if(Job = 14)
-    if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
-        SendChat("/fare " jobvar)
+	if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
+		SendChat("/fare " jobvar)
 return
 jBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6870,7 +6870,7 @@ else if(Job = 13){
 	}
 }
 else if(Job = 14)
-    SendChat("/fare")
+	SendChat("/fare")
 return
 jBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6888,7 +6888,7 @@ else if(Job = 5)
 else if(Job = 7)
 	SendChat("/einfo")
 else if(Job = 8)
-    SendChat("/releasecorn")
+	SendChat("/releasecorn")
 else if(Job = 9)
 	SendChat("/load")
 else if(Job = 10){
@@ -6900,7 +6900,7 @@ else if(Job = 11)
 else if(Job = 13)
 	SendChat("/tzinfo")
 else if(Job = 14)
-    SendChat("/accept taxi")
+	SendChat("/accept taxi")
 return
 jBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6910,11 +6910,11 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(Job = 5)
 	SendChat("/printkey")
 else if(Job = 8)
-    SendChat("/pinfo")
+	SendChat("/pinfo")
 else if(Job = 10)
 	SendChat("/duty")
 else if(Job = 14)
-    SendChat("/cancel taxi")
+	SendChat("/cancel taxi")
 return
 
 ;fBinds
@@ -6959,7 +6959,7 @@ else if(IsFrak(10, 1))
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Federal Bureau of Investigation im Einsatz «««~/m [»»» Machen Sie unverzüglich den Weg frei! «««")
 else if(IsFrak(12, 1))
-    BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
+	BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
 return
 fBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6999,7 +6999,7 @@ else if(IsFrak(10, 1))
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Federal Bureau of Investigation «««~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 else if(IsFrak(12, 1))
-    BindReplace("/s Varrios los Aztecas >|< Überfall >|< Halt sofort an, Puta Madre")
+	BindReplace("/s Varrios los Aztecas >|< Überfall >|< Halt sofort an, Puta Madre")
 return
 fBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7027,7 +7027,7 @@ else if(IsFrak(10, 1))
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Drug Enforcement Administration «««~/m [» Person- und Güterkontrolle im Bezug auf Drogenkriminalität «~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 else if(IsFrak(12, 1))
-    SendChat("/gangflag")
+	SendChat("/gangflag")
 return
 fBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7097,7 +7097,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/use lsd")
 else if(IsFrak(12, 1))
-    SendChat("/use lsd")
+	SendChat("/use lsd")
 return
 fBind6:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7119,7 +7119,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/use gold")
 else if(IsFrak(12, 1))
-    SendChat("/use gold")
+	SendChat("/use gold")
 return
 fBind7:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7141,7 +7141,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/fpkeep wasser")
 else if(IsFrak(12, 1))
-    SendChat("/fpkeep wasser")
+	SendChat("/fpkeep wasser")
 return
 fBind8:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7151,7 +7151,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	SendChat("/swapgun")
 else if(IsFrak(3, 1))
-    BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
+	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
 else if(IsFrak(6, 1))
 	SendChat("/materials getammo")
 else if(IsFrak(7, 1))
@@ -7161,7 +7161,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/fpkeep dueng")
 else if(IsFrak(12, 1))
-    SendChat("/fpkeep dueng")
+	SendChat("/fpkeep dueng")
 return
 fBind9:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7171,7 +7171,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	BindReplace("/mv~/oldmv~/towopen")
 else if(IsFrak(3, 1))
-    BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 else if(IsFrak(6, 1))
 	SendChat("/sellgun " PlayerInput("Gib den Namen oder die ID des Spielers ein: "))
 else if(IsFrak(7, 1))
@@ -7181,7 +7181,7 @@ else if(IsFrak(9, 1))
 else if(IsFrak(10, 1))
 	SendChat("/swapgun")
 else if(IsFrak(12, 1))
-    SendChat("/swapgun")
+	SendChat("/swapgun")
 return
 fBind10:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7191,11 +7191,11 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 if(IsFrak(2, 1))
 	SendChat("/me funkt zur Zentrale")
 else if(IsFrak(3, 1))
-    BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
+	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
 else if(IsFrak(12, 1))
-    SendChat("/bl")
+	SendChat("/bl")
 return
 fBind11:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7217,7 +7217,7 @@ if(IsFrak(2, 1)){
 	SendInput, {down 9}{enter}
 }
 else if(IsFrak(3, 1)){
-    FrakOption6 := Mod(FrakOption6, 5) + 1
+	FrakOption6 := Mod(FrakOption6, 5) + 1
 	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
 	IniWrite, %FrakOption6%, %INIFile%, Settings, FrakOption6
 	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
@@ -7246,7 +7246,7 @@ if(IsFrak(2, 1)){
 	SendInput, {down 8}{enter}
 }
 else if(IsFrak(3, 1))
-    BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 return
 fBind13:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
