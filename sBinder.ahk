@@ -3381,7 +3381,7 @@ else if(Job = 13)
 else if(Job = 14)
 	TextArray := ["/get ersatzteil", "/repair", "/tzinfo"]
 else if(Job = 15)
-    TextArray := ["/fare", "/fare (Offduty gehen", "/accept taxi", "/cancel taxi"]
+    TextArray := ["/fare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
 	Gui, JobGUI:Font, underline
