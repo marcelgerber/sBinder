@@ -7196,6 +7196,8 @@ else if(IsFrak(3, 1))
 	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
+else if(IsFrak(10, 1))
+	SendChat("/bl")
 return
 fBind11:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7223,8 +7225,6 @@ else if(IsFrak(3, 1)){
 	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
 	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
 }
-else if(IsFrak(10, 1))
-	SendChat("/bl")
 return
 fBind12:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
