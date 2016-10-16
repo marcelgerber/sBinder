@@ -6932,41 +6932,41 @@ else if(Job = 14)
 	SendChat("/cancel taxi")
 return
 jBind5:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen(){
-    SendHKey()
-    return
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
 }
 if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für den Reifenwechsel ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
 jBind6:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen(){
-    SendHKey()
-    return
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
 }
 if(Job = 10)
     SendChat("/mduty")
 jBind7:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen(){
-    SendHKey()
-    return
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
 }
 if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für die Lackierung ein: ")))
 		SendChat("/respray " jobvar " " jobvar1)
 }
 jBind8:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen(){
-    SendHKey()
-    return
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
 }
 if(Job = 10)
     SendChat("/respraycolor")
 jBind9:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen(){
-    SendHKey()
-    return
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
 }
 if(Job = 10){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")))
