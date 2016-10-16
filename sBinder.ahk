@@ -2141,7 +2141,7 @@ if (LastUsedBuild < 69 && Frak = 3)
 	fBind7 := ""
 	IniWrite, %fBind7%, %INIFile%, Keys, fBind7
 }
-Loop, 4
+Loop, %jBinds_max%
 	IniRead, jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%, %A_Space%
 loop, %Notes%
 	IniRead, Note%A_Index%, %INIFile%, Notes, Note%A_Index%, %A_Space%
@@ -2214,7 +2214,7 @@ loop, %Hotstrings%
 	IniWrite, % Hotstring%A_Index%, %INIFile%, Keys, Hotstring%A_Index%
 	IniWrite, % hBind%A_Index%, %INIFile%, Binds, hBind%A_Index%
 }
-Loop, 4
+Loop, %jBinds_max%
 	IniWrite, % jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%
 IniWrite, %xBind1%, %INIFile%, Binds, xBind1
 IniWrite, %xBind2%, %INIFile%, Binds, xBind2
@@ -2451,6 +2451,7 @@ active := 1
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
 Binds := 52
 fBinds_max := 13
+jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 0
 Hotstrings := 26
@@ -3747,7 +3748,7 @@ loop, % Hotstrings
 		hotstringsactive ++
 	}
 }
-loop, 4
+loop, %jBinds_max%
 {
 	if(jBind%A_Index% != "" AND jBinds >= A_Index)
 		NewHotkey(jBind%A_Index%, "jBind" A_Index)
