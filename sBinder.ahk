@@ -4721,7 +4721,7 @@ AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
-#If IsFrak(7) AND WinActive("GTA:SA:MP")
+#If IsFrak(3) AND WinActive("GTA:SA:MP")
 :?b0:/fpkeep wasser::
 :?b0:/fpkeep dueng::
 Suspend Permit
