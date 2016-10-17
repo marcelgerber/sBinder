@@ -3388,7 +3388,7 @@ else if(Job = 4)
 else if(Job = 5)
 	TextArray := ["/rob haus", "/rob person", "/rob vehicle", "/printkey"]
 else if(Job = 6)
-	TextArray := ["/startgeterz", "/stopgeterz"]
+	TextArray := ["/stone", "/takestone", "/deliverstone", "/stopstone", "/startgeterz", "/stopgeterz", "/erzload", "/releaseerz", "/einfo"]
 else if(Job = 7)
 	TextArray := ["/startfarm", "/cornload", "/releasecorn", "/pinfo"]
 else if(Job = 8)
@@ -6819,7 +6819,7 @@ else if(Job = 4)
 else if(Job = 5)
 	SendChat("/rob haus")
 else if(Job = 6)
-	SendChat("/startgeterz")
+	SendChat("/stone")
 else if(Job = 7)
 	SendChat("/startfarm")
 else if(Job = 8){
@@ -6859,7 +6859,7 @@ else if(Job = 4){
 else if(Job = 5)
 	SendChat("/rob person")
 else if(Job = 6)
-	SendChat("/stopgeterz")
+	SendChat("/takestone")
 else if(Job = 7){
 	if(jobvar := PlayerInput("Gib die Menge an Getreide an, die du einladen willst (25/50/75/100): "))
 		SendChat("/cornload " jobvar)
@@ -6896,6 +6896,8 @@ else if(Job = 3)
 	SendChat("/delbus")
 else if(Job = 5)
 	SendChat("/rob vehicle")
+else if(Job = 6)
+    SendChat("/deliverstone")
 else if(Job = 7)
 	SendChat("/releasecorn")
 else if(Job = 8)
@@ -6916,6 +6918,8 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 5)
 	SendChat("/printkey")
+else if(Job = 6)
+    SendChat("/stopstone")
 else if(Job = 7)
 	SendChat("/pinfo")
 else if(Job = 9){
@@ -6930,7 +6934,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 9){
+if(Job = 6)
+    SendChat("/startgeterz")
+else if(Job = 9){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für den Reifenwechsel ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
@@ -6942,7 +6948,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 9)
+if(Job = 6)
+    SendChat("/stopgeterz")
+else if(Job = 9)
     SendChat("/mduty")
 return
 jBind7:
@@ -6950,7 +6958,11 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 9){
+if(Job = 6){
+	if(jobvar := PlayerInput("Gib die Menge an Erz an, die du einladen willst (50/100/150/200): "))
+		SendChat("/erzload " jobvar)
+}
+else if(Job = 9){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für die Lackierung ein: ")))
 		SendChat("/respray " jobvar " " jobvar1)
 }
@@ -6960,7 +6972,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 9)
+if(Job = 6)
+    SendChat("/releaseerz")
+else if(Job = 9)
     SendChat("/respraycolor")
 return
 jBind9:
@@ -6968,7 +6982,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 9){
+if(Job = 6)
+    SendChat("/einfo")
+else if(Job = 9){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")))
 		SendChat("/showcolors " jobvar)
 }
