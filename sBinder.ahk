@@ -2483,7 +2483,7 @@ loop, %MaxOverlay%
 	Ov[A_Index] := -1
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer"]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer", "Waffenhändler"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
@@ -3417,6 +3417,8 @@ else if(Job = 19)
     TextArray := ["/startpizza", "/getpizza", "/delivery", "/unloadpizza", "/stoppizza"]
 else if(Job = 20)
     TextArray := ["/get drogen", "/sellhanf"]
+else if(Job = 21)
+    TextArray := ["/materials buy", "/materials deliver", "/sellgun"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
 	Gui, JobGUI:Font, underline
@@ -5911,7 +5913,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz", "Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tank", "Wartung", "Taxi|Cab", "Fisch|Angel", "Gärtner|Garten|Gras", "Holz", "Jäger|Jagen", "Müll", "Pizza", "Drogen"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz", "Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tank", "Wartung", "Taxi|Cab", "Fisch|Angel", "Gärtner|Garten|Gras", "Holz", "Jäger|Jagen", "Müll", "Pizza", "Drogen", "Waffen"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
@@ -6874,6 +6876,8 @@ else if(Job = 20){
 	if(jobvar := PlayerInput("Gib den Drogenbetrag ein: "))
 		SendChat("/get drogen " jobvar)
 }
+else if(Job = 21)
+    SendChat("/materials buy")
 return
 jBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6928,6 +6932,8 @@ else if(Job = 20){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib die Menge an Drogen ein: ")) AND (jobvar2 := PlayerInput("Gib den Preis für die Drogen ein: ")))
 		SendChat("/sellhand " jobvar " " jobvar1 " " jobvar2)
 }
+else if(Job = 21)
+    SendChat("/materials deliver")
 return
 jBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6968,6 +6974,10 @@ else if(Job = 18)
     SendChat("/unloadtrash")
 else if(Job = 19)
     SendChat("/delivery")
+else if(Job = 21){
+	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "")
+		SendChat("/sellgun " jobvar)
+}
 return
 jBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
