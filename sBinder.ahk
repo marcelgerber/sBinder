@@ -3392,7 +3392,7 @@ else if(Job = 6)
 else if(Job = 7)
 	TextArray := ["/startfarm", "/cornload", "/releasecorn", "/pinfo"]
 else if(Job = 8)
-	TextArray := ["/buyprods", "/sellprods", "/load"]
+	TextArray := ["/buyprods", "/sellprods", "/load", "/prodinfo"]
 else if(Job = 9)
 	TextArray := ["/repair car", "/get kanister", "/get werkzeug", "/refill", "/tirechange", "/mduty", "/respray", "/respraycolor", "/showcolors"]
 else if(Job = 10)
@@ -5897,7 +5897,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erzarbeiter", "Erzlieferant|Erzfahrer", "Farmer|Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz|Erzarbeiter|Erzlieferant|Erzfahrer", "Farmer|Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
@@ -6922,6 +6922,8 @@ else if(Job = 6)
     SendChat("/stopstone")
 else if(Job = 7)
 	SendChat("/pinfo")
+else if(Job = 8)
+    SendChat("/prodinfo")
 else if(Job = 9){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auffüllen ein: ")))
 		SendChat("/refill " jobvar " " jobvar1)
