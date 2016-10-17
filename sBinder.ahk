@@ -517,7 +517,7 @@ ChatLine(firstline, instr, lines=5, regex=0){
 WaitForChatLine(firstline, instr, lines=5, iterations=25, regex=0){
 	loop, %iterations%
 	{
-		chat := ChatLine(firstline, instr, lines)
+		chat := ChatLine(firstline, instr, lines, regex)
 		if (chat != "")
 			return chat
 		Sleep, 75
