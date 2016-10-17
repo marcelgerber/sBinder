@@ -2483,7 +2483,7 @@ loop, %MaxOverlay%
 	Ov[A_Index] := -1
 Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Dillimore Devils", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer"]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "DDMC|Dillimore|Devils|Dödels|Bike|Motorrad", "LV|Vagos"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
@@ -3405,6 +3405,10 @@ else if(Job = 13)
 	TextArray := ["/fare", "/startfare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
 else if(Job = 14)
     TextArray := ["/startfish", "/trackfish", "/catchfish", "/unloadfish", "/stopfish"]
+else if(Job = 15)
+    TextArray := ["/lawns", "/getgras", "/unloadgras", "/stopgras"]
+else if(Job = 16)
+    TextArray := ["/wood", "/takewood", "/deliverwood", "/stopwood"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
 	Gui, JobGUI:Font, underline
@@ -5899,7 +5903,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz|Erzarbeiter|Erzlieferant|Erzfahrer", "Farmer|Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi|Taxifahrer", "Fischer|Fisch"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz|Erzarbeiter|Erzlieferant|Erzfahrer", "Farmer|Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi|Taxifahrer", "Fischer|Fisch", "Gärtner|Garten|Gras", "Holzfäller|Holz"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
@@ -6848,6 +6852,10 @@ else if(Job = 13){
 }
 else if(Job = 14)
     SendChat("/startfish")
+else if(Job = 15)
+    SendChat("/lawns")
+else if(Job = 16)
+    SendChat("/wood")
 return
 jBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6888,6 +6896,10 @@ else if(Job = 13){
 }
 else if(Job = 14)
     SendChat("/trackfish")
+else if(Job = 15)
+    SendChat("/getgras")
+else if(Job = 16)
+    SendChat("/takewood")
 return
 jBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6918,6 +6930,10 @@ else if(Job = 13)
     SendChat("/fare")
 else if(Job = 14)
     SendChat("/catchfish")
+else if(Job = 15)
+    SendChat("/unloadgras")
+else if(Job = 16)
+    SendChat("/deliverwood")
 return
 jBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6946,6 +6962,10 @@ else if(Job = 13)
     SendChat("/accept taxi")
 else if(Job = 14)
     SendChat("/unloadfish")
+else if(Job = 15)
+    SendChat("stopgras")
+else if(Job = 16)
+    SendChat("/stopwood")
 return
 jBind5:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
