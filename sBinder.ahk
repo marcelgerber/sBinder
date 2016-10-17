@@ -5903,7 +5903,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz|Erzarbeiter|Erzlieferant|Erzfahrer", "Farmer|Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung", "Taxi|Taxifahrer", "Fischer|Fisch", "Gärtner|Garten|Gras", "Holzfäller|Holz"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz", "Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tank", "Wartung", "Taxi|Cab", "Fisch|Angel", "Gärtner|Garten|Gras", "Holz"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
