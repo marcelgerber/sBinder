@@ -4721,7 +4721,8 @@ AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
-/*#If IsFrak(7) AND WinActive("GTA:SA:MP")
+/*
+#If IsFrak(7) AND WinActive("GTA:SA:MP")
 :?b0:/fpkeep wasser::
 :?b0:/fpkeep dueng::
 Suspend Permit
@@ -4775,7 +4776,8 @@ if(data := HTTPData("http://saplayer.lima-city.de/sBinder/gs/plants.php?a=get",,
 else
 	AddChatMessage("Ein Fehler ist aufgetreten!")
 data := ""
-return*/
+return
+*/
 #If IsFrak(5) AND WinActive("GTA:SA:MP")
 ::/sg::
 Suspend Permit
@@ -5148,7 +5150,7 @@ else if(IsFrak(3))
 else if(IsFrak(5))
 	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ml", "/ssp"]
 else if(IsFrak(7))
-	FrakCmd := ["/fpkeep wasser", "/fpkeep dueng", "/plants"]
+	FrakCmd := ["/fpkeep wasser", "/fpkeep dueng"]
 else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
 else if(IsFrak(11))
