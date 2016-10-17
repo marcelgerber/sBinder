@@ -7002,11 +7002,11 @@ if(IsFrak(2, 1)){
 else if(IsFrak(3, 1)){
 	SendChat("/duty")
 	chat := WaitForChatLine(0, "Du bist n", 2)
-	if(InStr(chat, "Du bist nun als Arzt im Dienst und wirst Einsätze bekommen."))
+	if(InStr(chat, "INFO: Du befindest dich nun im Dienst."))
 		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
-	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
+	else if(InStr(chat, "FEHLER: Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
-	else if(InStr(chat, "Du bist nun nicht mehr als Arzt im Dienst."))
+	else if(InStr(chat, "INFO: Du befindest dich nun nicht mehr im Dienst."))
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 }
 else if(IsFrak(4, 1))
