@@ -503,16 +503,17 @@ BindReplace(String){
 		}
 	}
 }
-ChatLine(firstline, instr, lines=5){
+ChatLine(firstline, instr, lines=5, regex=0){
 	loop, %lines%
 	{
 		GetChatLine(firstline + A_Index - 1, chat)
-		if(InStr(chat, instr))
+		if(!regex && InStr(chat, instr))
 			return chat
+		else if(regex && RegExMatch(chat, instr))
 	}
 	return
 }
-WaitForChatLine(firstline, instr, lines=5, iterations=25){
+WaitForChatLine(firstline, instr, lines=5, iterations=25, regex=0){
 	loop, %iterations%
 	{
 		chat := ChatLine(firstline, instr, lines)
