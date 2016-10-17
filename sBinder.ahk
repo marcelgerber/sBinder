@@ -510,6 +510,7 @@ ChatLine(firstline, instr, lines=5, regex=0){
 		if(!regex && InStr(chat, instr))
 			return chat
 		else if(regex && RegExMatch(chat, instr))
+			return chat
 	}
 	return
 }
