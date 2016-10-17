@@ -3382,7 +3382,7 @@ Gui, JobGUI:Add, DDL, y5 x+10 w150 AltSubmit Choose%Job% gJobChange vNewJob, %nu
 if(Job = 2)
 	TextArray := ["/knastmember", "/free", "/checkjailtime"]
 else if(Job = 3)
-	TextArray := ["/bus", "/buslock", "/delbus"]
+	TextArray := ["/bus", "/route", "/buslock", "/delbus"]
 else if(Job = 4)
 	TextArray := ["/find", "/findcar"]
 else if(Job = 5)
@@ -3396,11 +3396,11 @@ else if(Job = 8)
 else if(Job = 9)
 	TextArray := ["/repair car", "/get kanister", "/get werkzeug", "/refill", "/tirechange", "/mduty", "/respray", "/respraycolor", "/showcolors"]
 else if(Job = 10)
-	TextArray := ["/startclean", "/stopclean", "/exit"]
+	TextArray := ["/startclean", "/clean", "/stopclean"]
 else if(Job = 11)
 	TextArray := ["/filljob", "/fillstation"]
 else if(Job = 12)
-	TextArray := ["/get ersatzteil", "/repair", "/tzinfo"]
+	TextArray := ["/repair", "/tzinfo", "/atminfo", "/marktz", "/markatm", "/get ersatzteil"]
 else if(Job = 13)
 	TextArray := ["/fare", "/startfare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
 else if(Job = 14)
@@ -6825,7 +6825,7 @@ else if(Job = 6)
 else if(Job = 7)
 	SendChat("/startfarm")
 else if(Job = 8){
-	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst: "))
+	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst [1-2500]: "))
 		SendChat("/buyprods " jobvar)
 }
 else if(Job = 9){
@@ -6836,8 +6836,12 @@ else if(Job = 10)
 	SendChat("/startclean")
 else if(Job = 11)
 	SendChat("/filljob")
-else if(Job = 12)
-	SendChat("/get ersatzteil")
+else if(Job = 12){
+	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
+		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
+		SendChat("/repair " jobvar1)
+	}
+}
 else if(Job = 13){
 	if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
 		SendChat("/fare " jobvar)
@@ -6855,7 +6859,7 @@ if(Job = 2){
 		SendChat("/free " jobvar)
 }
 else if(Job = 3)
-	SendChat("/buslock")
+	SendChat("/route")
 else if(Job = 4){
 	if(jobvar := PlayerInput("Gib die ID des Fahrzeuges ein, das du suchen willst (/vehicles): "))
 		SendChat("/findcar " jobvar)
@@ -6873,15 +6877,11 @@ else if(Job = 8)
 else if(Job = 9)
 	SendChat("/get kanister")
 else if(Job = 10)
-	SendChat("/stopclean")
+	SendChat("/clean")
 else if(Job = 11)
 	SendChat("/fillstation")
-else if(Job = 12){
-	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
-		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
-		SendChat("/repair " jobvar1)
-	}
-}
+else if(Job = 12)
+    SendChat("/tzelle")
 else if(Job = 13){
 	if(jobvar := PlayerInput("Gib die ID des Fahrgastes ein: "))
 		SendChat("/startfare " jobvar)
@@ -6899,7 +6899,7 @@ if(Job = 2){
 		SendChat("/checkjailtime " jobvar)
 }
 else if(Job = 3)
-	SendChat("/delbus")
+    SendChat("/buslock")
 else if(Job = 5)
 	SendChat("/rob vehicle")
 else if(Job = 6)
@@ -6911,9 +6911,9 @@ else if(Job = 8)
 else if(Job = 9)
     SendChat("/get werkzeug")
 else if(Job = 10)
-	SendChat("/exit")
+	SendChat("/stopclean")
 else if(Job = 12)
-	SendChat("/tzinfo")
+	SendChat("/atminfo")
 else if(Job = 13)
     SendChat("/fare")
 else if(Job = 14)
@@ -6924,7 +6924,9 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 5)
+if(Job = 3)
+    SendChat("/delbus")
+else if(Job = 5)
 	SendChat("/printkey")
 else if(Job = 6)
     SendChat("/stopstone")
@@ -6935,6 +6937,10 @@ else if(Job = 8)
 else if(Job = 9){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auffüllen ein: ")))
 		SendChat("/refill " jobvar " " jobvar1)
+}
+else if(Job = 12){
+    if(Trim(jobvar := PlayerInput("Gib die ID der Telefonzelle ein: ")))
+        SendChat("/marktz " jobvar)
 }
 else if(Job = 13)
     SendChat("/accept taxi")
@@ -6952,6 +6958,10 @@ else if(Job = 9){
     if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für den Reifenwechsel ein: ")))
 		SendChat("/tirechange " jobvar " " jobvar1)
 }
+else if(Job = 12){
+    if(Trim(jobvar := PlayerInput("Gib die ID des ATM ein: ")))
+        SendChat("/markatm " jobvar)
+}
 else if(Job = 13)
     SendChat("/cancel taxi")
 else if(Job = 14)
@@ -6966,6 +6976,8 @@ if(Job = 6)
     SendChat("/stopgeterz")
 else if(Job = 9)
     SendChat("/mduty")
+else if(Job = 12)
+    SendChat("/get ersatzteil")
 return
 jBind7:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
