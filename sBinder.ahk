@@ -270,7 +270,7 @@ IsPlayerInAnyVehicle(){
 	return DllCall(IsPlayerInAnyVehicle_func)
 }
 SendChat(Text, spamcount=3){
-	global UseAPI, SendChat_func, Drugsystem
+	global UseAPI, SendChat_func
 	static lastsend, count
 	if(spamcount){
 		if(A_TickCount - lastsend < 900){
@@ -294,8 +294,6 @@ SendChat(Text, spamcount=3){
 		SendInput, % "{Raw}" Text
 		SendInput, {enter}
 	}
-	if(Drugsystem AND inOr(Text, "/use gold", "/use green", "/use lsd"))
-		gosub :?b0:%Text%
 	return res
 }
 SetParam(str_Name, str_Value){
@@ -2053,7 +2051,6 @@ IniRead, Tel, %INIFile%, Telefon, Active, 0
 IniRead, pText, %INIFile%, Telefon, p, Guten Tag, mein Name ist [Name].~Was kann ich für Sie tun?
 IniRead, hText, %INIFile%, Telefon, h, Wiederhören.
 IniRead, abText, %INIFile%, Telefon, ab, Sie sprechen mit dem Anrufbeantworter von [Name].~Leider ist [Name] zur Zeit nicht erreichbar.~Versuchen Sie es bitte später erneut!
-;IniRead, Drugsystem, %INIFile%, Settings, Drugsystem, 0
 loop, 3
 	IniRead, RadioSlot%A_Index%, %INIFile%, Radio, Slot%A_Index%, %A_Space%
 if(!WaitFor)
@@ -2459,7 +2456,6 @@ Notes := 8
 FrakOptions := 7
 frakbinds := 1
 savemsg := 1
-Drugsystem := 1
 GuiButtons := 6
 DownloadMode := 0
 pi := 4 * ATan(1)
@@ -6014,18 +6010,6 @@ if(FileExist(chatlogpath)){
 else
 	AddChatMessage("Die chatlog.txt konnte nicht gefunden werden. Bitte wähle in den Einstellungen (Datei->Einstellungen) den Pfad zur chatlog.txt aus.")
 return
-/*
-::/drugsystem::
-Suspend Permit
-Drugsystem := !Drugsystem
-IniWrite, % Drugsystem, %INIFile%, Settings, Drugsystem
-AddChatMessage("Das Drogensystem wurde " (Drugsystem ? "" : "de") "aktiviert.")
-if(!Drugsystem){
-	loop, 4
-		SetTimer, DrugTimer%A_Index%, Off
-}
-return
-*/
 ::/kbl::
 Suspend Permit
 SendChat("/bl")
@@ -6613,62 +6597,6 @@ WaitFor()
 BindReplace(abText)
 WaitFor()
 SendChat("/h")
-return
-#If Drugsystem AND WinActive("GTA:SA:MP")
-::/druginfo::
-Suspend Permit
-drugs := ["Green", "Widow", "Gold", "LSD"]
-loop, 4
-{
-	temp := A_Now
-	temp -= DrugLastUsed%A_Index%, Seconds
-	AddChatMessage(drugs[A_Index] ": Zuletzt benutzt: " (DrugLastUsed%A_Index% ? "vor " date(temp) " (" FormatTime(DrugLastUsed%A_Index%, "HH:mm:ss") ")" : "Nie"))
-}
-return
-:?b0:/use Green::
-:?b0:/use Gold::
-:?b0:/use LSD::
-Suspend Permit
-RegExMatch(A_ThisLabel, ":?b0:/use (.+)$", chat)
-drugs := ArrayMatch(chat1, ["Green", "Widow", "Gold", "LSD"])
-DrugLastUsed%drugs% := A_Now
-/*
-if(!inOR(A_WDay, 3, 5, 1) OR A_Hour != 19){
-	drugs := ArrayMatch(chat1, ["Green", "Widow|Gold", "LSD"])
-	drugtimer := [30, 80, 120]
-	DrugUsed%drugs% := 0
-	AddChatMessage("Willst du einen Timer starten, der dich vor den Nebenwirkungen von {0022FF}" chat1 "{FF6600} warnt? Drücke dazu innerhalb der nächsten 5 Sekunden {0022FF}J{FF6600}.")
-	s := A_IsSuspended
-	Suspend On
-	KeyWait, J, D T5
-	if(!s)
-		Suspend Off
-	if(!ErrorLevel){
-		AddChatMessage("Der Drogentimer für {0022FF}" chat1 "{FF6600} wurde aktiviert.")
-		SetTimer, DrugTimer%drugs%, % -drugtimer[drugs] * 55000 ;eig. 55000
-	}
-}
-else{
-	loop, 3
-		SetTimer, DrugTimer%A_Index%, Off
-}
-drugs := ""
-return
-DrugTimer1:
-DrugTimer2:
-DrugTimer3:
-if(!WinActive("GTA:SA:MP"))
-	return
-num := SubStr(A_ThisLabel, 0)
-DrugUsed%num% ++
-if(DrugUsed%num% = 3)
-	DrugUsed%num% := 0
-else
-	SetTimer, %A_ThisLabel%, % -drugtimer[num] / (DrugUsed%num%*25) * 60000
-drugs := ["Green", "Widow bzw. Gold", "LSD"]
-AddChatMessage("Du solltest wieder {0022FF}" drugs[num] " einnehmen!")
-drugs := ""
-*/
 return
 #IfWinActive GTA:SA:MP
 
