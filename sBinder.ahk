@@ -7162,6 +7162,10 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
+	    if(Nickname == "ThomasTailor93"){
+	        Sleep, 50
+	        SendInput, {enter}
+	    }
 		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
 		if (!chat)
 			return
