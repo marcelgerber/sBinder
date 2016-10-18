@@ -5012,7 +5012,7 @@ return
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-chat := WaitForChatLine(0, "Du hast das Lager mit", 2)
+chat := WaitForChatLine(0, "Du hast das Lager mit", 1)
 if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	regex2 := StrReplace(regex2, ".")
@@ -5023,7 +5023,7 @@ if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten 
 return
 :b0:/mpdelete::
 Suspend Permit
-chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen", 2)
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen", 1)
 if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
