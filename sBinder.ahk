@@ -296,8 +296,6 @@ SendChat(Text, spamcount=3){
 	}
 	if(Drugsystem AND inOr(Text, "/use gold", "/use green", "/use lsd"))
 		gosub :?b0:%Text%
-	if(IsFrak(7) AND inOr(Text, "/fpkeep wasser", "/fpkeep dueng"))
-		gosub :?b0:%Text%
 	return res
 }
 SetParam(str_Name, str_Value){
@@ -4721,63 +4719,6 @@ AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
-/*
-#If IsFrak(7) AND WinActive("GTA:SA:MP")
-:?b0:/fpkeep wasser::
-:?b0:/fpkeep dueng::
-Suspend Permit
-if(UseAPI){
-	GetPlayerPosition(x, y, z, r)
-	if(between(x, 1100, 1450) AND between(y, 80, 500))
-		zone := 0
-	else
-		zone := 1
-}
-else{
-	AddChatMessage("Wenn du an der {0022FF}Plantage in Montgomery{FF6600} bist, drücke bitte innerhalb der nächsten 3 Sekunden {0022FF}J{FF6600}.")
-	KeyWait, J, D T3
-	zone := ErrorLevel
-}
-WaitForChatLine(0, "gewässert")
-chat := GetChatLines(2)
-if(InStr(chat, "gewässert"))
-	chat1 := "water"
-else if(InStr(chat, "gedüngt"))
-	chat1 := "dung"
-else{
-	chat1 := InStr(A_ThisLabel, "wasser") ? "water" : "dung"
-	AddChatMessage("Wenn du eben erfolgreich " (chat1 = "water" ? "gewässert" : "gedüngt") " hast, drücke bitte innerhalb der nächsten 3 Sekunden {0022FF}J{FF6600}.")
-	KeyWait, J, D T3
-	if(ErrorLevel)
-		chat1 := ""
-}
-if(zone != "" AND chat1){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/gs/plants.php?a=" chat1 "&p=" zone))
-		AddChatMessage("Die Plantage " (zone ? "außerhalb von Montgomery" : "in Montgomery") " wurde erfolgreich als " (chat1 = "dung" ? "gedüngt" : "gewässert") " eingetragen.")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten!")
-}
-else
-	AddChatMessage("Ein unbekannter Fehler ist aufgetreten!")
-return
-::/plants::
-Suspend Permit
-if(data := HTTPData("http://saplayer.lima-city.de/sBinder/gs/plants.php?a=get",,, 1)){
-	loop, Parse, data, `n, `r
-	{
-		if(RegExMatch(A_LoopField, "^(\d+)\|(\d+)\|(\d+)$", regex)){
-			regex3 += (regex2 ? 2 : 1), H
-			temp := regex3
-			temp -= A_Now, S
-			AddChatMessage((regex1 ? "Außerhalb von Montgomery" : "Montgomery") ": Nächste " (regex2 ? "Düngung" : "Bewässerung") ": {0022FF}" (temp < 0 ? "jetzt" : "in " date(temp)) "{FF6600} (letzte: " FormatTime(regex3, "dd.MM. HH:mm:ss") ")")
-		}
-	}
-}
-else
-	AddChatMessage("Ein Fehler ist aufgetreten!")
-data := ""
-return
-*/
 #If IsFrak(5) AND WinActive("GTA:SA:MP")
 ::/sg::
 Suspend Permit
@@ -5149,8 +5090,6 @@ else if(IsFrak(3))
 	FrakCmd := ["/vs"]
 else if(IsFrak(5))
 	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ml", "/ssp"]
-else if(IsFrak(7))
-	FrakCmd := ["/fpkeep wasser", "/fpkeep dueng"]
 else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
 else if(IsFrak(11))
