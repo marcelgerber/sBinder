@@ -3315,7 +3315,7 @@ Gui, FrakGUI:Add, Button, y5 h20 w120 gFrakChangeGUI, Fraktion ändern
 if(IsFrak(2))
 	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Traffic Stop", "/m: Straße räumen", "/m: Felony Stop", "/s: Sie sind verhaftet", "/swapgun", "/mv + /oldmv + /towopen", "/me: Zur Zentrale funken", "/wanted: Alle anzeigen", "/wanted: Alle anzeigen außer 1-10"]
 else if(IsFrak(3))
-	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Kastortransport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
+	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
 	TextArray := ["/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
 else if(IsFrak(5))
