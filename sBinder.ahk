@@ -138,7 +138,7 @@ if(!A_IsCompiled){
 	FileDelete, lines.ahk
 	FileAppend, % "script_lines := " script_lines "`nscript_chars := " script_chars, lines.ahk
 	FileDelete, VersionInfo.ahk
-	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports Reallife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2015 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
+	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports NewLife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
 	;FileDelete, VersionInfo_sUpdate.ahk
 	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2015 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
 }
@@ -2859,7 +2859,7 @@ Gui, CreditsGUI:Font, S15 bold
 Gui, CreditsGUI:Add, Link, cRed, Entwickler: <a href="https://forum.nes-newlife.de/user/810-icedwave/">IcedWave</a>`nDanke an folgende Personen:
 Gui, CreditsGUI:Font
 Gui, CreditsGUI:Font, S10
-Gui, CreditsGUI:Add, Link,, <a href="http://forum.nes-reallife.de/index.php/User/5371-Muffle/">Muffle</a> (Alter Schriftzug)`n<a href="http://forum.nes-reallife.de/index.php/User/6642-ChackN0rris/">ChackN0rris</a> (Viele tolle Ideen)`n<a href="http://forum.nes-reallife.de/index.php/User/8679-[L]ucius/">[L]ucius</a> (Icon, Schriftzug)`n`nAus dem AHK-Forum: <a href="http://www.autohotkey.com/board/user/7194-bentschi/">Bentschi</a>, <a href="http://www.autohotkey.com/board/user/19424-jnizm/">jNizM</a>, <a href="http://www.autohotkey.com/board/user/932-shimanov/">shimanov</a>, <a href="http://www.autohotkey.com/board/user/331-toralf/">toralf</a>, Brainside, <a href="http://www.autohotkey.com/board/user/1-polyethene/">polyethene</a>
+Gui, CreditsGUI:Add, Link,, <a href="https://forum.nes-newlife.de/user/1602-muffle/">Muffle</a> (Alter Schriftzug)`nChackN0rris (Viele tolle Ideen)`n<a href="https://forum.nes-newlife.de/user/412-l-ucius/">[L]ucius</a> (Icon, Schriftzug)`n`nAus dem AHK-Forum: <a href="http://www.autohotkey.com/board/user/7194-bentschi/">Bentschi</a>, <a href="http://www.autohotkey.com/board/user/19424-jnizm/">jNizM</a>, <a href="http://www.autohotkey.com/board/user/932-shimanov/">shimanov</a>, <a href="http://www.autohotkey.com/board/user/331-toralf/">toralf</a>, Brainside, <a href="http://www.autohotkey.com/board/user/1-polyethene/">polyethene</a>
 Gui, CreditsGUI:Menu, MenuBar
 ;CustomBindsGUI
 Gui, CustomBindsGUI:Add, Tab2, % "x5 y5 h" (Binds/4)*25+55 " w565 +Theme -Background -Wrap", Hotkeys - Seite 1|Hotkeys - Seite 2|Maustasten|Textbinds
