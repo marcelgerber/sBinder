@@ -1483,7 +1483,7 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		chat := WaitForChatLine(0, "ID:")
+		chat := WaitForChatLine(0, "ID:", 1)
 		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
