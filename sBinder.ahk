@@ -140,7 +140,7 @@ if(!A_IsCompiled){
 	FileDelete, VersionInfo.ahk
 	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports NewLife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
 	;FileDelete, VersionInfo_sUpdate.ahk
-	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2015 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
+	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
 }
 ;@Ahk2Exe-IgnoreEnd
 if(UseAPI){
