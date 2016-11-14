@@ -5672,8 +5672,8 @@ else{
 			i2++
 		}
 	}
-	SendChat("/f Members online: " online "/" members " (" leaderonline "/" leader " Leader)")
-	SendChat("/f Davon ingame anwesend: " active "/" online " (" leaderactive "/" leaderonline " Leader)")
+	AddChatMessage("Members online: " online "/" members " (" leaderonline "/" leader " Leader)")
+	AddChatMessage("Davon ingame anwesend: " active "/" online " (" leaderactive "/" leaderonline " Leader)")
 }
 FrakWebsite := ""
 return
