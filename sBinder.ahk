@@ -737,7 +737,7 @@ GetPlayerId(){
 }
 GetPlayerIdByName(name){
 	SendChat("/id " name)
-	chat := WaitForChatLine(0, "ID: ")
+	chat := WaitForChatLine(0, "ID: ", 1, , 0)
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -4924,32 +4924,6 @@ loop{
 		break
 }
 return
-#if IsFrak(3) AND WinActive("GTA:SA:MP") AND UseAPI
-:b0:/czone::
-Suspend Permit
-if(GetVehicleModel() != 407){
-	AddChatMessage("Du bist in keinem Feuerwehrfahrzeug!")
-	return
-}
-else
-	AddChatMessage("[sBinder] /czone-Countdown gestartet")
-while(A_Index < 120 AND WinActive("GTA:SA:MP") AND GetVehicleModel() = 407){
-	start := A_TickCount
-	ShowGameText("~n~~n~~n~~w~Dekontaminierung abgeschlossen in~n~~g~" 120 - A_Index " Sekunden", 2000, 3)
-	Sleep, % start - A_TickCount + 980
-}
-if(GetVehicleModel() != 407)
-	AddChatMessage("Du bist in keiner Feuerwehr mehr!")
-else{
-	AddChatMessage("Dekontaminierung abgeschlossen!")
-	loop, 5
-	{
-		SoundPlay, *64
-		Sleep, 200
-	}
-}
-return
-
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 ::/idtest::
 Suspend Permit
