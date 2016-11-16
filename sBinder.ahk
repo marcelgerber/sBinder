@@ -4572,9 +4572,9 @@ return
 ::/inettest::
 Suspend Permit
 AddChatMessage("Ein Test der Internetverbindung wird durchgeführt...")
-AddChatMessage("Ping nes-reallife Gameserver: {0022FF}" clearping("server.nes-newlife.de", 400))
-AddChatMessage("Ping nes-reallife Homepage: {0022FF}" clearping("nes-newlife.de", 400))
-AddChatMessage("Ping nes-reallife Forum: {0022FF}" clearping("forum.nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Gameserver: {0022FF}" clearping("server.nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Homepage: {0022FF}" clearping("nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Forum: {0022FF}" clearping("forum.nes-newlife.de", 400))
 AddChatMessage("Ping google.com (Referenz): {0022FF}" clearping("google.com", 400))
 return
 ::/kdonut::
