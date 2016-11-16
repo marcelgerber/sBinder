@@ -1482,11 +1482,14 @@ SendWPs(crime, wps){
 	RegExMatch(id1, "^((d|r)\s+)?(.*)\s*$", data)
 	if data3 is not integer
 	{
-		SendChat("/id " data3)
+		data3 := GetPlayerIdByName(data3)
+		
+		/*SendChat("/id " data3)
 		chat := WaitForChatLine(0, "ID:")
 		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
+		*/
 	}
 	/*
 	if(wps < 0){
@@ -4580,7 +4583,7 @@ return
 ::/kdonut::
 Suspend Permit
 SendChat("/oldstats")
-chat := WaitForChatLine(3, "Donuts: [")
+chat := WaitForChatLine(4, "Donuts: [")
 RegExMatch(chat, "Donuts: \[(.*)\]", chat)
 if(chat1 < 20)
 	SendChat("/get donut " 20 - chat1)
