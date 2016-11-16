@@ -737,7 +737,7 @@ GetPlayerId(){
 }
 GetPlayerIdByName(name){
 	SendChat("/id " name)
-	chat := WaitForChatLine(0, "ID: ", 1, , 0)
+	chat := WaitForChatLine(0, "ID: ", 1)
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -5020,7 +5020,7 @@ return
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
-chat := WaitForChatLine(1, " in deiner Hauskasse.")
+chat := WaitForChatLine(1, " in deiner Hauskasse.", 1)
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Du hast aktuell \$(\d*) in deiner Hauskasse", chat)
 if(chat1)
