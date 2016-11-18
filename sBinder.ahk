@@ -7095,9 +7095,9 @@ else if(IsFrak(3, 1)){
 		SendChat("/ame »» Spieler ist wieder gespawnt ««")
 	else if(!InStr(chat, "Du bist nicht im Dienst"))
 		SendChat("/ame »» Im Revive ««")
-	else if(!InStr(chat, "Begib dich zur Verwaltung und gib /get medizin ein")
+	else if(InStr(chat, "Begib dich zur Verwaltung und gib /get medizin ein"))
 	    SendChat("/ame »» Medikamente sind alle ««")
-    else if(!InStr(chat, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine Checkpointstrafe hat")
+    else if(InStr(chat, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine Checkpointstrafe hat"))
         SendChat("/ame »» Spieler AFK oder Checkpointstrafe ««")
 }
 else if(IsFrak(4, 1))
