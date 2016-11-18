@@ -736,7 +736,8 @@ GetPlayerId(){
 	return id
 }
 GetPlayerIdByName(name){
-	SendChat("/id " name)
+	SendChat("/id " name)+
+	Sleep, 75
 	chat := WaitForChatLine(0, "ID: ", 1)
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
@@ -745,7 +746,8 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	chat := WaitForChatLine(0, "ID: ")
+	Sleep, 75
+	chat := WaitForChatLine(0, "ID: ", 1)
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
