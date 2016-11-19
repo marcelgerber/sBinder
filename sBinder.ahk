@@ -7062,9 +7062,10 @@ else if(IsFrak(3, 1)){
 	        SendChat("/ame »» Spieler AFK oder Checkpointstrafe ««")
 	    else
 	        SendChat("/ame »» im Revive ««")
-    if(RegExMatch(chat1, "INFO: Nach der Reanimation hast du noch ([0-9.]+) Medikamente\.", regex))
+    if(RegExMatch(chat1, "INFO: Nach der Reanimation hast du noch ([0-9.]+) Medikamente\.", regex)){
         if(regex1 <= 10)
             AddChatMessage("Du solltest demnächst das Krankenhaus aufsuchen und deine Medikamente aufstocken.")
+    }
 }
 else if(IsFrak(4, 1))
 	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
