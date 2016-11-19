@@ -7058,10 +7058,13 @@ else if(IsFrak(3, 1)){
 	if(!InStr(chat1, "Du bist bei keiner Leiche"))
 	    if(InStr(chat1, "Begib dich zur Verwaltung und gib /get medizin ein"))
 	        SendChat("/ame »» Medikamente sind alle ««")
-	    else if(InStr(chat, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine Checkpointstrafe hat"))
+	    else if(InStr(chat2, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine Checkpointstrafe hat"))
 	        SendChat("/ame »» Spieler AFK oder Checkpointstrafe ««")
 	    else
 	        SendChat("/ame »» im Revive ««")
+    if(RegExMatch(chat1, "INFO: Nach der Reanimation hast du noch ([0-9.]+) Medikamente\.", regex))
+        if(regex1 <= 10)
+            AddChatMessage("Du solltest demnächst das Krankenhaus aufsuchen und deine Medikamente aufstocken.")
 }
 else if(IsFrak(4, 1))
 	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
