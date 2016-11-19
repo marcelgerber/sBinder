@@ -138,7 +138,7 @@ if(!A_IsCompiled){
 	FileDelete, lines.ahk
 	FileAppend, % "script_lines := " script_lines "`nscript_chars := " script_chars, lines.ahk
 	FileDelete, VersionInfo.ahk
-	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports NewLife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
+	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova-eSports NewLife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
 	;FileDelete, VersionInfo_sUpdate.ahk
 	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
 }
@@ -3676,7 +3676,7 @@ ChangelogBrowser:
 Run, http://saplayer.lima-city.de/l/sBinder-changelog&a=nobugs
 return
 ForumThread:
-Run, http://forum.nes-reallife.de/index.php/Thread/139191-sBinder
+Run, https://forum.nes-newlife.de/thread/1544-sbinder-by-icedwave/
 return
 CreditsGUI:
 Gui, CreditsGUI:Show,, sBinder: Credits
@@ -3801,7 +3801,7 @@ Help29:
 Help30:
 Help31:
 Help32:
-helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova eSports RealLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
+helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova-eSports NewLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
 , "In den Fraktionsbinds kannst du Tasten für vordefinierte, einheitliche Aktionen setzen.`nDafür musst du erst deine Fraktion auswählen und mit dem Passwort, das du normalerweise vom Leader bekommst, bestätigen.`n`nWenn deine Fraktion noch nicht vertreten ist, kannst du, oder z.B. einer eurer Leader, mich kontaktieren, dass auch deine Fraktion integriert wird."
