@@ -2009,13 +2009,12 @@ if(Frak = 3 AND LastUsedBuild < 47){
 }
 if (Frak = 3 AND LastUsedBuild < 68) {
 	Frakoption6 := Frakoption4
-	Frakoption7 := Frakption5
+	Frakoption7 := Frakoption5
 	Frakoption4 := ""
 	Frakoption5 := ""
 	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
 	IniWrite, %Frakoption5%, %INIFile%, Settings, Frakoption5
 	IniWrite, %Frakoption6%, %INIFile%, Settings, Frakoption6
-	IniWrite, %Frakoption7%, %INIFile%, Settings, Frakoption7
 }
 IniRead, JobOption1, %INIFile%, Settings, JobOption1, 0
 IniRead, TrayMinimize, %INIFile%, Settings, MinimizeToTray, 0
@@ -3361,7 +3360,6 @@ if(IsFrak(3)){
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
 	Gui, FrakGui:Add, Edit, % "vFrakoption4 x175 y" fBinds*25+135 " w100 h20", %Frakoption4%
 	Gui, FrakGui:Add, Edit, % "vFrakoption5 x175 y" fBinds*25+160 " w100 h20", %Frakoption5%
-	Gui, FrakGui:Add, Checkbox, % "vFrakoption7 x10 y" fBinds*25+190 " Checked" !!FrakOption7, Übermittlung von Daten ans SARD Interface zulassen
 	Gui, FrakGui:Add, Button, % "x300 y" fBinds*25+190 " h20 w12 gHelp32", ?
 }
 TextArray := ""
@@ -4942,8 +4940,6 @@ if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten 
 	regex1 := StrReplace(regex1, ".")
 	regex2 := StrReplace(regex2, ".")
 	SendChat("/r Das Lager wurde mit " number_format(regex1) "/" number_format(regex2) " Medikamenten befüllt.")
-	if (FrakOption7)
-		HTTPData("http://sard-interface.de/activity/index.php?get=medifahrt&var=WzUHn8Qajusw9Pd1ux9zffcVIokc8FmGb6qMgZxk&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
 }
 return
 :b0:/mpdelete::
@@ -4952,8 +4948,6 @@ chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abg
 if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
-	if (FrakOption7)
-		HTTPData("http://sard-interface.de/activity/index.php?get=medivernichtung&var=emy87EbVXB3oDq9SeNQtufdqHBkKSL5bXI1eoNGD7e2YmSZyie&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex1))
 }
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
@@ -6987,17 +6981,11 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-	    if(Nickname == "ThomasTailor93"){
-	        Sleep, 50
-	        SendInput, {enter}
-	    }
 		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
 		if (!chat)
 			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
-		if (FrakOption7)
-			HTTPData("http://sard-interface.de/activity/index.php?get=services&var=8Ycz1YADg1cN0IkXnbFKBIwheBV49opo4JL1d1K&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
 	}
 }
 else if(IsFrak(4, 1))
