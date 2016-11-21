@@ -3360,7 +3360,6 @@ if(IsFrak(3)){
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
 	Gui, FrakGui:Add, Edit, % "vFrakoption4 x175 y" fBinds*25+135 " w100 h20", %Frakoption4%
 	Gui, FrakGui:Add, Edit, % "vFrakoption5 x175 y" fBinds*25+160 " w100 h20", %Frakoption5%
-	Gui, FrakGui:Add, Button, % "x300 y" fBinds*25+190 " h20 w12 gHelp32", ?
 }
 TextArray := ""
 Gui, FrakGUI:Menu, MenuBar
