@@ -2006,7 +2006,6 @@ if(Frak = 3 AND LastUsedBuild < 47){
 }
 if (Frak = 3 AND LastUsedBuild < 68) {
 	Frakoption6 := Frakoption4
-	Frakoption7 := Frakoption5
 	Frakoption4 := ""
 	Frakoption5 := ""
 	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
@@ -2452,7 +2451,7 @@ MaxOverlays := 3
 OverlayActive := 0
 Hotstrings := 26
 Notes := 8
-FrakOptions := 7
+FrakOptions := 6
 frakbinds := 1
 savemsg := 1
 GuiButtons := 6
