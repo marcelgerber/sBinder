@@ -7034,7 +7034,7 @@ else if(IsFrak(3, 1)){
 	    else
 	        SendChat("/ame »» im Revive ««")
     if(RegExMatch(chat1, "INFO: Nach der Reanimation hast du noch ([0-9.]+) Medikamente\.", regex)){
-        if(regex1 <= 10)
+        if(StrReplace(regex1, ".") <= 10)
             AddChatMessage("Du solltest demnächst das Krankenhaus aufsuchen und deine Medikamente aufstocken.")
     }
 }
