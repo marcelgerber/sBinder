@@ -736,9 +736,8 @@ GetPlayerId(){
 	return id
 }
 GetPlayerIdByName(name){
-	SendChat("/id " name)+
-	Sleep, 75
-	chat := WaitForChatLine(0, "ID: ", 1)
+	SendChat("/id " name)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -746,8 +745,7 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	Sleep, 75
-	chat := WaitForChatLine(0, "ID: ", 1)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
@@ -1485,7 +1483,6 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		Sleep, 1000
 		chat := WaitForChatLine(0, "ID:", 1)
 		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
@@ -4579,7 +4576,7 @@ return
 ::/kdonut::
 Suspend Permit
 SendChat("/oldstats")
-chat := WaitForChatLine(4, "Donuts: [")
+chat := WaitForChatLine(3, "Donuts: [")
 RegExMatch(chat, "Donuts: \[(.*)\]", chat)
 if(chat1 < 20)
 	SendChat("/get donut " 20 - chat1)
@@ -5012,7 +5009,7 @@ return
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
-chat := WaitForChatLine(1, " in deiner Hauskasse.", 1)
+chat := WaitForChatLine(1, " in deiner Hauskasse.")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Du hast aktuell \$(\d*) in deiner Hauskasse", chat)
 if(chat1)
