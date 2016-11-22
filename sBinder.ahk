@@ -4916,15 +4916,6 @@ loop{
 		break
 }
 return
-#if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
-::/idtest::
-Suspend Permit
-if((getid := PlayerInput("Gib einen Namen ein: ")) = ""){
-	AddChatMessage("Du hast nichts eingegeben!")
-	return
-}
-AddChatMessage("ID:" GetPlayerIdByName(getid))
-return
 
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
