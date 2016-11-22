@@ -2423,7 +2423,7 @@ GuiControl, TempGUI:, Status, Update wird durchgeführt...
 FileGetSize, size_curr, sBinder_new.exe
 if(size_curr >= vSize){
 	FileDelete, sUpdate.bat
-	FileAppend, % "@echo off`nping 127.0.0.1 -n 1`ndel """ A_ScriptDir "\sBinder.exe""`nmove """ A_ScriptDir "\sBinder_new.exe"" """ A_ScriptDir "\sBinder.exe""`nping 127.0.0.1 -n 1`nstart """" """ A_ScriptDir "\sBinder.exe"" ""--just-updated""`ndel """ A_ScriptDir "\sUpdate.bat""", sUpdate.bat
+	FileAppend, % "@echo off`nping 1.1.1.1 -n 1`ndel """ A_ScriptDir "\sBinder.exe""`nmove """ A_ScriptDir "\sBinder_new.exe"" """ A_ScriptDir "\sBinder.exe""`nping 1.1.1.1 -n 1`nstart """" """ A_ScriptDir "\sBinder.exe"" ""--just-updated""`ndel """ A_ScriptDir "\sUpdate.bat""", sUpdate.bat
 	Run, *RunAs sUpdate.bat,, Hide
 	ExitApp
 }
