@@ -1488,7 +1488,7 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		chat := WaitForChatLine(0, "ID:", 1)
+		chat := WaitForChatLine(0, "ID:")
 		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
@@ -4925,7 +4925,7 @@ return
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-chat := WaitForChatLine(0, "Du hast das Lager mit", 1)
+chat := WaitForChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	regex2 := StrReplace(regex2, ".")
@@ -4934,7 +4934,7 @@ if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten 
 return
 :b0:/mpdelete::
 Suspend Permit
-chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen", 1)
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
 if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
@@ -6919,7 +6919,7 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1)){
 	SendChat("/duty")
-	chat := WaitForChatLine(0, " nimmt seine Marke aus dem Spint.", 4)
+	chat := WaitForChatLine(0, " nimmt seine Marke aus dem Spint.")
 	if(chat){
 		BindReplace("/takku~/equip")
 		WaitFor()
@@ -6928,7 +6928,7 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1)){
 	SendChat("/duty")
-	chat := WaitForChatLine(0, "Du befindest dich nun|Du bist nicht am Dutypunkt in",1,, 1)
+	chat := WaitForChatLine(0, "Du befindest dich nun|Du bist nicht am Dutypunkt in")
 	if(InStr(chat, "Du befindest dich nun im Dienst."))
 		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
 	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
@@ -7049,7 +7049,7 @@ else if(IsFrak(5, 1))
 	SendChat("/equip")
 else if(IsFrak(6, 1)){
 	SendChat("/nummer " Nickname)
-	chat := WaitForChatLine(0, ", Ph: ", 2)
+	chat := WaitForChatLine(0, ", Ph: ")
 	if(!RegExMatch(chat, "U)Name: .*, Ph: (\d+)$", chat) OR !chat1)
 		chat1 := "me"
 	BindReplace("Yakuza - feinste Ware aus dem fernen Osten~Du brauchst was? /call " chat1 " | Yakuza~Nur bei mir, einfach aufsteigen~Munition der Klasse 1 & Klasse 2.~Waffen der Klasse 1 & Klasse 2.")
