@@ -750,7 +750,7 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	chat := WaitForChatLine(0, "ID: ")
+	chat := WaitForChatLine(0, "ID: ", 1)
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
@@ -1493,23 +1493,6 @@ SendWPs(crime, wps){
 		if(chat1)
 			data3 := chat1
 	}
-	/*
-	if(wps < 0){
-		SendChat("/checkwanted " data3)
-		chat := WaitForChatLine(0, "Wantedpunkte und somit Wantedlevel:")
-		RegExMatch(chat, "U)HQ: .+ hat (\d+) Wantedpunkte und somit Wantedlevel:", wp)
-		if(wps = -1){
-			if(wp1){
-				wps := 15
-				crime .= " (2. Fall)"
-			}
-			else{
-				wps := 9
-				crime := "StVO-Vergehen (1. Fall)"
-			}
-		}
-	}
-	*/
 	if(id3)
 		ia := " i.A. " id3
 	if(data2)
@@ -4670,7 +4653,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	chat := WaitForChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ", 1)
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4688,7 +4671,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	chat := WaitForChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ", 1)
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -6967,7 +6950,7 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
+		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.", 3, 45)
 		if (!chat)
 			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
