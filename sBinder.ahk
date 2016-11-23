@@ -7016,8 +7016,8 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat1)
 	GetChatLine(2, chat2)
-	if(!InStr(chat1, "Du bist bei keiner Leiche") && !InStr(chat1, "Begib dich zur Verwaltung und gib /get medizin ein"))
-	    if(InStr(chat2, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine Checkpointstrafe hat"))
+	if(!InStr(chat1, "Du bist bei keiner Leiche") && !InStr(chat1, "Begib dich zur Verwaltung und gib /get medizin ein") && !InStr(chat1, "Du bist schon dabei einen toten Spieler zu reanimieren!"))
+	    if(InStr(chat2, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine CP-Strafe hat"))
 	        SendChat("/ame »» Spieler AFK oder Checkpointstrafe ««")
 	    else
 	        SendChat("/ame »» im Revive ««")
