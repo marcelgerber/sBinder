@@ -5020,7 +5020,7 @@ return
 ::/textbinds 4::
 ::/textbinds 5::
 Suspend Permit
-cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/kfish", "/ksell", "/druginfo", "/calc", "/kbl", "/kfishes", "/frakall", "/membersall", "/carvalue", "/car lock [1-9]", "/wolframalpha"])
+cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/druginfo", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-9]", "/wolframalpha"])
 if(A_ThisLabel = "::/textbinds"){
 	if(UseAPI){
 		loop, % Ceil(cmd._maxIndex()/10){
@@ -5073,12 +5073,9 @@ else{
 	, "Mit diesem Textbind werden einige laufende Funktionen (aktuell nur /kame) des sBinders gestoppt."
 	, "Gibt alle Textbinds, die den sBinder direkt steuern, sortiert im Chat aus."
 	, "Dieser Textbind ermittelt per /oldstats die Anzahl eurer aktuellen Donuts und kauft dann so viele Donuts, wie sie euch bis 20 Donuts fehlen.`nIhr habt also nach der Eingabe dieses Befehls wieder 20 Donuts."
-	, "Mit diesem Textbind angelt der sBinder automatisch für euch. Ihr könnt den Textbind auch auf eine Taste legen, um mit einer Taste zu angeln.`nGehe dazu einfach in die eigenen Binds, wähle eine beliebige Taste oder Tastenkombination`nund gebe als Befehl '/kfish' ein."
-	, "Mit dem Textbind siehst du schon vor dem Verkauf der Fische, wie viel diese ungefähr wert sind. Der genaue Wert ist abhängig von den`ngekauften Upgrades (/upgrades). Mit {999999}/kfishes single{FFFFFF} siehst du außerdem den Wert eines jeden einzelnen Fisches (und auch den Gesamtwert)."
 	, "Nach der Eingabe dieses Textbinds wird per /oldstats dein Vermögen ausgelesen und (zusammengerechnet) ausgegeben."
 	, "Schaltet die /me-Texte zu den Animationen an bzw. aus."
 	, "Es öffnen sich zwei Chatfelder, in die du die Zahlen des Paydays eingeben musst (KEIN BOT!).`nDanach werden die Zahlen addiert und es wird /payday [Ergebnis] gesendet."
-	, "Mit diesem Textbind verkauft der sBinder automatisch eure geangelten Fische und zeigt euch den Verdienst an.`nIhr könnt den Textbind auch auf eine Taste legen, um das Ganze komfortabler zu machen.`nGehe dazu einfach in die eigenen Binds, wähle eine beliebige Taste oder Tastenkombination und gebe als Befehl '/ksell' ein."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird dieser Person eine SMS geschickt (ihr braucht also nicht /nummer einzugeben)."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird diese Person über eine Telefonzelle, also anonym, angerufen (ihr braucht also nicht /nummer einzugeben)."
 	, "Dieser Textbind zeigt die Leader der eingegebenen Fraktion (sowohl online als auch offline).`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"").`nMit {999999}/leaders id{FFFFFF} kannst du außerdem den /id-Befehl für jeden Leader ausgeben lassen,`nso siehst du z.B., wer von ihnen auf dem Friedhof oder im Gefängnis ist."
@@ -5837,112 +5834,6 @@ else{
 	gosub HotkeysDefine
 	AddChatMessage("Dein Beruf wurde erfolgreich in {0022FF}" Jobnames[Job] "{FF6600} geändert!")
 }
-return
-::/kfish::
-Suspend Permit
-if(A_IsSuspended){
-	AddChatMessage("Der sBinder ist aktuell deaktiviert. Aktiviere ihn erst!")
-	return
-}
-chat := ""
-fishes := wait := currindex := 0
-IniRead, AutoReleaseFishes, %INIFile%, Settings, AutoReleaseFishes, 0
-if(AutoReleaseFishes AND !inOR(Nickname, "IcedWave", "AudRay", "Sundosia", "[L]ucius", "Definitiv", "ChackN0rris"))
-	AutoReleaseFishes := 0
-if(AutoReleaseFishes)
-	fishprices := [["Pike", "Seebarsch", "Thunfisch", "Schildkröte", "Aal", "Penisfisch", "Makrele", "Dorsch", "Forelle", "Lachs", "Schwertfisch", "Roter Snapper", "Zackenbarsch", "Katzenfisch", "Blauer Marlin", "Amberjack"], [7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 1]]
-while(!(InStr(chat, "Du hast zu viele Fische gefangen") OR InStr(chat, "Tote können keine Befehle") OR InStr(chat, "Du bist nicht auf") OR InStr(chat, "Du darfst nicht") OR InStr(chat, "Mit einem Premiumaccount kannst du") OR InStr(chat, "Du musst noch etwas warten") OR InStr(chat, "Deine Taschen sind voll") OR InStr(chat, "Wirf welche weg oder verkauf") OR InStr(chat, "Angeln ist in dieser Umgebung nicht möglich"))){
-	SendChat("/fish")
-	currindex ++
-	WaitFor()
-	GetChatLine(0, chat)
-	if(InStr(chat, "Als Fraktionsmitglied kannst du nur alle 2 Sekunden angeln.")){
-		wait := 1
-		Sleep, 2000
-	}
-	else if(InStr(chat, "Du hast einen ") AND InStr(chat, "Gewicht: ")){
-		currindex := 0
-		if(AutoReleaseFishes AND (RegExMatch(chat, "Du hast einen (.+) .+ Gewicht: (\d+) Kg", chat) AND (chat2 < 10 OR (fishprices[2, ArrayMatch(chat1, fishprices[1])] * chat2) < AutoReleaseFishes)))
-			SendChat("/releasefish " fishes + 1)
-		else
-			fishes ++
-		if(wait AND (fishes != 5 AND fishes != 10))
-			Sleep, 2000
-	}
-	if(A_Index / (fishes+1) > 18 OR currindex > 14)
-		break
-}
-AddChatMessage("Fischen abge" (fishes ? "schlossen" : "brochen"))
-return
-::/ksell::
-Suspend Permit
-chat := ""
-fishes := 0
-loop, 10
-{
-	SendChat("/sell fisch " A_Index)
-	if(A_Index = 1 OR A_Index = 6){
-		WaitFor()
-		GetChatLine(0, chat)
-		if(InStr(chat, "Du bist nicht im") OR InStr(chat, "Premium") OR InStr(chat, "Die Nummer muss") OR InStr(chat, "Mit dieser Nummer hast du keinen"))
-			break
-	}
-	fishes := A_Index
-}
-if(fishes > 1){
-	SendChat("/throwbackall")
-	WaitFor()
-	fishes_old := fishes
-	fishes := price := 0
-	loop, % fishes_old + 4
-	{
-		GetChatLine(A_Index - 1, chat)
-		if(InStr(chat, "kg, Preis $") AND RegExMatch(chat, "Du hast deinen .+Er wog \d{1,2}kg, Preis \$(\d+)\.", chat)){
-			price += chat1
-			fishes ++
-		}
-	}
-	if(fishes)
-		AddChatMessage("Du hast " fishes " von " fishes_old " Fisch" (chat = 1 ? "" : "en") " verkauft und $" number_format(price) " verdient.")
-}
-return
-::/kfishes::
-::/kfishes single::
-Suspend Permit
-fishprices := [["Pike", "Seebarsch", "Thunfisch", "Schildkröte", "Aal", "Penisfisch", "Makrele", "Dorsch", "Forelle", "Lachs", "Schwertfisch", "Roter Snapper", "Zackenbarsch", "Katzenfisch", "Blauer Marlin", "Amberjack"], [7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 1]]
-SendChat("/fishes")
-WaitFor()
-chat := fullchat := ""
-fishes := price := sellable := 0
-loop
-{
-	GetChatLine(A_Index-1, chat)
-	if(InStr(chat, "|__________________ Fische __________________|"))
-		break
-	else if(A_Index >= 20){
-		AddChatMessage("Fehler beim Auslesen des Chats!")
-		return
-	}
-	fullchat := chat "`n" fullchat
-}
-loop, Parse, fullchat, `n, `r
-{
-	if(RegExMatch(A_LoopField, "U)\(\d+\) Fish: (.+)\.\s+Gewicht: (\d+)\.", chat) AND chat2 != 0){
-		fishes ++
-		if(chat2 > 9){
-			price += (price_ := fishprices[2, ArrayMatch(chat1, fishprices[1])] * chat2)
-			sellable ++
-		}
-		else
-			price_ := 0
-		if(A_ThisLabel = "::/kfishes single")
-			AddChatMessage("Fisch: " chat1 " -- Gewicht: " chat2 "kg -- Gewinn: $" number_format(price_))
-	}
-}
-if(fishes)
-	AddChatMessage("Du hast " fishes " Fisch" (fishes = 1 ? "" : "e") " gefangen" (fishes = sellable ? "" : " (" sellable " verkaufbar)") ", damit verdienst du {0022FF}~$" number_format(price) "{FF6600}.")
-else
-	AddChatMessage("Du hast keine Fische gefangen!")
 return
 ::/kautosetup::
 Suspend Permit
