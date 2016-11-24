@@ -753,7 +753,7 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	chat := WaitForChatLine(0, "ID: ", 1)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
@@ -4656,7 +4656,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	chat := WaitForChatLine(0, ", Ph: ", 1)
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4674,7 +4674,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	chat := WaitForChatLine(0, ", Ph: ", 1)
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -6953,7 +6953,7 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.", 3, 45)
+		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
 		if (!chat)
 			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
