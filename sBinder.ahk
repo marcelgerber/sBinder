@@ -5020,7 +5020,7 @@ return
 ::/textbinds 4::
 ::/textbinds 5::
 Suspend Permit
-cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/druginfo", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]", "/wolframalpha"])
+cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]", "/wolframalpha"])
 if(A_ThisLabel = "::/textbinds"){
 	if(UseAPI){
 		loop, % Ceil(cmd._maxIndex()/10){
@@ -5063,7 +5063,6 @@ else{
 	, "Sendet einige leere Zeilen in den Chat, sodass dieser leer erscheint."
 	, "Bei der Eingabe dieses Befehls werdet ihr gefragt, in welchen Chat der Countdown gestartet werden soll (z.B. /s, /r, /d, /news, /f, ...).`nDann wird ein Countdown in diesen Chat gestartet. Ihr könnt den Countdown mit Entf abbrechen."
 	, "Gibt die ungefähre aktuelle Prozessorauslastung aus. Außerdem wird euch die RAM-Auslastung angezeigt."
-	, "Mit diesem Textbind seht ihr, wann ihr zuletzt eine Droge (Green, Widow, Gold, LSD) zu euch genommen habt."
 	, "Dieser Textbind zeigt dir die Mitgliederzahlen - online und gesamt - aller Fraktionen auf Nova an."
 	, "Mit diesem Textbind wird deine gesamte Hauskasse entleert."
 	, "Es wird ein Ping-Test durchgeführt, um zu erkennen, ob Internetprobleme serverseitig oder von eurem PC ausgehen."
@@ -5075,7 +5074,6 @@ else{
 	, "Dieser Textbind ermittelt per /oldstats die Anzahl eurer aktuellen Donuts und kauft dann so viele Donuts, wie sie euch bis 20 Donuts fehlen.`nIhr habt also nach der Eingabe dieses Befehls wieder 20 Donuts."
 	, "Nach der Eingabe dieses Textbinds wird per /oldstats dein Vermögen ausgelesen und (zusammengerechnet) ausgegeben."
 	, "Schaltet die /me-Texte zu den Animationen an bzw. aus."
-	, "Es öffnen sich zwei Chatfelder, in die du die Zahlen des Paydays eingeben musst (KEIN BOT!).`nDanach werden die Zahlen addiert und es wird /payday [Ergebnis] gesendet."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird dieser Person eine SMS geschickt (ihr braucht also nicht /nummer einzugeben)."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird diese Person über eine Telefonzelle, also anonym, angerufen (ihr braucht also nicht /nummer einzugeben)."
 	, "Dieser Textbind zeigt die Leader der eingegebenen Fraktion (sowohl online als auch offline).`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"").`nMit {999999}/leaders id{FFFFFF} kannst du außerdem den /id-Befehl für jeden Leader ausgeben lassen,`nso siehst du z.B., wer von ihnen auf dem Friedhof oder im Gefängnis ist."
