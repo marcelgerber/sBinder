@@ -745,7 +745,7 @@ GetPlayerId(){
 }
 GetPlayerIdByName(name){
 	SendChat("/id " name)
-	chat := WaitForChatLine(0, "ID: ", 1)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -1491,7 +1491,7 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		chat := WaitForChatLine(0, "ID:", 1)
+		chat := WaitForChatLine(0, "ID:")
 		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
@@ -4566,7 +4566,7 @@ return
 ::/kdonut::
 Suspend Permit
 SendChat("/oldstats")
-chat := WaitForChatLine(4, "Donuts: [")
+chat := WaitForChatLine(3, "Donuts: [")
 RegExMatch(chat, "Donuts: \[(.*)\]", chat)
 if(chat1 < 20)
 	SendChat("/get donut " 20 - chat1)
@@ -4911,7 +4911,7 @@ return
 #if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-chat := WaitForChatLine(0, "Du hast das Lager mit", 1)
+chat := WaitForChatLine(0, "Du hast das Lager mit")
 if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	regex2 := StrReplace(regex2, ".")
@@ -4920,7 +4920,7 @@ if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten 
 return
 :b0:/mpdelete::
 Suspend Permit
-chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen", 1)
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
 if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
 	regex1 := StrReplace(regex1, ".")
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
@@ -4990,7 +4990,7 @@ return
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
-chat := WaitForChatLine(1, " in deiner Hauskasse.", 1)
+chat := WaitForChatLine(1, " in deiner Hauskasse.")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Du hast aktuell \$(\d*) in deiner Hauskasse", chat)
 if(chat1)
