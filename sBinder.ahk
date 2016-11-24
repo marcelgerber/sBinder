@@ -5020,7 +5020,7 @@ return
 ::/textbinds 4::
 ::/textbinds 5::
 Suspend Permit
-cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/druginfo", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-9]", "/wolframalpha"])
+cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/druginfo", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]", "/wolframalpha"])
 if(A_ThisLabel = "::/textbinds"){
 	if(UseAPI){
 		loop, % Ceil(cmd._maxIndex()/10){
@@ -6019,6 +6019,17 @@ return
 ::/car lock 7::
 ::/car lock 8::
 ::/car lock 9::
+::/car lock 10::
+::/car lock 11::
+::/car lock 12::
+::/car lock 13::
+::/car lock 14::
+::/car lock 15::
+::/car lock 16::
+::/car lock 17::
+::/car lock 18::
+::/car lock 19::
+::/car lock 20::
 Suspend Permit
 SendChat("/car lock")
 if(UseAPI){
