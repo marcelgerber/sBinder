@@ -516,8 +516,11 @@ WaitForChatLine(firstline, instr, lines=5, iterations=25, regex=0){
 	loop, %iterations%
 	{
 		GetChatLine(firstline, loopLine, 1, 1)
-		if (origLine = loopLine && StartTS < A_TickCount - 550)
+		if (origLine = loopLine && StartTS > A_TickCount - 550)
+		{
+			Sleep, 75
 			continue
+		}
 		chat := ChatLine(firstline, instr, lines, regex)
 		if (chat != "")
 			return chat
