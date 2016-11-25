@@ -222,15 +222,22 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	}
 	return i*res
 }
-GetChatLine(Line, ByRef Output, timestamp=0, color=0){
+GetChatLineCount(){
 	global chatlogpath
-	chatindex := 0
 	FileRead, file, %chatlogpath%
 	StringReplace, file, file, `n, `n, UseErrorLevel
-	chatindex := ErrorLevel
+	return ErrorLevel
+}
+GetChatLine(Line, ByRef Output, timestamp=0, color=0){
+	return GetChatLine_abs(GetChatLineCount() - line, Output, timestamp, color)
+}
+GetChatLine_abs(Line, ByRef Output, timestamp=0, color=0){
+	global chatlogpath
+	output := ""
+	FileRead, file, %chatlogpath%
 	loop, Parse, file, `n, `r
 	{
-		if(A_Index = chatindex - line){
+		if(A_Index = line){
 			output := A_LoopField
 			break
 		}
@@ -510,18 +517,26 @@ ChatLine(firstline, instr, lines=5, regex=0){
 	}
 	return
 }
+ChatLine_abs(firstline, instr, lines=5, regex=0, chatindex=0){
+	loop, %lines%
+	{
+		line := GetChatLineCount() - (firstline + A_Index - 1)
+		if (line <= chatindex)
+			break
+		GetChatLine(firstline + A_Index - 1, chat)
+		if(!regex && InStr(chat, instr))
+			return chat
+		else if(regex && RegExMatch(chat, instr))
+			return chat
+	}
+	return
+}
 WaitForChatLine(firstline, instr, lines=5, iterations=25, regex=0){
-	GetChatLine(firstline, origLine, 1, 1)
 	StartTS := A_TickCount
+	chatindex := GetChatLineCount()
 	loop, %iterations%
 	{
-		GetChatLine(firstline, loopLine, 1, 1)
-		if (origLine = loopLine && StartTS > A_TickCount - 550)
-		{
-			Sleep, 75
-			continue
-		}
-		chat := ChatLine(firstline, instr, lines, regex)
+		chat := ChatLine_abs(firstline, instr, lines, regex, chatindex)
 		if (chat != "")
 			return chat
 		Sleep, 75
