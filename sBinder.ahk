@@ -2451,7 +2451,7 @@ active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
 Binds := 52
-fBinds_max := 13
+fBinds_max := 12
 jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 0
@@ -7141,13 +7141,6 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
-return
-fBind13:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
-	SendHKey()
-	return
-}
-
 return
 
 /*
