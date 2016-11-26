@@ -5112,8 +5112,8 @@ else{
 	, "Mit diesem Textbind werden Fraktionsbinds aktiviert oder deaktiviert."
 	, "Gibt euch ingame alle aktuell verfügbaren Truckermissionen bis zu eurem Truckerlevel aus. Dabei werden die Aufträge auch im Trucking-Fenster aktualisiert.`nDie Daten werden direkt von der Homepage heruntergeladen.`nFormat: {999999}Ort (Produkt) | Trucklevel | Erfahrung | Einkaufspreis -> Verkaufspreis (Gewinn) | Gewicht | (Anhänger){FFFFFF}`nEventuell funktioniert dieser Textbind bei Änderungen an der Homepage kurzzeitig nicht."
 	, "Zeigt dir die aktuelle Uhrzeit und das Datum."
-	, "Mit diesem Textbind kannst du dir das Ergebnis einer (englischen) Frage von der semantischen Suchmaschine Wolfram|Alpha liefern lassen. Achtung Informationsflut!"
 	, "Zeigt dir das Wetter in LS, SF, LV und der Umgebung."
+	, "Mit diesem Textbind kannst du dir das Ergebnis einer (englischen) Frage von der semantischen Suchmaschine Wolfram|Alpha liefern lassen. Achtung Informationsflut!"
 	, "Spielt den Sound eines YouTube-Videos über den VLC Player ab. Ihr benötigt dafür den VLC Media Player in der Version 2 oder höher.`nAußerdem müsst ihr in den Einstellungen eventuell den Pfad zur vlc.exe angeben.`nMit {999999}/youtube search{FFFFFF} kannst du dir außerdem 10 Ergebnisse einer Suche anzeigen lassen, aus denen du dann eines auswählen kannst."
 	, "Nach der Eingabe dieses Textbinds werdet ihr nach der Nummer (1-8) der Notiz gefragt. Nach der Eingabe der Nummer wird die Notiz ausgegeben.`nIhr könnt auch 'all' eingeben, dann werden alle Notizen im Chat ausgegeben."]
 		for i, k in cmd
