@@ -60,7 +60,7 @@ if(LastUsedBuild < 40){
 				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by IcedWave
 				FileCreateDir, %musicfolder%
 				FileDelete, sBinder_move.bat
-				FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
+				FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nping 1.1.1.1 -n 1 -w 800`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
 				Run, *RunAs sBinder_move.bat
 				ExitApp
 			}
