@@ -7156,7 +7156,7 @@ if(IsFrak(2, 1)){
 		if (!chat)
 			return
 		RegExMatch(chat, "U)Du hast den Einsatz von (.*) angenommen (Ort: (.*)).", chat)
-		BindReplace("/r » Code 5 - Notruf von" (chat1 ? " von " chat1 : "") " angenommen! «")
+		BindReplace("/r » Code 5 - Notruf von" (chat1 ? " von " chat1 : "") " angenommen (Ort: " chat ") «")
 	}
 }
 return
