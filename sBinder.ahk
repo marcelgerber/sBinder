@@ -2451,7 +2451,7 @@ active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
 Binds := 52
-fBinds_max := 12
+fBinds_max := 13
 jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 0
@@ -3317,7 +3317,7 @@ else
 Gui, FrakGUI:Font
 Gui, FrakGUI:Add, Button, y5 h20 w120 gFrakChangeGUI, Fraktion ändern
 if(IsFrak(2))
-	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Traffic Stop", "/m: Straße räumen", "/m: Felony Stop", "/s: Sie sind verhaftet", "/swapgun", "/mv + /oldmv + /towopen", "/me: Zur Zentrale funken", "/wanted: Alle anzeigen", "/wanted: Alle anzeigen außer 1-10"]
+	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Traffic Stop", "/m: Straße räumen", "/m: Felony Stop", "/s: Sie sind verhaftet", "/swapgun", "/mv + /oldmv + /towopen", "/me: Zur Zentrale funken", "/wanted: Alle anzeigen", "/wanted: Alle anzeigen außer 1-10", "/accept cop"]
 else if(IsFrak(3))
 	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
@@ -7142,7 +7142,24 @@ if(IsFrak(2, 1)){
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 return
-
+fBind13:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(IsFrak(2, 1)){
+    SendChat("/accept cop")
+	WaitFor()
+	GetChatLine(0, chat)
+	if(!InStr(chat, "Niemand benötigt einen Streifenwagen.")){
+		chat := WaitForChatLine(0, "Du hast den Einsatz von ",, 45)
+		if (!chat)
+			return
+		RegExMatch(chat, "U)Du hast den Einsatz von (.*) angenommen (Ort: (.*)).", chat)
+		BindReplace("/r » Code 5 - Notruf von" (chat1 ? " von " chat1 : "") " angenommen! «")
+	}
+}
+return
 /*
 *::
 arr := NextNovaLocation()
