@@ -7155,7 +7155,7 @@ if(IsFrak(2, 1)){
 		chat := WaitForChatLine(0, "Du hast den Einsatz von ",, 45)
 		if (!chat)
 			return
-		RegExMatch(chat, "U)Du hast den Einsatz von (.*) angenommen (Ort: \(.*)\).", chat)
+		RegExMatch(chat, "U)Du hast den Einsatz von (.*) angenommen \(Ort: (.*)\)\.", chat)
 		BindReplace("/r » Code 5 - Notruf " (chat1 ? " von " chat1 : "") " angenommen (Ort: " chat2 ") «")
 	}
 }
