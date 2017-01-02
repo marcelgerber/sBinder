@@ -3321,7 +3321,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
-	TextArray := ["/getbizflag, /dropbizflag, /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "Plata O' Plomo", "Waffenhandel", "Zigarrenhandel", "Stehen bleiben", "Überfall", "Adios", "/kcheck", "Flagge unsere"]
+	TextArray := ["/getbizflag & /dropbizflag & /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "/s: Plata O' Plomo", "/me: Waffenhandel", "/me: Zigarrenhandel", "/s: Stehen bleiben", "/s: Überfall", "Adios", "/kcheck", "/f: Flagge unsere"]
 else if(IsFrak(5))
 	TextArray := ["/use lsd", "/use gold", "/use green", "/equip", "/s: Überfall", "/gangflag", "/me: Pizza anbieten"]
 else if(IsFrak(6))
@@ -7053,7 +7053,7 @@ if(IsFrak(2, 1))
 else if(IsFrak(3, 1))
 	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
 else if(IsFrak(4, 1))
-    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/Me holt frisch importierte kolumbianische Zigarren aus seiner Tasche.~[Wait 2000]/rap1~/me flüstert Und....Interesse ?")
+    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me holt frisch importierte kolumbianische Zigarren aus seiner Tasche.~[Wait 2000]/rap1~/me flüstert Und....Interesse ?")
 else if(IsFrak(6, 1))
 	SendChat("/materials getammo")
 else if(IsFrak(7, 1))
@@ -7153,8 +7153,18 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
-else if(IsFrak(4, 1))
-    BindReplace("[InputMode]t/kcheck{ENTER}[Wait 300]{DOWN}{DOWN}{ENTER}[Wait 300]{DOWN}{ENTER}[Wait 300]6{ENTER}")
+else if(IsFrak(4, 1)){
+	SendChat("/kcheck")
+	WaitFor()
+	Sleep, 50
+	SendInput, {enter}{down 2}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, {down}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, 6{enter}
+}
 return
 fBind13:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
