@@ -3321,7 +3321,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
-	TextArray := ["/use green", "/use gold", "/use lsd"]
+	TextArray := ["/getbizflag, /dropbizflag, /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "Plata O' Plomo", "Waffenhandel", "Zigarrenhandel", "Stehen bleiben", "Überfall", "Adios", "/kcheck", "Flagge unsere"]
 else if(IsFrak(5))
 	TextArray := ["/use lsd", "/use gold", "/use green", "/equip", "/s: Überfall", "/gangflag", "/me: Pizza anbieten"]
 else if(IsFrak(6))
@@ -6839,7 +6839,7 @@ else if(IsFrak(3, 1)){
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 }
 else if(IsFrak(4, 1))
-	SendChat("/use green")
+	BindReplace("/getbizflag~/dropbizflag~/gangflag")
 else if(IsFrak(5, 1))
 	SendChat("/use lsd")
 else if(IsFrak(6, 1))
@@ -6877,7 +6877,7 @@ else if(IsFrak(3, 1)){
 	}
 }
 else if(IsFrak(4, 1))
-	SendChat("/use gold")
+	BindReplace("/mv~/oldmv")
 else if(IsFrak(5, 1))
 	SendChat("/use gold")
 else if(IsFrak(6, 1))
@@ -6905,7 +6905,7 @@ if(IsFrak(2, 1))
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
 else if(IsFrak(4, 1))
-	SendChat("/use lsd")
+	SendChat("/use green")
 else if(IsFrak(5, 1))
 	SendChat("/use green")
 else if(IsFrak(6, 1))
@@ -6945,6 +6945,8 @@ else if(IsFrak(3, 1)){
             AddChatMessage("Du solltest demnächst das Krankenhaus aufsuchen und deine Medikamente aufstocken.")
     }
 }
+else if(IsFrak(4, 1))
+    SendChat("/use gold")
 else if(IsFrak(5, 1))
 	SendChat("/equip")
 else if(IsFrak(6, 1)){
@@ -6976,6 +6978,8 @@ if(IsFrak(2, 1))
 	BindReplace("/m »»»» Polizeieinsatz ««««~/m Bitte machen Sie den Weg frei und ermöglichen die Durchfahrt!")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Dienstfahrzeug im Einsatz!!~/m SARD | Bitte räumen Sie die Straße frei!!")
+else if(IsFrak(4, 1))
+    SendChat("/use lsd")
 else if(IsFrak(5, 1))
 	BindReplace("/s | LCN | Sofort stehen bleiben!~/s »» Dann passiert dir auch nichts! ««")
 else if(IsFrak(6, 1))
@@ -7000,6 +7004,8 @@ if(IsFrak(2, 1))
 	BindReplace("/m [SA:PD] Fahren Sie sofort rechts ran und stellen Sie den Motor ab.~/m Steigen Sie aus und legen sich auf den Boden!~/m Sollten Sie Widerstand leisten, wird dies Folgen haben! [SA:PD]~/oos /verletzt")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Rettungshelikopter startet / landet!!~/m SARD | Bitte räumen Sie die Landefläche frei!!")
+else if(IsFrak(4,1))
+    BindReplace("/me spuckt auf den Boden und guckt Böse~/s Plata o' Plomo, hijo de Puta?~/fucku")
 else if(IsFrak(5, 1))
 	SendChat("/gangflag")
 else if(IsFrak(6, 1))
@@ -7022,6 +7028,8 @@ if(IsFrak(2, 1))
 	BindReplace("/s Stehenbleiben, Sie sind verhaftet!~/s Legen Sie sich auf den Boden (/verletzt)!")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Castor-Transport!!~/m SARD | Bitte halten Sie die Straße frei!!~/m SARD | Bei Entfernung unterhalb von 100m erfolgt Schussfreigabe!!")
+else if(IsFrak(4, 1))
+    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me zeigt seine Preisliste~/deal~/me Deagle=3000$ | Mp5=2850$| Shotgun=2800$| AK-47=4200$| M4=4200$| Rifle=5600$~/me Deagle-Muni=10$ | Mp5-Muni=12$ | Shotgun-Muni=12$~/me AK-47-Muni=17$ | M4-Muni=17$ | Rifle-Muni=20$~[Wait 800]/me flüstert: Und....Interesse ?~[Wait 800]/chat2~[Wait 2000]/rap1")
 else if(IsFrak(5, 1))
 	BindReplace("/me ______________________________________~/me flüstert zu dir: Pizza Calzone | 25$~/me flüstert zu dir: Pizza Tonno | 29$~/me flüstert zu dir: Pizza Margarita | 21$~/me flüstert zu dir: Speziale Pizza | Zivi --> 750$~/me flüstert zu dir: Speziale Pizza | Fraktion --> 1000$~/me ______________________________________")
 else if(IsFrak(6, 1))
@@ -7044,6 +7052,8 @@ if(IsFrak(2, 1))
 	SendChat("/swapgun")
 else if(IsFrak(3, 1))
 	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
+else if(IsFrak(4, 1))
+    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/Me holt frisch importierte kolumbianische Zigarren aus seiner Tasche.~[Wait 2000]/rap1~/me flüstert Und....Interesse ?")
 else if(IsFrak(6, 1))
 	SendChat("/materials getammo")
 else if(IsFrak(7, 1))
@@ -7064,6 +7074,8 @@ if(IsFrak(2, 1))
 	BindReplace("/mv~/oldmv~/towopen")
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
+else if(IsFrak(4, 1))
+    BindReplace("/s Hijo de Puta, Sofort stehen bleiben oder ich schiebe dir paar Blei Kugeln in den Arsch")
 else if(IsFrak(6, 1))
 	SendChat("/sellgun " PlayerInput("Gib den Namen oder die ID des Spielers ein: "))
 else if(IsFrak(7, 1))
@@ -7084,6 +7096,8 @@ if(IsFrak(2, 1))
 	SendChat("/me funkt zur Zentrale")
 else if(IsFrak(3, 1))
 	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
+else if(IsFrak(4, 1))
+    BindReplace("/raub~/s Hijo de Puta, Überfall sofort Aussteigen und auf den Boden~/oos /verletzt~/me guckt aggressiv.")
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
 else if(IsFrak(10, 1))
@@ -7115,6 +7129,8 @@ else if(IsFrak(3, 1)){
 	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
 	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
 }
+else if(IsFrak(4, 1))
+    SendChat("Adios, Dios te acompañe.")
 return
 fBind12:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7137,6 +7153,8 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+else if(IsFrak(4, 1))
+    BindReplace("[InputMode]t/kcheck{ENTER}[Wait 300]{DOWN}{DOWN}{ENTER}[Wait 300]{DOWN}{ENTER}[Wait 300]6{ENTER}")
 return
 fBind13:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7155,6 +7173,8 @@ if(IsFrak(2, 1)){
 		BindReplace("/r » Code 5 - Notruf " (chat1 ? " von " chat1 : "") " angenommen (Ort: " chat2 ") «")
 	}
 }
+else if(IsFrak(4, 1))
+    SendChat("/f Flagge unsere & Clean")
 return
 /*
 *::
