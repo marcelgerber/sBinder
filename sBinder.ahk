@@ -4941,6 +4941,12 @@ if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtung
 	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
 }
 return
+:b0:/drop medikamente::
+Suspend Permit
+GetChatLine(0, chat)
+if(InStr(chat, "Du hast das Lager erfolgreich mit Medikamenten aufgefüllt."))
+    SendChat("/r Es wurden 10 Medikamente in den Healpunkt gefüllt.")
+return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/vs::
 Suspend Permit
