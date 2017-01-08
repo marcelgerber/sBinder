@@ -4943,9 +4943,8 @@ if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtung
 return
 :b0:/drop medikamente::
 Suspend Permit
-WaitFor()
-GetChatLine(0, chat)
-if(InStr(chat, "Du hast das Lager erfolgreich mit Medikamenten aufgefüllt."))
+chat := WaitForChatLine(0, "Du hast das Lager erfolgreich")
+if(chat)
     SendChat("/r Es wurden 10 Medikamente in den Healpunkt gefüllt.")
 return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
