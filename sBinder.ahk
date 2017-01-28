@@ -3020,7 +3020,7 @@ Gui, Textbinds:Add, Button, gTextbindsBrowser, Im Browser anzeigen
 Gui, Textbinds:Margin, 0
 ;Overlay:
 if(OverlayActive){
-	Gui, Overlay:Color, 888888
+	Gui, Overlay:Color, DDDDDD
 	Gui, Overlay:Add, Button, x520 y5 h20 w12 gHelp27, ?
 	y := -95
 	loop, %MaxOverlays%
