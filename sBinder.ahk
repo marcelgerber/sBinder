@@ -57,10 +57,10 @@ if(LastUsedBuild < 40){
 		{
 			FileSelectFolder, newfolder,, 3, Wähle den neuen Ordner des sBinders:
 			if(!ErrorLevel){
-				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by SAPlayer
+				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by IcedWave
 				FileCreateDir, %musicfolder%
 				FileDelete, sBinder_move.bat
-				FileAppend, @echo off`nping 127.0.0.1 -n 1`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
+				FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nping 1.1.1.1 -n 1 -w 800`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
 				Run, *RunAs sBinder_move.bat
 				ExitApp
 			}
@@ -138,9 +138,9 @@ if(!A_IsCompiled){
 	FileDelete, lines.ahk
 	FileAppend, % "script_lines := " script_lines "`nscript_chars := " script_chars, lines.ahk
 	FileDelete, VersionInfo.ahk
-	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by SAPlayer`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova eSports Reallife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2015 SAPlayer`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
+	FileAppend, % ";@Ahk2Exe-SetName sBinder " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Der sBinder ist ein ein Keybinder für den SA-MP-Server Nova-eSports NewLife``, der viele Funktionen bietet.`n;@Ahk2Exe-SetVersion " Version "`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sBinder.exe", Versioninfo.ahk
 	;FileDelete, VersionInfo_sUpdate.ahk
-	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by SAPlayer`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2015 SAPlayer`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
+	;FileAppend, % ";@Ahk2Exe-SetName sBinder Updater " Version "-" Build " by IcedWave`n;@Ahk2Exe-SetDescription Diese Datei wird den sBinder aktualisieren.`n;@Ahk2Exe-SetCopyright (C) 2012-2016 IcedWave`n;@Ahk2Exe-SetOrigFilename sUpdate.exe", Versioninfo_sUpdate.ahk
 }
 ;@Ahk2Exe-IgnoreEnd
 if(UseAPI){
@@ -223,15 +223,22 @@ AddChatMessage(Text, color=0xFF6600, nosplit=0, indent=0){
 	}
 	return i*res
 }
-GetChatLine(Line, ByRef Output, timestamp=0, color=0){
+GetChatLineCount(){
 	global chatlogpath
-	chatindex := 0
 	FileRead, file, %chatlogpath%
 	StringReplace, file, file, `n, `n, UseErrorLevel
-	chatindex := ErrorLevel
+	return ErrorLevel
+}
+GetChatLine(Line, ByRef Output, timestamp=0, color=0){
+	return GetChatLine_abs(GetChatLineCount() - line, Output, timestamp, color)
+}
+GetChatLine_abs(Line, ByRef Output, timestamp=0, color=0){
+	global chatlogpath
+	output := ""
+	FileRead, file, %chatlogpath%
 	loop, Parse, file, `n, `r
 	{
-		if(A_Index = chatindex - line){
+		if(A_Index = line){
 			output := A_LoopField
 			break
 		}
@@ -271,7 +278,7 @@ IsPlayerInAnyVehicle(){
 	return DllCall(IsPlayerInAnyVehicle_func)
 }
 SendChat(Text, spamcount=3){
-	global UseAPI, SendChat_func, Drugsystem
+	global UseAPI, SendChat_func
 	static lastsend, count
 	if(spamcount){
 		if(A_TickCount - lastsend < 900){
@@ -295,10 +302,6 @@ SendChat(Text, spamcount=3){
 		SendInput, % "{Raw}" Text
 		SendInput, {enter}
 	}
-	if(Drugsystem AND inOr(Text, "/use gold", "/use green", "/use lsd"))
-		gosub :b0:%Text%
-	if(IsFrak(11) AND inOr(Text, "/fpkeep wasser", "/fpkeep dueng"))
-		gosub :b0:%Text%
 	return res
 }
 SetParam(str_Name, str_Value){
@@ -479,6 +482,10 @@ BindReplace(String){
 					gosub, % "::/" textbind2
 					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
 				}
+				else if(IsLabel(":b0:/" textbind2)){
+					gosub, % ":b0:/" textbind2
+					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
+				}
 			}
 			KeyWait, Enter
 			SendInput, %BindOutput%
@@ -497,19 +504,48 @@ BindReplace(String){
 			}
 			if(IsLabel("::" currentPart) AND !A_IsSuspended)
 				gosub % "::" currentPart
+			else if(IsLabel(":b0:" currentPart) AND !A_IsSuspended)
+				gosub % ":b0:" currentPart
 			else if(!A_IsSuspended AND currentPart != "")
 				SendChat(Trim(currentPart))
 		}
 	}
 }
-ChatLine(firstline, instr, lines=5){
+ChatLine(firstline, instr, lines=5, regex=0){
 	loop, %lines%
 	{
 		GetChatLine(firstline + A_Index - 1, chat)
-		if(InStr(chat, instr))
+		if(!regex && InStr(chat, instr))
+			return chat
+		else if(regex && RegExMatch(chat, instr))
 			return chat
 	}
 	return
+}
+ChatLine_abs(firstline, instr, lines=5, regex=0, chatindex=0){
+	loop, %lines%
+	{
+		line := GetChatLineCount() - (firstline + A_Index - 1)
+		if (line <= chatindex)
+			break
+		GetChatLine(firstline + A_Index - 1, chat)
+		if(!regex && InStr(chat, instr))
+			return chat
+		else if(regex && RegExMatch(chat, instr))
+			return chat
+	}
+	return
+}
+WaitForChatLine(firstline, instr, lines=5, iterations=25, regex=0){
+	StartTS := A_TickCount
+	chatindex := GetChatLineCount()
+	loop, %iterations%
+	{
+		chat := ChatLine_abs(firstline, instr, lines, regex, chatindex)
+		if (chat != "")
+			return chat
+		Sleep, 75
+	}
 }
 clearping(host, timeout=500){
 	if host is number
@@ -729,8 +765,7 @@ GetPlayerId(){
 }
 GetPlayerIdByName(name){
 	SendChat("/id " name)
-	WaitFor()
-	GetChatLine(0, chat)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \((\d{1,3})\) ", chat)
 	if(!chat1)
 		chat1 := name
@@ -738,8 +773,7 @@ GetPlayerIdByName(name){
 }
 GetPlayerNameById(id){
 	SendChat("/id " id)
-	WaitFor()
-	GetChatLine(0, chat)
+	chat := WaitForChatLine(0, "ID: ")
 	RegExMatch(chat, "U)ID: \(\Q" id "\E\) (.+) Level: ", chat)
 	if(!chat1)
 		chat1 := id
@@ -950,7 +984,7 @@ InfoProgress(text="", title="", windowName=""){
 		Gui, InfoProgress:Show, NA, %windowName%
 	}
 	else
-		GUIs["InfoProgress"] := ""
+		GUIs.Delete("InfoProgress")
 }
 IniSave(section, key, value, default, ini=""){
 	global INIFile
@@ -1137,7 +1171,7 @@ NextNovaLocation(pos_x="", pos_y="", pos_z=""){
 	static Locations, last := Object(), IsPlayerInAnyInterior_func
 	if(!Locations){
 		IsPlayerInInterior_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInInterior")
-		Locations_raw := "Lagerverkauf|1449|2350|12|1,LV Productions|-224|2601|64|1,Adminbase|-456|2593|50|1,Toter Flughafen|214|2502|18|1,Raffinerie|264|1415|12|1,Fort Carson|-125|1101|21|1,SAM AG Base|-1943|486|34|1,Zombotech|-1954|617|35|1,SF Bank|-1808|533|35|1,Police Department SF|-1699|697|25|1,SF Bahnhof|-1984|145|28|2,Feuerwehr SF|-2023|82|28|1,TÜV|-2027|-99|35|1,Radio SF|-2520|-618|133|1,Sägewerk|-2003|-2414|31|1,Angelpine|-2164|-2392|30|1,Mount Chiliad|-2309|-1636|484|1,Angelpine Tankstelle|-1623|-2695|48|1,Funpark SF|-2112|-445|39|1,Stadthalle SF|-1498|919|7|1,Heißluftballon SF|-1494|803|7|1,SF Werkstatt|-2036|177|29|1,Flugzeugträger|-1335|483|12|1,Pier 69|-1661|1387|7|1,SF Kirche|-1985|1118|54|1,24/7 SF|-2443|754|35|1,Bootsanlegesteg SF|-2946|482|5|1,SARD Base SF|-2663|611|14|1,Verwahrplatz SF|-2603|687|28|1,Donutladen SF|-2766|789|53|1,SF Carshop|-2427|1023|50|1,Paintball Arena|-2277|2290|5|1,Las Barrancas|-824|1438|14|1,Staudamm LV|-734|2052|60|1,Big Ear|-359|1590|77|1,Army Base|61|1838|18|1,LV Airport|1538|1598|11|2.2,Otto's Autohaus|-1650|1217|7|1,SF Kran|-1547|127|3|1,Premium Autohaus|-1588|40|17|1,Carheal-Shop|-1722|-118|3|1,SF Airport|-1524|-230|13|2.2,Flyshop SF|-1262|38|14|1,Erzmine|826|851|12|1,Heißluftballon LV|926|835|13|1,FBI Base|1026|1174|11|1,Caligula's Autohaus|2436|1653|11|1,NewComer Autohaus|1652|2191|11|1,Four Dragons Casino|2031|1010|11|1,Hitmen Base|1875|701|11|1,Rebellen Base|2774|914|11|1,Oldtimer Autohaus|225|19|2|1,Farm|-65|8|3|1,Fleischberg|-119|-353|1|1,Kraftwerk SF|-1019|-662|32|1,Truckstop Autohaus|-53|-1141|1|1,Truckstop Tankstelle|-88|-1170|2|1,Wohnmobilkaufhaus|-71|-1587|3|1,OC Taufsee|-758|-2020|5|1,LCN Base|323|-1192|76|1,tripleb's Hütte|1443|-631|96|1,Xraid's Hütte|1331|-632|109|1,Vinewood Auffahrt|1376|-921|34|1,Motorradladen SF|-2591|62|4|1,Wheel Arch Angels|-2712|218|4|1,Justin's Farm|-1096|-1644|76|1,Piertreppe|399|-1792|7|0.6,LS Pier|370|-1861|8|1.6,LS Pierparkplatz|416|-2000|8|0.8,Heißluftballon LS|307|-1867|3|0.7,Strandautohaus|536|-1812|6|1,Pier PNS|488|-1739|11|1,Hafenklause|942|-1967|6|1,Busspawn|1263|-1822|13|1,24/7 Stadthalle|1353|-1758|13|1,LS Stadthalle|1478|-1745|13|1,Ornungsamt Base|1587|-1636|13|1,Police Department LS|1519|-1554|18|1,Noobspawn|1120|-1478|16|1,Taxistand|1051|-1366|13|1,Donutladen LS|1038|-1339|14|1,Verwahrplatz LS|927|-1229|17|1,Fahrschule|776|-1329|13|1,Market Station|815|-1344|13|1,Friedhof|867|-1102|24|1,Dillimore|685|-572|16|1,Dillimore Tankstelle|658|-562|16|1,Dillimore Devils Base|683|-477|16|1,Autovermietung|547|-1282|17|1,BSN PNS|1023|-1026|32|1,BSN Tankstelle|1005|-941|42|1,LS Burger Shot Nord|1213|-904|43|1.5,24/7 BSN|1316|-904|39|1,LS Bank|1464|-1013|27|1,Bankparkplatz|1577|-1030|24|1,Lottoladen|1632|-1169|24|1,Startower|1572|-1336|16|1,Straßenreinigung|1519|-1281|14|1,Glen Park|1954|-1203|18|1,LS Office|1787|-1300|13|1,Noobautohaus|2126|-1130|25|1,Noobhotel|2231|-1160|26|1,IKEA|2349|-1414|24|1,Basketballplatz|2291|-1527|27|1,Stuntpark|1917|-1427|10|1,Grove Street|2485|-1666|13|1,GS Binco|2245|-1664|15|1,Fitnesscenter|2227|-1723|13|1,LS Arena|2690|-1697|10|1,GS Autohaus|2783|-1615|11|1,Pig Pen|2421|-1223|25|1,GS Kneipe (Ten Green Bottles)|2317|-1650|14|1,Ballas Base|2511|-2009|13|1,Truck-Autohaus|2456|-2098|13|1,LS Docks|2760|-2451|13|1,LS Train Station|2186|-2277|13|1,LS Airport|1940|-2443|13|2.2,Los Vagos Base|2260|-1038|53|1,LS Bahnhof|1721|-1947|13|1,Alhambra|1834|-1683|13|1,PNS East LS|2077|-1831|13|1,GS Tankstelle|1936|-1772|13|1,SAPlayer's Hütte|-595|-1057|23|1,Ammunation LS|1369|-1280|14|1,GS Ammunation|2401|-1981|14|1,FastFood AG|-1803|908|26|1,SF Burger Shot Süd|-2335|-167|36|1,SF Cluckin' Bell Süd|-2673|260|5|1,SF Cluckin' Bell Nord|-1817|617|35|1,SF Burger Shot Mitte|-1912|830|35|1,SF Carshop Tankstelle|-2419|969|45|1,SF Burger Shot Nord|-2356|1007|51|1,SF Tankstelle Ost|-1675|431|7|1,SF PNS|-1906|285|41|1,SF Tankstelle West|-2032|161|29|1,Nova Transportlogistik GmbH|-521|-487|27|1,LS Burger Shot Süd|813|-1617|14|1,LS Cluckin' Bell West|927|-1353|13|1,TransFender LS|1041|-1026|32|1,LS Cluckin' Bell Grove|2398|-1897|14|1,Loco Low Co.|2645|-2039|14|1,TransFender LV|2387|1043|11|1,LV Tankstelle|639|1684|7|1,Heiliges Huhn|-237|2663|64|1,Heilige Kuh|-857|1536|23|1,SF Tunnel|-1019|-985|91|2.5,LS Casino|575|-1386|14|1,Yakuza Base|-2608|1354|7|1,SF Rifa Base|-2718|-320|7|1,LV West Tankstelle|-1316|2694|50|1,SF Trailerspawn|-1730|101|5|1,SARD Base LS|2024|-1425|16|1,Feuerwache San Andreas|1745|-1143|24|1"
+		Locations_raw := "Lagerverkauf|1449|2350|12|1,LV Productions|-224|2601|64|1,Adminbase|-456|2593|50|1,Toter Flughafen|214|2502|18|1,Raffinerie|264|1415|12|1,Fort Carson|-125|1101|21|1,SAM AG Base|-1943|486|34|1,Zombotech|-1954|617|35|1,SF Bank|-1808|533|35|1,Police Department SF|-1699|697|25|1,SF Bahnhof|-1984|145|28|2,Feuerwehr SF|-2023|82|28|1,TÜV|-2027|-99|35|1,Radio SF|-2520|-618|133|1,Sägewerk|-2003|-2414|31|1,Angelpine|-2164|-2392|30|1,Mount Chiliad|-2309|-1636|484|1,Angelpine Tankstelle|-1623|-2695|48|1,Funpark SF|-2112|-445|39|1,Stadthalle SF|-1498|919|7|1,Heißluftballon SF|-1494|803|7|1,SF Werkstatt|-2036|177|29|1,Flugzeugträger|-1335|483|12|1,Pier 69|-1661|1387|7|1,SF Kirche|-1985|1118|54|1,24/7 SF|-2443|754|35|1,Bootsanlegesteg SF|-2946|482|5|1,SARD Base SF|-2663|611|14|1,Verwahrplatz SF|-2603|687|28|1,Donutladen SF|-2766|789|53|1,SF Carshop|-2427|1023|50|1,Paintball Arena|-2277|2290|5|1,Las Barrancas|-824|1438|14|1,Staudamm LV|-734|2052|60|1,Big Ear|-359|1590|77|1,Army Base|61|1838|18|1,LV Airport|1538|1598|11|2.2,Otto's Autohaus|-1650|1217|7|1,SF Kran|-1547|127|3|1,Premium Autohaus|-1588|40|17|1,Carheal-Shop|-1722|-118|3|1,SF Airport|-1524|-230|13|2.2,Flyshop SF|-1262|38|14|1,Erzmine|826|851|12|1,Heißluftballon LV|926|835|13|1,FBI Base|1026|1174|11|1,Caligula's Autohaus|2436|1653|11|1,NewComer Autohaus|1652|2191|11|1,Four Dragons Casino|2031|1010|11|1,Hitmen Base|1875|701|11|1,Rebellen Base|2774|914|11|1,Oldtimer Autohaus|225|19|2|1,Farm|-65|8|3|1,Fleischberg|-119|-353|1|1,Kraftwerk SF|-1019|-662|32|1,Truckstop Autohaus|-53|-1141|1|1,Truckstop Tankstelle|-88|-1170|2|1,Wohnmobilkaufhaus|-71|-1587|3|1,OC Taufsee|-758|-2020|5|1,LCN Base|323|-1192|76|1,tripleb's Hütte|1443|-631|96|1,Xraid's Hütte|1331|-632|109|1,Vinewood Auffahrt|1376|-921|34|1,Motorradladen SF|-2591|62|4|1,Wheel Arch Angels|-2712|218|4|1,Justin's Farm|-1096|-1644|76|1,Piertreppe|399|-1792|7|0.6,LS Pier|370|-1861|8|1.6,LS Pierparkplatz|416|-2000|8|0.8,Heißluftballon LS|307|-1867|3|0.7,Strandautohaus|536|-1812|6|1,Pier PNS|488|-1739|11|1,Hafenklause|942|-1967|6|1,Busspawn|1263|-1822|13|1,24/7 Stadthalle|1353|-1758|13|1,LS Stadthalle|1478|-1745|13|1,Ornungsamt Base|1587|-1636|13|1,Police Department LS|1519|-1554|18|1,Noobspawn|1120|-1478|16|1,Taxistand|1051|-1366|13|1,Donutladen LS|1038|-1339|14|1,Verwahrplatz LS|927|-1229|17|1,Fahrschule|776|-1329|13|1,Market Station|815|-1344|13|1,Friedhof|867|-1102|24|1,Dillimore|685|-572|16|1,Dillimore Tankstelle|658|-562|16|1,Dillimore Pub|683|-477|16|1,Autovermietung|547|-1282|17|1,BSN PNS|1023|-1026|32|1,BSN Tankstelle|1005|-941|42|1,LS Burger Shot Nord|1213|-904|43|1.5,24/7 BSN|1316|-904|39|1,LS Bank|1464|-1013|27|1,Bankparkplatz|1577|-1030|24|1,Lottoladen|1632|-1169|24|1,Startower|1572|-1336|16|1,Straßenreinigung|1519|-1281|14|1,Glen Park|1954|-1203|18|1,LS Office|1787|-1300|13|1,Noobautohaus|2126|-1130|25|1,Noobhotel|2231|-1160|26|1,IKEA|2349|-1414|24|1,Basketballplatz|2291|-1527|27|1,Stuntpark|1917|-1427|10|1,Grove Street|2485|-1666|13|1,GS Binco|2245|-1664|15|1,Fitnesscenter|2227|-1723|13|1,LS Arena|2690|-1697|10|1,GS Autohaus|2783|-1615|11|1,Pig Pen|2421|-1223|25|1,GS Kneipe (Ten Green Bottles)|2317|-1650|14|1,Ballas Base|2511|-2009|13|1,Truck-Autohaus|2456|-2098|13|1,LS Docks|2760|-2451|13|1,LS Train Station|2186|-2277|13|1,LS Airport|1940|-2443|13|2.2,Los Vagos Base|2260|-1038|53|1,LS Bahnhof|1721|-1947|13|1,Alhambra|1834|-1683|13|1,PNS East LS|2077|-1831|13|1,GS Tankstelle|1936|-1772|13|1,SAPlayer's Hütte|-595|-1057|23|1,Ammunation LS|1369|-1280|14|1,GS Ammunation|2401|-1981|14|1,FastFood AG|-1803|908|26|1,SF Burger Shot Süd|-2335|-167|36|1,SF Cluckin' Bell Süd|-2673|260|5|1,SF Cluckin' Bell Nord|-1817|617|35|1,SF Burger Shot Mitte|-1912|830|35|1,SF Carshop Tankstelle|-2419|969|45|1,SF Burger Shot Nord|-2356|1007|51|1,SF Tankstelle Ost|-1675|431|7|1,SF PNS|-1906|285|41|1,SF Tankstelle West|-2032|161|29|1,Nova Transportlogistik GmbH|-521|-487|27|1,LS Burger Shot Süd|813|-1617|14|1,LS Cluckin' Bell West|927|-1353|13|1,TransFender LS|1041|-1026|32|1,LS Cluckin' Bell Grove|2398|-1897|14|1,Loco Low Co.|2645|-2039|14|1,TransFender LV|2387|1043|11|1,LV Tankstelle|639|1684|7|1,Heiliges Huhn|-237|2663|64|1,Heilige Kuh|-857|1536|23|1,SF Tunnel|-1019|-985|91|2.5,LS Casino|575|-1386|14|1,Yakuza Base|-2608|1354|7|1,SF Rifa Base|-2718|-320|7|1,LV West Tankstelle|-1316|2694|50|1,SF Trailerspawn|-1730|101|5|1,SARD Base LS|2024|-1425|16|1,Feuerwache San Andreas|1745|-1143|24|1"
 		Locations := Object()
 		loop, Parse, Locations_raw, `,
 		{
@@ -1481,28 +1515,11 @@ SendWPs(crime, wps){
 	if data3 is not integer
 	{
 		SendChat("/id " data3)
-		WaitFor()
-		RegExMatch(ChatLine(0, "ID: (", 3), "U)ID: \((\d*)\) ", chat)
+		chat := WaitForChatLine(0, "ID:")
+		RegExMatch(chat, "U)ID: \((\d*)\) ", chat)
 		if(chat1)
 			data3 := chat1
 	}
-	/*
-	if(wps < 0){
-		SendChat("/checkwanted " data3)
-		WaitFor()
-		RegExMatch(ChatLine(0, "Wantedpunkte und somit Wantedlevel: ", 3), "U)HQ: .+ hat (\d+) Wantedpunkte und somit Wantedlevel:", wp)
-		if(wps = -1){
-			if(wp1){
-				wps := 15
-				crime .= " (2. Fall)"
-			}
-			else{
-				wps := 9
-				crime := "StVO-Vergehen (1. Fall)"
-			}
-		}
-	}
-	*/
 	if(id3)
 		ia := " i.A. " id3
 	if(data2)
@@ -1811,7 +1828,7 @@ URLEncode(raw){
 }
 WaitFor(){
 	global WaitFor
-	ping("server.nes-reallife.de", 32, 400)
+	ping("server.nes-newlife.de", 32, 400)
 	Sleep, % WaitFor
 }
 wb_BeforeNavigate2(wb, url, flags, frame, postdata, headers, cancel){ ;AHK-Installer //Lexikos
@@ -1834,7 +1851,7 @@ wb_BeforeNavigate2(wb, url, flags, frame, postdata, headers, cancel){ ;AHK-Insta
 	if(m1 = "go" OR m1 = "g"){
 		loop, Parse, m2, `;
 		{
-			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^NSC$|^SimpleSAM$|^Feedback$|.*Online$")))
+			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^SimpleSAM$|^Feedback$|.*Online$")))
 				gosub %A_LoopField%
 		}
 	}
@@ -1931,7 +1948,7 @@ if(Startup_Fraps)
 if(Startup_TS)
 	SetTimer, TSConnect, % Abs(Startup_TS_Delay) * -1000
 if(Startup_SAMP)
-	SetTimer, NSC, % Abs(Startup_SAMP_Delay) * -1000
+	SetTimer, Connect, % Abs(Startup_SAMP_Delay) * -1000
 if(Startup_Other)
 	SetTimer, RunOtherProgram, % Abs(Startup_Other_Delay) * -1000
 if(AutoHitsound)
@@ -1957,10 +1974,34 @@ Open:
 RegRead, SAMPName, HKCU, Software\SAMP, playername
 RegRead, Fp, HKCU, Software\sBinder, Fp
 IniRead, samppath, %INIFile%, Settings, SAMPPath, 0
-IniRead, nscpath, %INIFile%, Settings, NSCPath, 0
 IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
 IniRead, Frak, %INIFile%, Settings, Fraktion, 1
+if (LastUsedBuild < 60 && Frak != 1) {
+	/*
+	1"Keine Fraktion"
+	2"Ordnungsamt"x
+	3"Police Department"2
+	4"Rettungsdienst"3
+	5"FBI"x
+	6"Bundeswehr"x
+	7"Medellin Kartell"4
+	8"Taxiteam"x
+	9"La Cosa Nostra"5
+	10"Yakuza"6
+	11"Grove Street"7
+	12"San Fierro Rifa"x
+	13"San Andreas Media AG"8
+	14"Ballas Family"9
+	15"Los Vagos"10
+	16"Korsakow Familie"x
+	17"Hitmen"x
+	*/
+	;Before: "Keine Fraktion", "Ordnungsamt", "Police Department", "Rettungsdienst", "FBI", "Bundeswehr", "Medellin Kartell", "Taxiteam", "La Cosa Nostra", "Yakuza", "Grove Street", "San Fierro Rifa", "San Andreas Media AG", "Ballas Family", "Los Vagos", "Korsakow Familie", "Hitmen"
+	;After: "Keine Fraktion", "Los Santos Polizei", "Rettungsdienst", "Medellin Kartell", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos"
+	Frak := [1, 1, 2, 3, 1, 1, 4, 1, 5, 6, 7, 1, 8, 9, 10, 1, 1][Frak]
+	IniWrite, %Frak%, %INIFile%, Settings, Fraktion
+}
 IniRead, hmv, %INIFile%, Settings, AutoMv, 0
 IniRead, vlc_Path, %INIFile%, Settings, VLCPath, %A_ProgramFiles%\VideoLAN\VLC\vlc.exe
 IniRead, musicfolder, %INIFile%, Settings, music, %A_ScriptDir%\sBinder_music
@@ -1972,11 +2013,19 @@ if(InStr(FullArgs, "--design=") AND RegExMatch(FullArgs, "--design=\s*(\d+)", re
 IniRead, meTexte, %INIFile%, Settings, me, 1
 loop, %FrakOptions%
 	IniRead, Frakoption%A_Index%, %INIFile%, Settings, Frakoption%A_Index%, %A_Space%
-if(Frak = 4 AND LastUsedBuild < 47){
+if(Frak = 3 AND LastUsedBuild < 47){
 	Frakoption4 := Frakoption3
 	Frakoption3 := ""
 	IniWrite, %Frakoption3%, %INIFile%, Settings, Frakoption3
 	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
+}
+if (Frak = 3 AND LastUsedBuild < 68) {
+	Frakoption6 := Frakoption4
+	Frakoption4 := ""
+	Frakoption5 := ""
+	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
+	IniWrite, %Frakoption5%, %INIFile%, Settings, Frakoption5
+	IniWrite, %Frakoption6%, %INIFile%, Settings, Frakoption6
 }
 IniRead, JobOption1, %INIFile%, Settings, JobOption1, 0
 IniRead, TrayMinimize, %INIFile%, Settings, MinimizeToTray, 0
@@ -1993,24 +2042,28 @@ if(!FileExist(chatlogpath))
 	chatlogpath := A_MyDocuments "\GTA San Andreas User Files\SAMP\chatlog.txt"
 if(LastUsedBuild < 49)
 	gosub ChatlogSearch
-IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-reallife.de
+IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-newlife.de
 if(!IsIP(ServerIP))
-	ServerIP := "server.nes-reallife.de"
-IniRead, TSIP, %INIFile%, IPs, TS, ts.nes-reallife.de
+	ServerIP := "server.nes-newlife.de"
+IniRead, TSIP, %INIFile%, IPs, TS, ts.nes-newlife.de
 if(!IsIP(TSIP))
-	TSIP := "ts.nes-reallife.de"
+	TSIP := "ts.nes-newlife.de"
 IniRead, WaitFor, %INIFile%, Settings, WaitFor, 90
 IniRead, xBind1, %INIFile%, Binds, xBind1, %A_Space%
 IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
 IniRead, wBind2, %INIFile%, Binds, wBind2, %A_Space%
-IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 2
+IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 1
+IniRead, SkipPing, %INIFile%, Settings, SkipPing, 0
+if (LastUsedBuild < 58 && DownloadMode = 2) {
+	DownloadMode := 1
+	IniWrite, %DownloadMode%, %INIFile%, Settings, DownloadMode
+}
 IniRead, AFKBox, %INIFile%, Settings, AFKBox, 0
 IniRead, Tel, %INIFile%, Telefon, Active, 0
 IniRead, pText, %INIFile%, Telefon, p, Guten Tag, mein Name ist [Name].~Was kann ich für Sie tun?
 IniRead, hText, %INIFile%, Telefon, h, Wiederhören.
 IniRead, abText, %INIFile%, Telefon, ab, Sie sprechen mit dem Anrufbeantworter von [Name].~Leider ist [Name] zur Zeit nicht erreichbar.~Versuchen Sie es bitte später erneut!
-;IniRead, Drugsystem, %INIFile%, Settings, Drugsystem, 0
 loop, 3
 	IniRead, RadioSlot%A_Index%, %INIFile%, Radio, Slot%A_Index%, %A_Space%
 if(!WaitFor)
@@ -2056,7 +2109,49 @@ if(LastUsedBuild < 53 && LastUsedBuild > 0 && fBinds_reassign := {7: 3, 9: 3, 12
 		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
 	}
 }
-Loop, 4
+if (LastUsedBuild < 66 && Frak = 3)
+{
+	loop, % fBinds_max - 10
+	{
+		temp := 9 + A_Index
+		temp2 := temp + 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+}
+if (LastUsedBuild < 67 && Frak = 2)
+{
+	loop, % fBinds_max - 8
+	{
+		temp := 7 + A_Index
+		temp2 := temp + 3
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+}
+if(LastUsedBuild < 69 && fBinds_reassign := {4: 1, 10: 9}[Frak])
+{
+	loop, % fBinds_max - fBinds_reassign
+	{
+		temp := fBinds_reassign + A_Index - 1
+		temp2 := temp + 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+}
+if (LastUsedBuild < 69 && Frak = 3)
+{
+	loop, % fBinds_max - 7
+	{
+		temp := fBinds_max - A_Index + 1
+		temp2 := temp - 1
+		fBind%temp% := fBind%temp2%
+		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
+	}
+	fBind7 := ""
+	IniWrite, %fBind7%, %INIFile%, Keys, fBind7
+}
+Loop, %jBinds_max%
 	IniRead, jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%, %A_Space%
 loop, %Notes%
 	IniRead, Note%A_Index%, %INIFile%, Notes, Note%A_Index%, %A_Space%
@@ -2130,7 +2225,7 @@ loop, %Hotstrings%
 	IniWrite, % Hotstring%A_Index%, %INIFile%, Keys, Hotstring%A_Index%
 	IniWrite, % hBind%A_Index%, %INIFile%, Binds, hBind%A_Index%
 }
-Loop, 4
+Loop, %jBinds_max%
 	IniWrite, % jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%
 IniWrite, %xBind1%, %INIFile%, Binds, xBind1
 IniWrite, %xBind2%, %INIFile%, Binds, xBind2
@@ -2186,18 +2281,22 @@ else{
 	if(temp > 432000) ;5 Tage
 		errortext .= "<li>Die chatlog.txt wurde vor langer Zeit geändert (zuletzt " FormatTime(temp2, "dd.MM.yyyy HH:mm") "). <a href='sBinder://go/ChatlogSearch'>Automatisch beheben</a> oder <a href='sBinder://go/SelectCL'>manuell auswählen</a>"
 }
-while(ping < 0 AND A_Index <= 3){
-	SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
-	ping := ping("saplayer.lima-city.de",, 450)
-	if(ping < 0)
-		Sleep, 500
+if(!SkipPing){
+	while(ping < 0 AND A_Index <= 3){
+		SB_SetTextEx("Internetverbindung wird geprüft... (Versuch " A_Index "/3" (A_Index > 1 ? ", Vorheriger Versuch: " clearping(ping) : "") ")")
+		ping := ping("saplayer.lima-city.de",, 450)
+		if(ping < 0)
+			Sleep, 500
+	}
+	pingsuccessful := ping >= 0
+} else {
+	pingsuccessful := 1
 }
-pingsuccessful := ping >= 0
 if(pingsuccessful || FileExist(datacachefile)){
 	SB_SetTextEx("Daten werden heruntergeladen...")
 	
 	if(pingsuccessful)
-		data := LTrim(HTTPData("http://saplayer.lima-city.de/sBinder/logon.php?u=" URLEncode(Nickname) "&v=" URLEncode(Version "-" Build (InStr(A_ScriptName, ".ahk") ? "-dev" : (A_ScriptName = "sBinder_Beta.exe" ? "-beta" : ""))), "Die Daten konnten nicht heruntergeladen werden", "UTF-8"), " ?")
+		data := LTrim(HTTPData("http://saplayer.lima-city.de/sBinder/logon.php?nl&u=" URLEncode(Nickname) "&v=" URLEncode(Version "-" Build (InStr(A_ScriptName, ".ahk") ? "-dev" : (A_ScriptName = "sBinder_Beta.exe" ? "-beta" : ""))), "Die Daten konnten nicht heruntergeladen werden", "UTF-8"), " ?")
 	else
 		data := ""
 	if(vBuild := RegExFileRead(data, "B", 0)){
@@ -2288,7 +2387,7 @@ if(pingsuccessful || FileExist(datacachefile)){
 	data := ""
 }
 if(!inetconn){
-	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a>" (Frak > 1 ? "<br><b>Fraktionsbinds können nicht genutzt werden!</b>" : "") (vBuild ? "<i>Es werden gecachte Daten genutzt.</i>" : "") "<br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
+	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a>" (Frak > 1 && !vBuild ? "<br><b>Fraktionsbinds können nicht genutzt werden!</b>" : "") (vBuild ? "<br><i>Es werden gecachte Daten genutzt.</i>" : "") "<br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
 	SetWB(Inf, "<span style='color:#F10'>Es sind Fehler aufgetreten!</span><br><ul>" errortext "</ul><br><b>Hinweis:</b> <div class='hint'>Diese Seite aktualisiert sich nicht automatisch. <a href='sBinder://g/Downloads'>Jetzt aktualisieren</a></div>",, InfoColor)
 	GuiControl, 1:Disable, LastInfo
 	GuiControl, 1:Disable, NextInfo
@@ -2307,7 +2406,7 @@ Gui, TempGUI:Color, FFFFFF, 282828
 Gui, TempGUI:Add, Text, w290, % (UpdateAvailable ? "Die neue Version " vVersion "-" vBuild " ist zum Download verfügbar.`nWillst du jetzt ein Update ausführen?" : "Es ist kein Update verfügbar, die aktuellste Version ist " vVersion "-" vBuild ". Du kannst trotzdem ein manuelles Update ausführen.")
 Gui, TempGUI:Add, Button, x160 y40 w120 gVT, Virustotal-Link öffnen
 Gui, TempGUI:Add, Button, x200 y65 w80 gChangelogOnline, Changelog
-Gui, TempGUI:Add, CheckBox, x10 y90 vDoUpdate Checked, Update durchführen (empfohlen)
+Gui, TempGUI:Add, CheckBox, % "x10 y90 vDoUpdate" + (UpdateAvailable ? " Checked" : ""), % "Update durchführen" + (UpdateAvailable ? " (empfohlen)" : "")
 Gui, TempGUI:Add, Button, x220 w60 y90 gUpdate Default, Weiter »»
 Gui, TempGUI:Add, Text, vStatus x10 y110 w200
 Gui, TempGUI:Show, w290, sBinder: Update
@@ -2336,7 +2435,7 @@ GuiControl, TempGUI:, Status, Update wird durchgeführt...
 FileGetSize, size_curr, sBinder_new.exe
 if(size_curr >= vSize){
 	FileDelete, sUpdate.bat
-	FileAppend, % "@echo off`nping 127.0.0.1 -n 1`ndel """ A_ScriptDir "\sBinder.exe""`nmove """ A_ScriptDir "\sBinder_new.exe"" """ A_ScriptDir "\sBinder.exe""`nstart """" """ A_ScriptDir "\sBinder.exe"" ""--just-updated""`ndel """ A_ScriptDir "\sUpdate.bat", sUpdate.bat
+	FileAppend, % "@echo off`nping 1.1.1.1 -n 1 -w 800`ndel """ A_ScriptDir "\sBinder.exe""`nmove """ A_ScriptDir "\sBinder_new.exe"" """ A_ScriptDir "\sBinder.exe""`nping 1.1.1.1 -n 1 -w 800`nstart """" """ A_ScriptDir "\sBinder.exe"" ""--just-updated""`ndel """ A_ScriptDir "\sUpdate.bat""", sUpdate.bat
 	Run, *RunAs sUpdate.bat,, Hide
 	ExitApp
 }
@@ -2357,21 +2456,21 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "1.3.13"
-Build := 57
+Version := "2.1.4"
+Build := 73
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
 Binds := 52
-fBinds_max := 14
+fBinds_max := 13
+jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 1
 Hotstrings := 26
 Notes := 8
-FrakOptions := 4
+FrakOptions := 6
 frakbinds := 1
 savemsg := 1
-Drugsystem := 1
 GuiButtons := 6
 DownloadMode := 0
 pi := 4 * ATan(1)
@@ -2393,14 +2492,14 @@ return
 Arrays:
 loop, %MaxOverlay%
 	Ov[A_Index] := -1
-Fraknames := ["Keine Fraktion", "Ordnungsamt", "Police Department", "Rettungsdienst", "FBI", "Bundeswehr", "Dillimore Devils", "Taxiteam", "La Cosa Nostra", "Yakuza", "Grove Street", "San Fierro Rifa", "San Andreas Media AG", "Ballas Family", "Los Vagos", "Korsakow Familie", "Hitmen"]
+Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Medellin Kartell", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
 Fraks := Fraknames._maxIndex() - 1
-Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter", "Erzlieferant", "Fahrzeughändler", "Farmer", "Geldtransport", "Getreidelieferant", "Hure", "Lieferant", "Makler", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice"]
-FrakRegEx := ["PD|Police|Polizei", "F\.?B\.?I|Federal|Bureau|Investigation", "Army|Bundeswehr|BW|Bund", "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung", "Hitm(a|e)n", "SAM ?AG|Media|News|^SAM|Reporter", "TT|Taxi", "SF|Rifa|Scarfo", "", "Ballas", "GS$|Grove", "Ordnungsamt|O-?Amt", "", "", "DD|Dillimore|Devils", "LV|Vagos", "Irish|Sullivan|Iren|Irland|Mob|OS?M", "OC|Orcus|Blackfield|BF?C|Black|Church|Kirche", "Korsakow|KF"]
-FrakNums := [0, 15, 1, 4, 2, 3, 18, 10, 5, 6, 14, 11, 9, 13, 19, 22, 8]
-Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_1.html", version: "1.1"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_0.html", version: "1.0"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
+Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer & Drogenschieber", "Waffenhändler", "Fastfood AG"]
+FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "Medellin|Kartell|Kolumbien|Columbi|MK", "LV|Vagos"]
+FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
+Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
-CarModels := {400:"Landstalker",402:"Buffalo",403:"Linerunner",404:"Perenniel",405:"Sentinel",406:"Dumper",407:"Feuerwehr",408:"Müllwagen",409:"Stretch",411:"Infernus",412:"Voodoo",413:"Pony",415:"Cheetah",416:"Rettungswagen",417:"Leviathan",418:"Moonbeam",419:"Esperanto",420:"Taxi",421:"Washington",422:"Bobcat",424:"BF Injection",425:"Hunter",426:"Premier",427:"Enforcer",428:"Bankwagen",429:"Banshee",430:"Polizeischiff",431:"Bus",432:"Panzer",433:"Barracks",434:"Hotknife",437:"Coach",440:"Rumpo",445:"Admiral",451:"Turismo",454:"Tropic",456:"Yankee",457:"Golf-Caddy",459:"Drogenvan",461:"PCJ-600",462:"Faggio",463:"Freeway",467:"Oceanic",468:"Sanchez",470:"Patriot",471:"Quad",472:"Coastguard",473:"Dinghy",474:"Hermes",475:"Sabre",476:"Rustler",477:"ZR-350",478:"Walton",480:"Comet",482:"Burrito",483:"Camper",484:"Marquis",487:"Maverick",489:"Rancher",490:"FBI Rancher",493:"Jetmax",494:"Hotring Racer",495:"Sandking",496:"Blista Compact",497:"Polizei Maverick",498:"Boxville",499:"Benson",500:"Mesa",502:"Hotring Racer",503:"Hotring Racer",504:"Bloodring Banger",505:"Rancher",506:"Super GT",507:"Elegant",508:"Journey",514:"Tanker",515:"Roadtrain",517:"Majestic",519:"Shamal",520:"Hydra",521:"FCR-900",522:"NRG-500",523:"Polizei Bike",524:"Betonmischer",525:"Towtruck",528:"FBI Truck",532:"Mähdrescher",533:"Feltzer",534:"Remington",535:"Slamvan",536:"Blade",541:"Bullet",542:"Clover",544:"Feuerwehr mit Leiter",545:"Hustler",548:"Cargobob",550:"Sunrise",554:"Yosemite",555:"Windsor",558:"Uranus",559:"Jester",560:"Sultan",561:"Stratum",562:"Elegy",563:"Medicopter",565:"Flash",566:"Tahoma",567:"Savanna",568:"Bandito",573:"Dune",574:"Sweeper",575:"Broadway",579:"Huntley",580:"Stafford",581:"BF-400",585:"Emperor",586:"Wayfarer",587:"Euros",589:"Club",593:"Dodo",596:"Polizei (LS)",597:"Polizei (SF)",598:"Army Car",599:"Noteinsatzfahrzeug",601:"Wasserwerfer",602:"Alpha",603:"Phoenix"}
+CarModels := {400:"Landstalker",402:"Buffalo",403:"Linerunner",404:"Perenniel",405:"Sentinel",406:"Dumper",407:"Feuerwehr",408:"Müllwagen",409:"Stretch",411:"Infernus",412:"Voodoo",413:"Pony",415:"Cheetah",416:"Rettungswagen",417:"Leviathan",418:"Moonbeam",419:"Esperanto",420:"Taxi",421:"Washington",422:"Bobcat",424:"BF Injection",425:"Hunter",426:"Premier",427:"Enforcer",428:"Bankwagen",429:"Banshee",430:"Polizeischiff",431:"Bus",432:"Panzer",433:"Barracks",434:"Hotknife",437:"Coach",440:"Rumpo",445:"Admiral",451:"Turismo",454:"Tropic",456:"Yankee",457:"Golf-Caddy",459:"Drogenvan",461:"PCJ-600",462:"Faggio",463:"Freeway",467:"Oceanic",468:"Sanchez",470:"Patriot",471:"Quad",472:"Coastguard",473:"Dinghy",474:"Hermes",475:"Sabre",476:"Rustler",477:"ZR-350",478:"Walton",480:"Comet",482:"Burrito",483:"Camper",484:"Marquis",487:"Maverick",489:"Rancher",490:"FBI Rancher",493:"Jetmax",494:"Hotring Racer",495:"Sandking",496:"Blista Compact",497:"Polizei Maverick",498:"Boxville",499:"Benson",500:"Mesa",502:"Hotring Racer",503:"Hotring Racer",504:"Bloodring Banger",505:"Rancher",506:"Super GT",507:"Elegant",508:"Journey",514:"Tanker",515:"Roadtrain",517:"Majestic",519:"Shamal",520:"Hydra",521:"FCR-900",522:"NRG-500",523:"Polizei Bike",524:"Betonmischer",525:"Towtruck",528:"FBI Truck",532:"Mähdrescher",533:"Feltzer",534:"Remington",535:"Slamvan",536:"Blade",541:"Bullet",542:"Clover",544:"Feuerwehr mit Leiter",545:"Hustler",548:"Cargobob",550:"Sunrise",554:"Yosemite",555:"Windsor",558:"Uranus",559:"Jester",560:"Sultan",561:"Stratum",562:"Elegy",563:"Raindance",565:"Flash",566:"Tahoma",567:"Savanna",568:"Bandito",573:"Dune",574:"Sweeper",575:"Broadway",579:"Huntley",580:"Stafford",581:"BF-400",585:"Emperor",586:"Wayfarer",587:"Euros",589:"Club",593:"Dodo",596:"Polizei (LS)",597:"Polizei (SF)",598:"Army Car",599:"Noteinsatzfahrzeug",601:"Wasserwerfer",602:"Alpha",603:"Phoenix"}
 return
 mainGUI:
 ;DocumentWidth := 424
@@ -2415,14 +2514,14 @@ if(UseDesign = 1){
 	;height: 478
 	Gui, Add, Picture, x104 y0, %A_AppData%\sBinder\bg.png
 	Gui, Add, Button, x10 y30 w120 h20 gTSConnect, TS³ Connect
-	Gui, Add, Button, x140 y30 w120 h20 gNSC, NSC && SAMP starten
+	Gui, Add, Button, x140 y30 w120 h20 gConnect, SAMP starten
 	Gui, Add, Button, x270 y30 w120 h20 gForum, Nova Forum
 	Gui, Add, Button, x395 y30 h20 w12 gHelp1, ?
 	Gui, Add, Button, x140 y80 w120 h20 gCustomBindsGUI, Eigene Binds
 	Gui, Add, Button, x265 y80 h20 w12 gHelp2, ?
 	Gui, Add, Button, x140 y110 w120 h20 gJobGUI, Jobs
 	Gui, Add, Button, x265 y110 h20 w12 gHelp3, ?
-	if(Frak = 13)
+	if(Frak = 8)
 		Gui, Add, Button, x10 y140 w120 h20 gSimpleSAM, SimpleSAM starten
 	Gui, Add, Button, x140 y140 w120 h20 gFrakGUI vFrakGUI Disabled, Fraktionsbinds
 	Gui, Add, Button, x265 y140 h20 w12 gHelp4, ?
@@ -2506,7 +2605,7 @@ else{
 		_mainGUI.document.getElementById("FrakGUI").className .= " disabled"
 	_mainGUI.document.getElementById("FrakGUI").href := "#"
 	_mainGUI.document.getElementById("Name").value := Nickname
-	if(Frak = 13 AND _mainGUI.document.DocumentMode >= 8)
+	if(Frak = 8 AND _mainGUI.document.DocumentMode >= 8)
 		_mainGUI.document.querySelectorAll(".content")[0].innerHTML  .= "<a class=""button"" style=""left: 10px; top: 140px; font-size: 0.9em"" href=""sBinder://g/SimpleSAM"">SimpleSAM starten</a>"
 	;MsgBox, % _mainGUI.document.DocumentMode
 	ComObjConnect(_mainGUI, "wb_")
@@ -2548,7 +2647,7 @@ Menu, SonstigesMenu, Add, Nach &Updates suchen, Downloads
 Menu, SonstigesMenu, Add
 Menu, SonstigesMenu, Add, &Debug-Informationen anzeigen, DebugGUI
 Menu, SonstigesMenu, Add, Keybinder &testen (Debug), TestGUI
-Menu, ConnectMenu, Add, NSC && SAMP sta&rten, NSC
+Menu, ConnectMenu, Add, SAMP sta&rten, Connect
 Menu, ConnectMenu, Add, &TeamSpeak³, TSConnect
 Menu, ConnectMenu, Add, Nova &Forum, Forum
 Menu, MenuBar, Add, &Datei, :DateiMenu
@@ -2576,7 +2675,7 @@ else
 if(A_IsCompiled)
 	Menu, Tray, NoStandard
 Menu, Tray, Color, FFFFFF
-Menu, Tray, Tip, sBinder %Version%-%Build% by SAPlayer
+Menu, Tray, Tip, sBinder %Version%-%Build% by IcedWave
 Menu, Tray, Add, &Öffnen, GuiShow
 Menu, Tray, Add, B&eenden, 1GuiClose
 Menu, Tray, Default, &Öffnen
@@ -2598,7 +2697,7 @@ Menu, SonstigesMenu, Icon, &Über, shell32.dll, 225
 Menu, SonstigesMenu, Icon, &Debug-Informationen anzeigen, shell32.dll, 222
 Menu, SonstigesMenu, Icon, Keybinder &testen (Debug), shell32.dll, 217
 try
-	Menu, ConnectMenu, Icon, NSC && SAMP sta&rten, %nscpath%
+	Menu, ConnectMenu, Icon, SAMP sta&rten, %samppath%
 try{
 	RegRead, ts3_temp, HKCR, ts3server\shell\open\command
 	RegExMatch(ts3_temp, "UO)^""(.+)""", ts3_temp)
@@ -2619,7 +2718,7 @@ return
 BuildGUIs:
 ;AboutGUI
 Gui, AboutGUI:Add, Picture, x0 y5, %A_AppData%\sBinder\bg.png
-Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: SAPlayer`nCopyright © 2012-2015 SAPlayer`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion "`n`nAktuelle Länge des Quellcodes: " number_format(script_chars) " Zeichen in " number_format(script_lines) " Zeilen"
+Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: IcedWave`nCopyright © 2012-2015 IcedWave`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion "`n`nAktuelle Länge des Quellcodes: " number_format(script_chars) " Zeichen in " number_format(script_lines) " Zeilen"
 Gui, AboutGUI:Menu, MenuBar
 ;SettingsGUI
 Gui, SettingsGUI:Add, Tab2, -Background +Theme -Wrap x5 y5 w525 h340 vSettingsTab, Seite 1|Seite 2|Seite 3|Erweiterte Optionen
@@ -2684,7 +2783,7 @@ Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp13, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gSelectCL, Chatlog-Pfad auswählen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w150 gChatlogSearch, Chatlog automatisch suchen
-Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectNSC vNSCSelect, NSC-Pfad ändern
+Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectSAMP vSAMPSelect, SAMP-Pfad ändern
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp15, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gOpenINI, INI-Datei öffnen
@@ -2718,7 +2817,7 @@ Gui, SettingsGUI:Tab, 3
 ;Tab 3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h140 w510 vStartupProgramSettings c000000", Programme mitstarten
-Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vStartup_SAMP Checked%Startup_SAMP% gStartupSettingsChange, NSC && SAMP mitstarten
+Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vStartup_SAMP Checked%Startup_SAMP% gStartupSettingsChange, SAMP mitstarten
 Gui, SettingsGUI:Add, Text, x190 y%y% vStartup_SAMP_Disable1, Verzögerung:
 Gui, SettingsGUI:Add, Edit, x260 y%y% w45 h20 vStartup_SAMP_Disable2
 Gui, SettingsGUI:Add, UpDown, vStartup_SAMP_Delay Range0-60, %Startup_SAMP_Delay%
@@ -2767,15 +2866,15 @@ Gui, SettingsGUI:Add, Button, x15 y%y% h20 gUpdateDesign, Aktuelles Design manue
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp30, ?
 y += 30
 Gui, SettingsGUI:Tab
-Gui, SettingsGUI:Add, Text, x5, sBinder %Version%-%Build% by SAPlayer
+Gui, SettingsGUI:Add, Text, x5, sBinder %Version%-%Build% by IcedWave
 Gui, SettingsGUI:Add, ListBox, x535 y25 w150 h320 gSettingsChangeTab vSettingsListBox AltSubmit Choose1 0x100, Allgemeine Einstellungen|Ingame-Einstellungen|   Telefontexte|Pfade|/trucking|/radio-Slots|Programme mitstarten|Erweiterte Optionen
 Gui, SettingsGUI:Menu, MenuBar
 ;CreditsGUI
 Gui, CreditsGUI:Font, S15 bold
-Gui, CreditsGUI:Add, Link, cRed, Entwickler: <a href="http://forum.nes-reallife.de/index.php/User/7208-SAPlayer/">SAPlayer</a>`nDanke an folgende Personen:
+Gui, CreditsGUI:Add, Link, cRed, Entwickler: <a href="https://forum.nes-newlife.de/user/810-icedwave/">IcedWave</a>`nDanke an folgende Personen:
 Gui, CreditsGUI:Font
 Gui, CreditsGUI:Font, S10
-Gui, CreditsGUI:Add, Link,, <a href="http://forum.nes-reallife.de/index.php/User/5371-Muffle/">Muffle</a> (Alter Schriftzug)`n<a href="http://forum.nes-reallife.de/index.php/User/6642-ChackN0rris/">ChackN0rris</a> (Viele tolle Ideen)`n<a href="http://forum.nes-reallife.de/index.php/User/8679-[L]ucius/">[L]ucius</a> (Icon, Schriftzug)`n`nAus dem AHK-Forum: <a href="http://www.autohotkey.com/board/user/7194-bentschi/">Bentschi</a>, <a href="http://www.autohotkey.com/board/user/19424-jnizm/">jNizM</a>, <a href="http://www.autohotkey.com/board/user/932-shimanov/">shimanov</a>, <a href="http://www.autohotkey.com/board/user/331-toralf/">toralf</a>, Brainside, <a href="http://www.autohotkey.com/board/user/1-polyethene/">polyethene</a>
+Gui, CreditsGUI:Add, Link,, <a href="https://forum.nes-newlife.de/user/1602-muffle/">Muffle</a> (Alter Schriftzug)`nChackN0rris (Viele tolle Ideen)`n<a href="https://forum.nes-newlife.de/user/412-l-ucius/">[L]ucius</a> (Icon, Schriftzug)`n`nAus dem AHK-Forum: <a href="http://www.autohotkey.com/board/user/7194-bentschi/">Bentschi</a>, <a href="http://www.autohotkey.com/board/user/19424-jnizm/">jNizM</a>, <a href="http://www.autohotkey.com/board/user/932-shimanov/">shimanov</a>, <a href="http://www.autohotkey.com/board/user/331-toralf/">toralf</a>, Brainside, <a href="http://www.autohotkey.com/board/user/1-polyethene/">polyethene</a>
 Gui, CreditsGUI:Menu, MenuBar
 ;CustomBindsGUI
 Gui, CustomBindsGUI:Add, Tab2, % "x5 y5 h" (Binds/4)*25+55 " w565 +Theme -Background -Wrap", Hotkeys - Seite 1|Hotkeys - Seite 2|Maustasten|Textbinds
@@ -2829,7 +2928,7 @@ loop, % Hotstrings
 }
 Gui, CustomBindsGUI:Menu, MenuBar
 ;CarCalcGUI:
-car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Blade", "Blista Compact", "Bobcat", "Boxville", "Broadway", "Buccaneer", "Buffalo", "Bullet", "Burrito [Premium]", "Camper", "Cheetah", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Glendale", "Greenwood", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Picador", "Pony", "Premier [Premium]", "Quad", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Sentinel", "Shamal", "Slamvan", "Stafford", "Stallion", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tahoma", "Tanker", "Tornado", "Tropic", "Turismo", "Uranus", "Virgo", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
+car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Bike", "Blade", "Blista Compact", "BMX", "Bobcat", "Boxville", "Broadway", "Buffalo", "Bullet", "Burrito [Premium]", "Cabbie", "Camper", "Cheetah [Premium]", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Mountain Bike", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Pony", "Premier [Premium]", "Quad", "Regina", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Shamal", "Slamvan", "Stafford", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tanker", "Taxi", "Tractor", "Tropic", "Turismo", "Uranus", "Utility", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
 Gui, CarCalcGUI:Add, Text, x10 y10, Fahrzeug:
 Gui, CarCalcGUI:Add, Text, x130 y10, Carheal:
 Gui, CarCalcGUI:Font, s15 cRed
@@ -2844,22 +2943,20 @@ for i, v in car_name
 }
 Gui, CarCalcGUI:Add, DDL, AltSubmit vcar gCalc x10 y30 w110, % SubStr(ddl, 2)
 ddl := ""
-Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250|Stufe 2: 1.500|Stufe 3: 1.750|Stufe 4: 2.000|Stufe 5: 2.250 [Premium]|Stufe 6: 2.500 [Premium]|Stufe 7: 2.750 [Premium]|Stufe 8: 3.000 [Premium]
+Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250
 Gui, CarCalcGUI:Add, Checkbox, vTogAll gTogAll x280 y40, Alle auswählen
 Gui, CarCalcGUI:Add, Checkbox, vOnlyAddons gCalc x375 y40, Nur Addonpreise
 Gui, CarCalcGUI:Add, Checkbox, x10 y70 vpeilsender gCalc, Peilsender
 Gui, CarCalcGUI:Add, Checkbox, x170 y70 vfunkfernbedienung gCalc, Funkfernbedienung
 Gui, CarCalcGUI:Add, Checkbox, x330 y70 valarmanlage gCalc, Alarmanlage
-Gui, CarCalcGUI:Add, Checkbox, x10 y90 vversicherung gCalc, Versicherung
-Gui, CarCalcGUI:Add, Checkbox, x170 y90 vwaffenlager gCalc, Waffenlager
-Gui, CarCalcGUI:Add, Checkbox, x330 y90 vunlimited_respawn gCalc, Unlimited Respawn
-Gui, CarCalcGUI:Add, Checkbox, x10 y110 vneon gCalc, Neon
-Gui, CarCalcGUI:Add, Checkbox, x170 y110 vkennzeichenfarbe gCalc, Kennzeichenfarbe
-Gui, CarCalcGUI:Add, Checkbox, x330 y110 vschloss gCalc, Schloss
-Gui, CarCalcGUI:Add, Checkbox, x10 y130 vakku gCalc, Handyakku
-Gui, CarCalcGUI:Add, Checkbox, x170 y130 vkraum gCalc, Kofferraum
+Gui, CarCalcGUI:Add, Checkbox, x10 y90 vkennzeichenfarbe gCalc, Kennzeichenfarbe
+Gui, CarCalcGUI:Add, Checkbox, x170 y90 vkraum gCalc, Kofferraum
+Gui, CarCalcGUI:Add, Checkbox, x330 y90 vwaffenlager gCalc, Waffenlager
+Gui, CarCalcGUI:Add, Checkbox, x10 y110 vversicherung gCalc, Versicherung
+Gui, CarCalcGUI:Add, Checkbox, x170 y110 vunlimited_respawn gCalc, Unlimited Respawn
+Gui, CarCalcGUI:Add, Checkbox, x330 y110 vakku gCalc, Handyakku
+Gui, CarCalcGUI:Add, Checkbox, x10 y130 vneon gCalc, Neon
 Gui, CarCalcGUI:Add, Checkbox, x330 y130 vvalue gCalc, Wert (/car sell)
-;Gui, CarCalcGUI:Add, Edit, Hidden x250 y128 h20 w100 vkm gCalc, KM-Stand
 Gui, CarCalcGUI:Add, Checkbox, x10 y150 vDiesel gCalc, Umbau auf Diesel
 Gui, CarCalcGUI:Add, Checkbox, x330 y150 vLPG gCalc, Umbau auf LPG
 Gui, CarCalcGUI:Add, Button, x170 y150 h20 gOnlineCarCalc, Online-Fahrzeugrechner
@@ -3062,22 +3159,22 @@ GuiControlGet, TogAll, CarCalcGUI:
 GuiControl, CarCalcGUI:, peilsender, %TogAll%
 GuiControl, CarCalcGUI:, funkfernbedienung, %TogAll%
 GuiControl, CarCalcGUI:, alarmanlage, %TogAll%
-GuiControl, CarCalcGUI:, versicherung, %TogAll%
-GuiControl, CarCalcGUI:, waffenlager, %TogAll%
-GuiControl, CarCalcGUI:, unlimited_respawn, %TogAll%
-GuiControl, CarCalcGUI:, neon, %TogAll%
 GuiControl, CarCalcGUI:, kennzeichenfarbe, %TogAll%
-GuiControl, CarCalcGUI:, schloss, %TogAll%
-GuiControl, CarCalcGUI:, akku, %TogAll%
 GuiControl, CarCalcGUI:, kraum, %TogAll%
+GuiControl, CarCalcGUI:, waffenlager, %TogAll%
+GuiControl, CarCalcGUI:, versicherung, %TogAll%
+GuiControl, CarCalcGUI:, unlimited_respawn, %TogAll%
+GuiControl, CarCalcGUI:, akku, %TogAll%
+GuiControl, CarCalcGUI:, neon, %TogAll%
 Calc:
 Gui, CarCalcGUI:Submit, Nohide
-car_shop := [12, 12, 10, 5, 13, 6, 7, 3, 0, 12, 13, 3, 14, 5, 5, 11, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 14, 14, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 10, 7, 3, 7, 12, 4, 14, 13, 11, 7, 1, 13, 4, 7, 0, 14, 10, 1, 5, 14, 2, 5, 2, 1, 4, 14, 13, 14, 9, 5, 0, 14, 1, 13, 12, 7, 3, 13, 4, 12]
-car_price := [97800, 124000, 12450000, 399000, 39874, 36300, 33250, 46200, 32400, 66200, 54210, 39800, 27600, 123300, 690600, 87500, 78000, 712000, 19000, 110200, 279000, 123200, 870000, 160200, 96000, 112000, 145000, 34400, 33800, 42800, 76000, 14800, 28000, 89000, 168000, 173400, 120800, 780000, 191200, 970000, 87800, 53600, 321000, 82200, 3670000, 980000, 36100, 56000, 9450000, 168000, 110200, 45700, 76000, 175000, 24300, 23540, 260000, 54000, 42200, 875650, 72900, 38400, 31900, 49000, 2700000, 56600, 215600, 98800, 36000, 478200, 195000, 67200, 368000, 31900, 574000, 33300, 1780200, 620800, 68000, 23500, 41000, 6450, 143200, 42100, 118800, 125421, 19102, 301200]
-car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
-shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Truck-Autohaus", "Xoomer Autohaus in South Los Santos"]
+car_shop := [12, 12, 10, 5, 13, 6, 7, 7, 3, 0, 7, 12, 13, 3, 5, 5, 11, 13, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 10, 7, 3, 7, 12, 4, 13, 11, 7, 0, 1, 13, 4, 7, 0, 10, 1, 5, 2, 5, 2, 1, 4, 13, 13, 8, 9, 5, 0, 13, 1, 13, 12, 7, 3, 13, 4, 12]
+car_price := [31500, 34000, 2000000, 125000, 12000, 19900, 13900, 3000, 12500, 7500, 5000, 27500, 14000, 22700, 89000, 175000, 56000, 22000, 34000, 274000, 3999, 44000, 220000, 12500, 299000, 23500, 27900, 14500, 42500, 15000, 19500, 24500, 21000, 28500, 78000, 32000, 23000, 275000, 38900, 240000, 28000, 12000, 49000, 14500, 222000, 700000, 24999, 18000, 9000, 945000, 44900, 10500, 18000, 6800, 125000, 8500, 35000, 9000, 10700, 37500, 69000, 28000, 12900, 8400, 1400000, 16500, 48000, 23500, 112000, 39999, 23999, 98000, 59000, 29000, 14500, 79999, 144000, 16500, 24780, 9800, 4250, 32500, 36000, 27200, 17000, 27500, 59000]
+car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
+shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Gewerbliches Autohaus East Los Santos"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
-carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
+;carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
+carhealprices := [0, 10000]
 GuiControl, % "CarCalcGUI:" (Diesel ? "Disable" : "Enable"), LPG
 GuiControl, % "CarCalcGUI:" (LPG ? "Disable" : "Enable"), Diesel
 /*if(value){
@@ -3091,7 +3188,7 @@ if(value)
 	price := "Wert: $" number_format(Floor(car_price[car]*0.25))
 else{
 	;GuiControl, CarCalcGUI:Hide, km
-	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*3200+funkfernbedienung*8500+alarmanlage*4500+versicherung*8000+waffenlager*12000+unlimited_respawn*105000+neon*8200+kennzeichenfarbe*60+Ceil(schloss*(car_price[car]*0.25))+akku*16000+kraum*5000+Diesel*32500+LPG*38450)
+	price := "$" number_format(car_price[car]*!OnlyAddons+carhealprices[carheal]+peilsender*2000+funkfernbedienung*899+alarmanlage*500+kennzeichenfarbe*60+kraum*2500+waffenlager*2700+versicherung*800+unlimited_respawn*12000+akku*750+neon*2500+Diesel*2250+LPG*4500)
 }
 GuiControl, CarCalcGUI:, price, %price%
 shop := car_shop[car] + 1
@@ -3102,7 +3199,7 @@ TruckReload:
 GuiControlGet, temp, TruckerGUI:, TruckReloaded
 GuiControl, TruckerGUI:, TruckReloaded, % SubStr(temp, 1, 31) " (Wird aktualisiert...)"
 TruckDDOS := 0
-if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
 	TruckDDOS := 1
 	if(WinActive("GTA:SA:MP"))
 		AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
@@ -3232,37 +3329,27 @@ else
 Gui, FrakGUI:Font
 Gui, FrakGUI:Add, Button, y5 h20 w120 gFrakChangeGUI, Fraktion ändern
 if(IsFrak(2))
-	TextArray := ["Onduty/Offduty gehen", "/getcarowner", "/towopen + /mv", "/carticket (Bike)", "/towpark (Verwahrplatz)", "/radar", "/tazer", "/accept ordnung", "/m: Straße räumen", "/m: Stehen bleiben", "/accept theft", "/accept alarm", "/m: Heli startet/landet", "/accept mechaniker"]
+	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Traffic Stop", "/m: Straße räumen", "/m: Felony Stop", "/s: Sie sind verhaftet", "/swapgun", "/mv + /oldmv + /towopen", "/me: Zur Zentrale funken", "/wanted: Alle anzeigen", "/wanted: Alle anzeigen außer 1-10", "/accept cop"]
 else if(IsFrak(3))
-	TextArray := ["Onduty/Offduty gehen", "Donut benutzen", "/checkwanted", "/m: Rechts ranfahren", "/m: Straße räumen", "Allgemeine Verkehrskontrolle", "/s: Sie sind verhaftet", "Alkoholtest", "Drogentest", "/frisk", "/swapgun", "/mv + /oldmv", "/me: Zur Zentrale funken"]
+	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
-	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Straße räumen", "/m: Medicopter startet/landet", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "/mv + /oldmv", "Funkrufnummer umschalten"]
+	TextArray := ["/getbizflag & /dropbizflag & /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "/s: Plata O' Plomo", "/me: Waffenhandel", "/me: Zigarrenhandel", "/s: Stehen bleiben", "/s: Überfall", "Adios", "/kcheck", "/f: Flagge unsere"]
 else if(IsFrak(5))
-	TextArray := ["/equip + /takku", "/checkwanted", "/m: Weg räumen", "/m: Rechts ranfahren", "/m: Aussteigen + /handsup", "/s: Stehen bleiben", "/cc: Sie sind festgenommen", "Ich werde Sie nun durchsuchen", "/use donut", "/mv + /oldmv", "/me: Zur Zentrale funken"]
-else if(IsFrak(6))
-	TextArray := ["Donut benutzen", "/m: Rechts ranfahren", "Passkontrolle", "/m: Straße räumen", "/fucku", "/m: Platz räumen", "/m: Achtung - Atommüll Konvoi", "/s: Sie sind festgenommen", "/mv + /oldmv", "/cc: Sie sind festgenommen", "/r: Betrete Base mit [Fahrzeug]", "/r: Verlasse Base mit [Fahrzeug]", "/checkwanted", "/me: Zur Zentrale funken"]
-else if(IsFrak(7))
-	TextArray := ["/use herbs", "/use green", "/use gold", "/use lsd", "/s: Überfall", "/gangflag"]
-else if(IsFrak(8))
-	TextArray := ["/fare [Preis]", "/startfare", "Begrüßung des Kunden", "Ich mache mich auf den Weg", "Auftragsende", "Auftrag annehmen", "In Bereitschaft", "/flock"]
-else if(IsFrak(9))
 	TextArray := ["/use lsd", "/use gold", "/use green", "/equip", "/s: Überfall", "/gangflag", "/me: Pizza anbieten"]
-else if(IsFrak(10))
+else if(IsFrak(6))
 	TextArray := ["Spielst du mit uns, spielst du mit dem Tod!", "Wir sehen, wir kommen, wir töten, wir gehen", "/s: Überfall", "Munition anbieten", "/materials buildgun", "/materials buildammo", "/materials getgun", "/materials getammo", "/sellgun"]
-else if(IsFrak(11))
+else if(IsFrak(7))
 	TextArray := ["/equip", "/use gold", "/use lsd", "/gangflag", "/swapgun", "/s: Überfall", "1. Spruch", "2. Spruch", "3. Spruch"]
-else if(IsFrak(12))
-	TextArray := ["/s: Überfall", "/me: Waren anbieten", "/gangflag", "/use lsd", "/use green", "/use gold", "/accept sex", "/equip"]
-else if(IsFrak(13))
+else if(IsFrak(8))
 	TextArray := ["Onduty/Offduty gehen", "/aufzug", "/lottoinfo", "/use donut", "/breaklive"]
-else if(IsFrak(14))
+else if(IsFrak(9))
 	TextArray := ["/use gold", "/use green", "/equip", "/use lsd", "/gangfight", "/gangflag", "/gangwar", "/s: Don't fuck with the Ballas Family", "/s: Wir kommen wir sehen wir töten wir gehen", "/s Are you kidding me?"]
-else if(IsFrak(15))
-	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/use herbs", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
-else if(IsFrak(16))
-	TextArray := ["/use lsd", "/use gold", "/dropbizflag", "/getbizflag", "/accept sex", "/s: Überfall", "/gangflag"]
-else if(IsFrak(17))
-	TextArray := ["/findhit [Letzter Auftrag]", "/gethit", "/portable", "/maskinfo", "/id [Letzter Auftrag]"]
+else if(IsFrak(10))
+	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/ad: Werbung", "/gangflag", "/use lsd", "/use gold", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
+else if(IsFrak(11))
+	TextArray := ["/m: Straße räumen", "/m: Rechts ranfahren", "/m: Drogenkontrolle", "/s: Stehen bleiben"]
+else if(IsFrak(12))
+	TextArray := ["/dropbizflag, /getbizflag, /getflagpos", "/s: Überfall", "/gangflag", "/use lsd", "/use gold", "/fpkeep wasser", "/fpkeep dueng", "/swapgun", "/bl"]
 fBinds := TextArray._maxIndex()
 if(TextArray AND IsFrak(Frak)){
 	Gui, FrakGUI:Font, underline
@@ -3275,20 +3362,18 @@ if(TextArray AND IsFrak(Frak)){
 		Gui, FrakGUI:Add, Text, % "x150 y" A_Index * 25 + 25 " h20", % k
 	}
 }
-if(IsFrak(4)){
-	FrakOption4 := between(FrakOption4, 1, 3) AND is(FrakOption4, "integer") ? FrakOption4 : 1
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+60 " vFrakOption4 gFRNChange Checked" !!(FrakOption4 = 1), Funkrufnummer 1 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+85 " gFRNChange Checked" !!(FrakOption4 = 2), Funkrufnummer 2 (mit / und -):
-	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption4 = 3), Funkrufnummer 3 (mit / und -):
+if(IsFrak(3)){
+	FrakOption6 := between(FrakOption6, 1, 5) AND is(FrakOption6, "integer") ? FrakOption6 : 1
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+60 " vFrakOption6 gFRNChange Checked" !!(FrakOption6 = 1), Funkrufnummer 1 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+85 " gFRNChange Checked" !!(FrakOption6 = 2), Funkrufnummer 2 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+110 " gFRNChange Checked" !!(FrakOption6 = 3), Funkrufnummer 3 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+135 " gFRNChange Checked" !!(FrakOption6 = 4), Funkrufnummer 4 (mit / und -):
+	Gui, FrakGui:Add, Radio, % "x10 y" fBinds*25+160 " gFRNChange Checked" !!(FrakOption6 = 5), Funkrufnummer 5 (mit / und -):
 	Gui, FrakGui:Add, Edit, % "vFrakoption1 x175 y" fBinds*25+60 " w100 h20", %Frakoption1%
 	Gui, FrakGui:Add, Edit, % "vFrakoption2 x175 y" fBinds*25+85 " w100 h20", %Frakoption2%
 	Gui, FrakGui:Add, Edit, % "vFrakoption3 x175 y" fBinds*25+110 " w100 h20", %Frakoption3%
-}
-if(IsFrak(8)){
-	if(!is(FrakOption1, "integer") OR StrLen(FrakOption1) > 4)
-		FrakOption1 := SubStr(RegExReplace(FrakOption1, "\D"), 1, 4)
-	Gui, FrakGui:Add, Text, % "x10 y" fBinds*25+60, Funkrufnummer:
-	Gui, FrakGui:Add, Edit, % "vFrakoption1 x95 y" fBinds*25+60 " w100 h20 Number Limit4", %Frakoption1%
+	Gui, FrakGui:Add, Edit, % "vFrakoption4 x175 y" fBinds*25+135 " w100 h20", %Frakoption4%
+	Gui, FrakGui:Add, Edit, % "vFrakoption5 x175 y" fBinds*25+160 " w100 h20", %Frakoption5%
 }
 TextArray := ""
 Gui, FrakGUI:Menu, MenuBar
@@ -3303,41 +3388,49 @@ for i, k in Jobnames
 		num .= "|"
 	num .= k
 }
-Gui, JobGUI:Add, DDL, y5 x+10 AltSubmit Choose%Job% gJobChange vNewJob, %num%
+Gui, JobGUI:Add, DDL, y5 x+10 w175 AltSubmit Choose%Job% gJobChange vNewJob, %num%
 if(Job = 2)
 	TextArray := ["/knastmember", "/free", "/checkjailtime"]
 else if(Job = 3)
-	TextArray := ["/fare", "/bus", "/buslock"]
+	TextArray := ["/bus", "/route", "/buslock", "/delbus"]
 else if(Job = 4)
 	TextArray := ["/find", "/findcar"]
 else if(Job = 5)
 	TextArray := ["/rob haus", "/rob person", "/rob vehicle", "/printkey"]
 else if(Job = 6)
-	TextArray := ["/startgeterz", "/stopgeterz"]
+	TextArray := ["/stone", "/takestone", "/deliverstone", "/stopstone", "/startgeterz", "/stopgeterz", "/erzload", "/releaseerz", "/einfo"]
 else if(Job = 7)
-	TextArray := ["/erzload", "/releaseerz", "/einfo"]
+	TextArray := ["/startfarm", "/cornload", "/releasecorn", "/pinfo"]
 else if(Job = 8)
-	TextArray := ["/givecar", "/vertrag"]
+	TextArray := ["/buyprods", "/sellprods", "/load", "/prodinfo"]
 else if(Job = 9)
-	TextArray := ["/startfarm"]
+	TextArray := ["/repair car", "/get kanister", "/get werkzeug", "/refill", "/tirechange", "/mduty", "/respray", "/respraycolor", "/showcolors"]
 else if(Job = 10)
-	TextArray := ["/moneyload 100", "/moneydrop", "/moneyloadstatus"]
+	TextArray := ["/startclean", "/clean", "/stopclean"]
 else if(Job = 11)
-	TextArray := ["/cornload", "/releasecorn", "/pinfo"]
-else if(Job = 12)
-	TextArray := ["/sex", "/strip"]
-else if(Job = 13)
-	TextArray := ["/buyprods", "/sellprods", "/load"]
-else if(Job = 14)
-	TextArray := ["/angebot", "/sellhouse"]
-else if(Job = 15)
-	TextArray := ["/repair car", "/refill", "/tirechange", "/duty"]
-else if(Job = 16)
-	TextArray := ["/startclean", "/stopclean", "/exit"]
-else if(Job = 17)
 	TextArray := ["/filljob", "/fillstation"]
+else if(Job = 12)
+	TextArray := ["/repair", "/tzinfo", "/atminfo", "/marktz", "/markatm", "/get ersatzteil"]
+else if(Job = 13)
+	TextArray := ["/fare", "/startfare", "/fare (Offduty gehen)", "/accept taxi", "/cancel taxi"]
+else if(Job = 14)
+    TextArray := ["/startfish", "/trackfish", "/catchfish", "/unloadfish", "/stopfish"]
+else if(Job = 15)
+    TextArray := ["/lawns", "/getgras", "/unloadgras", "/stopgras"]
+else if(Job = 16)
+    TextArray := ["/wood", "/takewood", "/deliverwood", "/stopwood"]
+else if(Job = 17)
+    TextArray := ["/hunt", "/trackhunt", "/takehunt", "/deliverhunt", "/stophunt"]
 else if(Job = 18)
-	TextArray := ["/get ersatzteil", "/repair", "/tzinfo"]
+    TextArray := ["/starttrash", "/empty", "/unloadtrash", "/stoptrash", "/gettrash"]
+else if(Job = 19)
+    TextArray := ["/startpizza", "/getpizza", "/delivery", "/unloadpizza", "/stoppizza"]
+else if(Job = 20)
+    TextArray := ["/get drogen", "/sellhanf", "/crackload", "/releasecrack"]
+else if(Job = 21)
+    TextArray := ["/materials buy", "/materials deliver", "/sellgun"]
+else if(Job = 22)
+    TextArray := ["/foodload", "/releasefood"]
 jBinds := TextArray._maxIndex()
 if(TextArray){
 	Gui, JobGUI:Font, underline
@@ -3349,8 +3442,9 @@ if(TextArray){
 		Gui, JobGUI:Add, Hotkey, % "x10 y" A_Index * 25 + 25 " w120 h20 vjBind" A_Index, % jBind%A_Index%
 		Gui, JobGUI:Add, Text, % "x150 y" A_Index * 25 + 25 " h20", % k
 	}
-	if(Job = 10)
+	/*if(Job = 10)
 		Gui, JobGUI:Add, Checkbox, % "x10 y" TextArray._maxIndex() * 25 + 50 " h20 vJobOption1 Checked" JobOption1, Dialog bei /moneyload automatisch schließen
+	*/
 }
 TextArray := ""
 Gui, JobGUI:Menu, MenuBar
@@ -3502,7 +3596,7 @@ else
 	ToolTip("TS³ ist bereits aktiv`nBeende es erst`, bevor du es neu startest!", 4000)
 return
 Forum:
-Run, http://forum.nes-reallife.de
+Run, http://forum.nes-newlife.de
 return
 RunOtherProgram:
 SetTimer, RunOtherProgram, Off
@@ -3593,7 +3687,7 @@ ChangelogBrowser:
 Run, http://saplayer.lima-city.de/l/sBinder-changelog&a=nobugs
 return
 ForumThread:
-Run, http://forum.nes-reallife.de/index.php/Thread/139191-sBinder
+Run, https://forum.nes-newlife.de/thread/1544-sbinder-by-icedwave/
 return
 CreditsGUI:
 Gui, CreditsGUI:Show,, sBinder: Credits
@@ -3680,7 +3774,7 @@ loop, % Hotstrings
 		hotstringsactive ++
 	}
 }
-loop, 4
+loop, %jBinds_max%
 {
 	if(jBind%A_Index% != "" AND jBinds >= A_Index)
 		NewHotkey(jBind%A_Index%, "jBind" A_Index)
@@ -3717,7 +3811,8 @@ Help28:
 Help29:
 Help30:
 Help31:
-helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova eSports RealLife bietet (Teamspeak, NSC & SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
+Help32:
+helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova-eSports NewLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
 , "In den Fraktionsbinds kannst du Tasten für vordefinierte, einheitliche Aktionen setzen.`nDafür musst du erst deine Fraktion auswählen und mit dem Passwort, das du normalerweise vom Leader bekommst, bestätigen.`n`nWenn deine Fraktion noch nicht vertreten ist, kannst du, oder z.B. einer eurer Leader, mich kontaktieren, dass auch deine Fraktion integriert wird."
@@ -3731,7 +3826,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden."
 , "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
 , "Du kannst ingame /trucking nutzen, um dir die aktuell verfügbaren Aufträge anzeigen zu lassen.`n`n`nNur Aufträge für Level anzeigen:`nDamit kannst du einstellen, bis zu welcher Grenze des Truckerlevels du die Aufträge angezeigt bekommst. Es gibt im Grunde diese Werte:`n-1: Zeigt ALLE Werte an, auch, wenn du das Level für diese Aufträge noch gar nicht erreicht hast.`n0: Zeigt nur die Aufträge deines aktuellen Levels an.`n1-10: Zeigt auch Aufträge von n niedrigeren Leveln an. Wenn du es also auf 2 stellst und du aktuell Truckerlevel 5 bist, zeigt es dir Aufträge von Level 3, 4 und 5 an. Der Wert 1 ist bei dieser Einstellung empfehlenswert (Standardwert)."
-, "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nNSC-Pfad ändern:`nDu kannst den Pfad zum Nova Social Client angeben, um ihn vom sBinder starten zu lassen und daraufhin auf den Server zu verbinden (mit dem Button ""NSC & SAMP starten"")."
+, "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nSAMP-Pfad ändern:`nDu kannst den Pfad zu SAMP angeben, um direkt im sBinder auf den Server zu verbinden (mit dem Button ""SAMP starten"")."
 , "Diesen Wert solltest du nur ändern, wenn es wirklich nötig ist!`n`nDiese Zeit bestimmt, wie lange (in Millisekunden) zusätzlich zum aktuellen Ping zum Server auf eine neue Zeile im Chatlog gewartet werden soll.`nStandardwert ist 90, falls der Chatlog nicht ausgelesen werden kann (z.B. bei /paydaytime), solltest du diese Zeit erhöhen.`nEs sind Werte zwischen 20 und 200 möglich."
 , "Hier findest du einige Möglichkeiten zum Löschen der Daten/Dateien, die der sBinder erzeugt.`nEs ist also ähnlich wie eine Deinstallation."
 , "API nutzen:`nDie API.dll wird benutzt, um Daten, die für dich bestimmt sind, auch nur dir anzuzeigen. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge nicht gestört.`nAllerdings funktioniert die API nicht bei jedem richtig, deshalb ist ihre Nutzung optional. Du kannst sie jederzeit aktivieren und deaktivieren.`nHINWEIS: Nach einer Änderung dieser Option wird der sBinder evtl. neu gestartet!`n`n`nOverlay-Einstellungen:`nDu kannst im sBinder ein komplett konfigurierbares Overlay nutzen, das dir im Spiel wichtige Daten anzeigt.`nDabei kannst du den Text mit einigen Variablen gestalten, außerdem sind dir bei der Wahl der Farbe, Schriftart, Schriftgröße und Position keine Grenzen gesetzt.`nMehr Informationen dazu findest du beim Klick auf den ?-Button in den Overlay-Einstellungen."
@@ -3739,7 +3834,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du eigene Radiosender definieren (bzw. deren URL angeben), die du später mit /radio aufrufen kannst.`nDu musst dafür als Name Slot 1, Slot 2 oder Slot 3 eingeben.`n`nHINWEIS: Die URL muss mit http:// oder https:// beginnen!"
 , "Beim Login automatisch eingeben:`nWenn du diese Funktion aktivierst, wird nach dem Login automatisch der in dem nebenstehenden Textfeld angegebene Befehl eingegeben.`nDu kannst zum Beispiel /togphone oder /hitsound nutzen (oder eine Kombination aus beiden).`nHINWEIS: Damit die Funktion korrekt arbeitet, muss der Keybinder VOR dem Start von SAMP gestartet werden!"
 , "INI-Datei öffnen:`nIn der INI-Datei werden alle deine Einstellungen gespeichert. Du kannst sie dir mit diesem Button ansehen.`nHINWEIS: Falls du Daten in der INI-Datei geändert hast, musst du den sBinder neu starten, damit sie ausgelesen werden. Wenn du davor im Keybinder speicherst gehen deine Änderungen verloren.`n`n`nsBinder-Ordner öffnen:`nMit diesem Button kannst du den Ordner öffnen, in dem der sBinder gespeichert ist."
-, "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit der NSC gestartet werden soll. Dabei wird auch SAMP automatisch mitgestartet."
+, "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den TS-Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit Fraps gestartet werden soll.`nEventuell musst du dazu den Pfad von Fraps angeben."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit ein weiteres Programm gestartet werden soll.`nDu musst den Pfad dieses Programms angeben."
@@ -3748,7 +3843,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
 , "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + NSC-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: NSC & SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;31
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
@@ -3773,7 +3868,6 @@ if(!ErrorLevel){
 }
 Thread, NoTimers, false
 return
-;Unused
 SelectSAMP:
 Thread, NoTimers
 FileSelectFile, temp, 1, % (FileExist(samppath) ? samppath : A_Desktop), Wähle die samp.exe aus, *.exe
@@ -3784,6 +3878,7 @@ if(!ErrorLevel){
 }
 Thread, NoTimers, false
 return
+;Unused
 SelectNSC:
 Thread, NoTimers
 FileSelectFile, temp, 1, % (FileExist(nscpath) ? nscpath : A_Desktop), Wähle den Nova Social Client aus, *.exe
@@ -3866,7 +3961,6 @@ if(!ErrorLevel){
 		IniWrite, %chatlogpath%, %INIFile%, Settings, ChatlogPath
 		IniWrite, %Job%, %INIFile%, Settings, Job
 		IniWrite, %samppath%, %INIFile%, Settings, SAMPPath
-		IniWrite, %nscpath%, %INIFile%, Settings, NSCPath
 		savemsg := 1
 		ToolTip("Deine Daten wurden gespeichert.`nSpeicherort: " INIFile "`n`nHINWEIS:`nBeim nächsten Start wird wieder folgende ini-Datei verwendet:`n" OldIni "`nDu kannst die andere ini-Datei aber per Datei->Öffnen auswählen.", 12000)
 		INIFile := OldIni
@@ -3962,7 +4056,7 @@ if(Del6){
 	IfMsgBox, Yes
 	{
 		FileDelete, delete.bat
-		FileAppend, @echo off`nping 127.0.0.1 -n 1`ndel "%A_ScriptDir%\sBinder.exe"`ndel "%A_ScriptDir%\delete.bat", delete.bat
+		FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`ndel "%A_ScriptDir%\sBinder.exe"`ndel "%A_ScriptDir%\delete.bat", delete.bat
 		Run, *RunAs delete.bat
 		ExitApp
 	}
@@ -4231,7 +4325,7 @@ KeyWait, h, D T0.2
 if(!ErrorLevel){
 	BindReplace("/mv~/oldmv")
 	if(IsFrak(2))
-		BindReplace("/towopen~/me drückt eine Taste auf seiner Fernbedienung.")
+		SendChat("/towopen")
 }
 return
 #IfWinActive GTA:SA:MP
@@ -4305,10 +4399,10 @@ if(FadeOut){
 ExitApp
 return
 GuiShow:
-Gui, 1:Show,, sBinder %Version%-%Build% by SAPlayer
+Gui, 1:Show,, sBinder %Version%-%Build% by IcedWave
 return
 
-
+;Unused
 NSC:
 SetTimer, StartNSC, -1 ;prevent hanging on WinWait
 return
@@ -4365,9 +4459,9 @@ Suspend Permit
 Critical
 reconnected := 1
 WinClose, GTA:SA:MP,, 3
-gosub NSC
+gosub Connect
 return
-;Unused
+
 Connect:
 SetTimer, %A_ThisLabel%, Off
 if(WinExist("GTA:SA:MP"))
@@ -4403,11 +4497,6 @@ if(!ErrorLevel){
 }
 else
 	AddChatMessage("Der sBinder wurde nicht neu gestartet, da du nicht innerhalb von 5 Sekunden {0022FF}R{FF6600} gedrückt hast.")
-return
-::/kpd::
-::/kpayday::
-Suspend Permit
-SendChat("/payday " PlayerInput("Erste Zahl: ") + PlayerInput("Zweite Zahl: "))
 return
 ::/znotiz::
 ::/zeige notiz::
@@ -4498,16 +4587,15 @@ return
 ::/inettest::
 Suspend Permit
 AddChatMessage("Ein Test der Internetverbindung wird durchgeführt...")
-AddChatMessage("Ping nes-reallife Gameserver: {0022FF}" clearping("server.nes-reallife.de", 400))
-AddChatMessage("Ping nes-reallife Homepage: {0022FF}" clearping("nes-reallife.de", 400))
-AddChatMessage("Ping nes-reallife Forum: {0022FF}" clearping("forum.nes-reallife.de", 400))
+AddChatMessage("Ping nes-newlife Gameserver: {0022FF}" clearping("server.nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Homepage: {0022FF}" clearping("nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Forum: {0022FF}" clearping("forum.nes-newlife.de", 400))
 AddChatMessage("Ping google.com (Referenz): {0022FF}" clearping("google.com", 400))
 return
 ::/kdonut::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(3, "Donuts: [")
+chat := WaitForChatLine(3, "Donuts: [")
 RegExMatch(chat, "Donuts: \[(.*)\]", chat)
 if(chat1 < 20)
 	SendChat("/get donut " 20 - chat1)
@@ -4571,8 +4659,7 @@ return
 ::/paydaytime::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(1, "Spielzeit seit Payday: [")
+chat := WaitForChatLine(1, "Spielzeit seit Payday: [")
 RegExMatch(chat, "Spielzeit seit Payday: \[(.*) Minuten\]", chat)
 chat1 := 60 - chat1
 AddChatMessage("Du musst noch {0022FF}" chat1 " Minute" (chat1 = 1 ? "" : "n") "{FF6600} bis zum Payday warten.")
@@ -4580,17 +4667,16 @@ return
 ::/respekt::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(3, "Nächstes Level:[")
+chat := WaitForChatLine(3, "Respekt:[")
 num := ChatLine(6, "Level:[")
 stat := ChatLine(5, "Status:[")
-RegExMatch(chat, "Nächstes Level:\[\$(.*?)\] Respekt:\[(.*)/(.*?)\]", chat)
-RegExMatch(num, "Level:\[(\d*?)\] Geschlecht:\[", num)
-chat4 := chat3 - chat2
-if(chat2 < chat3)
-	AddChatMessage("Du benötigst noch {0022FF}" chat4 " Respektpunkt" (chat4 = 1 ? "" : "e") "{FF6600}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat4 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {0022FF}Level " num1 + 1 "{FF6600}. {A6A6A6}[" chat2 "/" chat3 "]")
-else
-	AddChatMessage("Du kannst dir {0022FF}Level " num1 + 1 "{FF6600} für {0022FF}$" number_format(chat1) "{FF6600} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
+RegExMatch(chat, "Respekt:\[(\d+)/(\d+)\]", chat)
+RegExMatch(num, "Level:\[(\d+)\] Geschlecht:\[", num)
+chat3 := chat2 - chat1
+;if(chat1 < chat2)
+AddChatMessage("Du benötigst noch {0022FF}" chat3 " Respektpunkt" (chat3 = 1 ? "" : "e") "{FF6600}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat3 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {0022FF}Level " num1 + 1 "{FF6600}. {A6A6A6}[" chat1 "/" chat2 "]")
+;else
+;	AddChatMessage("Du kannst dir {0022FF}Level " num1 + 1 "{FF6600} für {0022FF}$" number_format(chat1) "{FF6600} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
 return
 ::/kcall::
 Suspend Permit
@@ -4599,8 +4685,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	WaitFor()
-	chat := ChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4618,8 +4703,7 @@ if(!num1 := PlayerInput("Gib die Nummer, den Namen oder die ID der Person ein: "
 	return
 if(!is(num1, "integer") OR (StrLen(num1) < 4 AND is(num1, "integer"))){
 	SendChat("/nummer " num1)
-	WaitFor()
-	chat := ChatLine(0, ", Ph: ")
+	chat := WaitForChatLine(0, ", Ph: ")
 }
 if(InStr(chat, "Spieler nicht gefunden"))
 	return
@@ -4634,121 +4718,19 @@ if(is(num1, "integer") AND StrLen(num1) >= 5){
 	SendInput, %num1%
 	WaitFor()
 	SendInput, {enter}
-
 }
 return
 ::/kgeld::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(6, "Bank:[$")
+chat := WaitForChatLine(6, "Bank:[$")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Bargeld:\[\$(.*?)\] Bank:\[\$(.*?)\] Handynummer:", chat)
 AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
-;Ordnungsamt-Binds
-#if IsFrak(2) AND WinActive("GTA:SA:MP")
-::/tt::
-Suspend Permit
-if(IsFrak(2)){
-	tt := PlayerInput("Gib die Nummer (Nummernschild) oder die ID (/dl) des TTs ein: ")
-	if(!(between(tt, 1, 20) OR between(tt, 121, 140))){
-		AddChatMessage("Dies ist kein TowTruck!")
-		return
-	}
-	if(between(tt, 121, 140))
-		tt -= 120
-	t := HTTPData("http://saplayer.lima-city.de/sBinder/oamt/tt.php?n=" Round(tt))
-	StringSplit, t, t, |
-	AddChatMessage("TT " tt " gehört {0022FF}" t1 "{FF6600}. (Stand: " t2 ")")
-}
-else
-	AddChatMessage("Du gehörst nicht zum Ordnungsamt!")
-return
-::/ttlist::
-Suspend Permit
-if(IsFrak(2)){
-	data := HTTPData("http://saplayer.lima-city.de/sBinder/oamt/tt.php?n=0")
-	if((s := RegExFileRead(data, "S")) = -1){
-		AddChatMessage("Fehler beim Download!")
-		return
-	}
-	loop, 20
-	{
-		if(A_Index != 19 AND A_Index != 17){
-			tt := RegExFileRead(data, A_Index)
-			AddChatMessage("TT " A_Index "{FF6600} gehört {0022FF}" tt "{FF6600}. (Stand: " s ")")
-		}
-	}
-}
-else
-	AddChatMessage("Du gehörst nicht zum Ordnungsamt!")
-return
-#If IsFrak(11) AND WinActive("GTA:SA:MP")
-:b0:/fpkeep wasser::
-:b0:/fpkeep dueng::
-Suspend Permit
-if(UseAPI){
-	GetPlayerPosition(x, y, z)
-	if(between(x, 1100, 1450) AND between(y, 80, 500))
-		zone := 0
-	else
-		zone := 1
-}
-else{
-	AddChatMessage("Wenn du an der {0022FF}Plantage in Montgomery{FF6600} bist, drücke bitte innerhalb der nächsten 3 Sekunden {0022FF}J{FF6600}.")
-	KeyWait, J, D T3
-	zone := ErrorLevel
-}
-WaitFor()
-chat := GetChatLines(2)
-if(InStr(chat, "gewässert"))
-	chat1 := "water"
-else if(InStr(chat, "gedüngt"))
-	chat1 := "dung"
-else{
-	chat1 := InStr(A_ThisLabel, "wasser") ? "water" : "dung"
-	AddChatMessage("Wenn du eben erfolgreich " (chat1 = "water" ? "gewässert" : "gedüngt") " hast, drücke bitte innerhalb der nächsten 3 Sekunden {0022FF}J{FF6600}.")
-	KeyWait, J, D T3
-	if(ErrorLevel)
-		chat1 := ""
-}
-if(zone != "" AND chat1){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/gs/plants.php?a=" chat1 "&p=" zone))
-		AddChatMessage("Die Plantage " (zone ? "außerhalb von Montgomery" : "in Montgomery") " wurde erfolgreich als " (chat1 = "dung" ? "gedüngt" : "gewässert") " eingetragen.")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten!")
-}
-else
-	AddChatMessage("Ein unbekannter Fehler ist aufgetreten!")
-return
-::/plants::
-Suspend Permit
-if(data := HTTPData("http://saplayer.lima-city.de/sBinder/gs/plants.php?a=get",,, 1)){
-	loop, Parse, data, `n, `r
-	{
-		if(RegExMatch(A_LoopField, "^(\d+)\|(\d+)\|(\d+)$", regex)){
-			regex3 += (regex2 ? 2 : 1), H
-			temp := regex3
-			temp -= A_Now, S
-			AddChatMessage((regex1 ? "Außerhalb von Montgomery" : "Montgomery") ": Nächste " (regex2 ? "Düngung" : "Bewässerung") ": {0022FF}" (temp < 0 ? "jetzt" : "in " date(temp)) "{FF6600} (letzte: " FormatTime(regex3, "dd.MM. HH:mm:ss") ")")
-		}
-	}
-}
-else
-	AddChatMessage("Ein Fehler ist aufgetreten!")
-data := ""
-return
 #If IsFrak(5) AND WinActive("GTA:SA:MP")
-::/kaufstellung::
-Suspend Permit
-if((id := PlayerInput("Gib die Uhrzeit der Aufstellung an: ")) AND (id2 := PlayerInput("Gib den Grund der Aufstellung an: ")))
-chat := PlayerInput("Gib den Chat an, in den du schreiben willst (Standard: /r): ")
-SendChat((chat ? chat : "/r") " Aufstellung | " id (is(id, "number") OR (InStr(id, ":") AND !InStr(id, "Uhr")) ? " Uhr" : "") " | " id2)
-return
-#If IsFrak(9) AND WinActive("GTA:SA:MP")
 ::/sg::
 Suspend Permit
 List(["/sg add", "/sg delete", "/sg list", "/sg bezahlt"], "/sg-Befehle: ", 1)
@@ -4905,8 +4887,8 @@ return
 ::/slsdme::
 Suspend Permit
 SendChat("/oldstats")
-WaitFor()
-RegExMatch(ChatLine(2, " LSD:["), "U)\] LSD:\[(\d+)\] Eisen:", chat)
+chat := WaitForChatLine(2, " LSD:[")
+RegExMatch(chat, "U)\] LSD:\[(\d+)\] Eisen:", chat)
 loop, % 6 - chat1
 	SendChat("/sellpizza speziale " Nickname)
 return
@@ -4935,7 +4917,7 @@ else
 pizza := ""
 ;BindReplace("/me ______________________________________~/me flüstert zu dir: Pizza Calzone | 25$~/me flüstert zu dir: Pizza Tonno | 29$~/me flüstert zu dir: Pizza Margarita | 21$~/me flüstert zu dir: Speziale Pizza | Zivi --> 750$~/me flüstert zu dir: Speziale Pizza | Fraktion --> 1000$~/me ______________________________________")
 return
-#if IsFrak(13) AND WinActive("GTA:SA:MP")
+#if IsFrak(8) AND WinActive("GTA:SA:MP")
 ::/mixWord::
 Suspend Permit
 if((word := PlayerInput("Gib ein Wort zum Verdrehen ein: ")) = ""){
@@ -4954,85 +4936,32 @@ loop{
 		break
 }
 return
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(4) OR IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
-::/übungen::
-Suspend Permit
-if(IsFrak(2)){
-	Übung_time := 19
-	Übung := ["Fahrübung", "Ortskunde", "Wantedquiz", "Waffenkunde"]
-}
-else if(IsFrak(3)){
-	Übung_time := 18
-	Übung := ["Ortskunde/Schussübung", "Fahrübung/Roleplay"]
-}
-else if(IsFrak(4)){
-	Übung_time := 19
-	Übung :=  ["Roleplay", "Flugübung", "Ortskunde", "Fahrübung"]
-}
-else if(IsFrak(5)){
-	Übung_time := 18
-	Übung := ["Roleplay", "Bombenalarm", "Kommunikations-/Fahrübung"]
-}
-else if(IsFrak(6)){
-	Übung_time := 19
-	Übung := ["Streife und RP-Kontrolle", "Waffentheorie", "Patriotenübung", "Ortskenntnisse und Fragestunde", "Einzelprüfung", "Gruppenprüfung"]
-}
-if(Übung){
-	AddChatMessage("Dies sind die Wochenübungen (jeweils um " Übung_time " Uhr):")
-	if(Übung[1])
-		AddChatMessage("Montag" (A_WDay = 2 ? " (Heute)" : "") ": {0022FF}" Übung[1])
-	if(Übung[2])
-		AddChatMessage("Dienstag" (A_WDay = 3 ? " (Heute)" : "") ": {0022FF}" Übung[2])
-	if(Übung[3])
-		AddChatMessage("Mittwoch" (A_WDay = 4 ? " (Heute)" : "") ": {0022FF}" Übung[3])
-	if(Übung[4])
-		AddChatMessage("Donnerstag" (A_WDay = 5 ? " (Heute)" : "") ": {0022FF}" Übung[4])
-	if(Übung[5])
-		AddChatMessage("Freitag" (A_WDay = 6 ? " (Heute)" : "") ": {0022FF}" Übung[5])
-	if(Übung[6])
-		AddChatMessage("Samstag" (A_WDay = 7 ? " (Heute)" : "") ": {0022FF}" Übung[6])
-	if(Übung[7])
-		AddChatMessage("Sonntag" (A_WDay = 1 ? " (Heute)" : "") ": {0022FF}" Übung[7])
-}
-Übung := Übung_time := ""
-return
-#if IsFrak(4) AND WinActive("GTA:SA:MP") AND UseAPI
-:b0:/czone::
-Suspend Permit
-if(GetVehicleModel() != 407){
-	AddChatMessage("Du bist in keinem Feuerwehrfahrzeug!")
-	return
-}
-else
-	AddChatMessage("[sBinder] /czone-Countdown gestartet")
-while(A_Index < 120 AND WinActive("GTA:SA:MP") AND GetVehicleModel() = 407){
-	start := A_TickCount
-	ShowGameText("~n~~n~~n~~w~Dekontaminierung abgeschlossen in~n~~g~" 120 - A_Index " Sekunden", 2000, 3)
-	Sleep, % start - A_TickCount + 980
-}
-if(GetVehicleModel() != 407)
-	AddChatMessage("Du bist in keiner Feuerwehr mehr!")
-else{
-	AddChatMessage("Dekontaminierung abgeschlossen!")
-	loop, 5
-	{
-		SoundPlay, *64
-		Sleep, 200
-	}
-}
-return
-#if IsFrak(4) AND WinActive("GTA:SA:MP") AND active
+
+#if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
 :b0:/mpdrop::
 Suspend Permit
-WaitFor()
-Sleep, 300
-chat := ChatLine(0, "Du hast das Lager mit")
-if(RegExMatch(chat, "Du hast das Lager mit (\d+) von (\d+) Medikamenten befüllt\.", regex)){
-	SendChat("/r Es wurden 200 Medikamente in das Lager gefüllt [" number_format(regex1) "/" number_format(regex2) "]")
-	HTTPData("http://sard-interface.tk/activity/medifahrt.php?var=Ntq5i2N2rWoCIXVyOuiN&mname=" URLEncode(Nickname) "&meds=" URLEncode(regex2))
+chat := WaitForChatLine(0, "Du hast das Lager mit")
+if(RegExMatch(chat, "Du hast das Lager mit ([0-9.]+) von ([0-9.]+) Medikamenten befüllt\.", regex)){
+	regex1 := StrReplace(regex1, ".")
+	regex2 := StrReplace(regex2, ".")
+	SendChat("/r Das Lager wurde mit " number_format(regex1) "/" number_format(regex2) " Medikamenten befüllt.")
 }
 return
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(4) IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
+:b0:/mpdelete::
+Suspend Permit
+chat := WaitForChatLine(1, "verfallene Medikamente an der Vernichtungsanlage abgeladen")
+if(RegExMatch(chat, "Du hast ([0-9.]+) verfallene Medikamente an der Vernichtungsanlage abgeladen\.", regex)){
+	regex1 := StrReplace(regex1, ".")
+	SendChat("/r Es wurden " number_format(regex1) " Medikamente zur Vernichtungsanlage gebracht.")
+}
+return
+:b0:/drop medikamente::
+Suspend Permit
+chat := WaitForChatLine(0, "Du hast das Lager erfolgreich")
+if(chat)
+    SendChat("/r Es wurden 10 Medikamente in den Healpunkt gefüllt.")
+return
+#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/vs::
 Suspend Permit
 if(UseAPI){
@@ -5066,17 +4995,17 @@ if((location := PlayerInput("Gib den Ort ein, an dem du Verstärkung brauchst: "
 else
 	AddChatMessage("Der /vs-Modus wird verlassen, da du nichts eingegeben hast.")
 return
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/showstaat::
 Suspend Permit
 chat1 := GetPlayerId()
 BindReplace("/oos /showperso " chat1 "~/oos /showlicenses " chat1 "~/oos /showvisum " chat1)
 return
-#if (IsFrak(3) OR IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/takedrogenall::
 Suspend Permit
 SendChat("/knastmember")
-WaitFor()
+WaitForChatLine(0, "Ort: ")
 chat_Arr := Object()
 while(A_Index < 30){
 	GetChatLine(A_Index-1, chat)
@@ -5096,8 +5025,7 @@ return
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
-WaitFor()
-chat := ChatLine(1, " in deiner Hauskasse.")
+chat := WaitForChatLine(1, " in deiner Hauskasse.")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Du hast aktuell \$(\d*) in deiner Hauskasse", chat)
 if(chat1)
@@ -5127,7 +5055,7 @@ return
 ::/textbinds 4::
 ::/textbinds 5::
 Suspend Permit
-cmd := ArraySort(["/reconnect", "/kpayday (/kpd)", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/kfish", "/ksell", "/druginfo", "/calc", "/kbl", "/kfishes", "/frakall", "/membersall", "/carvalue", "/car lock [1-9]", "/wolframalpha"])
+cmd := ArraySort(["/reconnect", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]", "/wolframalpha"])
 if(A_ThisLabel = "::/textbinds"){
 	if(UseAPI){
 		loop, % Ceil(cmd._maxIndex()/10){
@@ -5146,21 +5074,15 @@ if(A_ThisLabel = "::/textbinds"){
 		List(cmd)
 }
 if(IsFrak(2))
-	FrakCmd := ["/übungen", "/tt", "/ttlist", "/showstaat", "/wpbinds", "/vs"]
+	FrakCmd := ["/showstaat", "/takedrogenall", "/wpbinds", "/vs"]
 else if(IsFrak(3))
-	FrakCmd := ["/übungen", "/showstaat", "/takedrogenall", "/wpbinds", "/vs"]
-else if(IsFrak(4))
-	FrakCmd := ["/übungen", "/vs"]
+	FrakCmd := ["/vs"]
 else if(IsFrak(5))
-	FrakCmd := ["/übungen", "/showstaat", "/takedrogenall", "/wpbinds", "/vs"]
-else if(IsFrak(6))
-	FrakCmd := ["/takedrogenall", "/wpbinds", "/vs"]
-else if(IsFrak(9))
 	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ml", "/ssp"]
-else if(IsFrak(11))
-	FrakCmd := ["/fpkeep wasser", "/fpkeep dueng", "/plants"]
-else if(IsFrak(13))
+else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
+else if(IsFrak(11))
+	FrakCmd := ["/showstaat", "/takedrogenall", "/wpbinds", "/vs"]
 if(FrakCmd AND A_ThisLabel = "::/textbinds")
 	List(FrakCmd, Fraknames[Frak] ": ", 1)
 if(A_ThisLabel = "::/textbinds")
@@ -5176,7 +5098,6 @@ else{
 	, "Sendet einige leere Zeilen in den Chat, sodass dieser leer erscheint."
 	, "Bei der Eingabe dieses Befehls werdet ihr gefragt, in welchen Chat der Countdown gestartet werden soll (z.B. /s, /r, /d, /news, /f, ...).`nDann wird ein Countdown in diesen Chat gestartet. Ihr könnt den Countdown mit Entf abbrechen."
 	, "Gibt die ungefähre aktuelle Prozessorauslastung aus. Außerdem wird euch die RAM-Auslastung angezeigt."
-	, "Mit diesem Textbind seht ihr, wann ihr zuletzt eine Droge (Green, Widow, Gold, LSD) zu euch genommen habt."
 	, "Dieser Textbind zeigt dir die Mitgliederzahlen - online und gesamt - aller Fraktionen auf Nova an."
 	, "Mit diesem Textbind wird deine gesamte Hauskasse entleert."
 	, "Es wird ein Ping-Test durchgeführt, um zu erkennen, ob Internetprobleme serverseitig oder von eurem PC ausgehen."
@@ -5186,12 +5107,8 @@ else{
 	, "Mit diesem Textbind werden einige laufende Funktionen (aktuell nur /kame) des sBinders gestoppt."
 	, "Gibt alle Textbinds, die den sBinder direkt steuern, sortiert im Chat aus."
 	, "Dieser Textbind ermittelt per /oldstats die Anzahl eurer aktuellen Donuts und kauft dann so viele Donuts, wie sie euch bis 20 Donuts fehlen.`nIhr habt also nach der Eingabe dieses Befehls wieder 20 Donuts."
-	, "Mit diesem Textbind angelt der sBinder automatisch für euch. Ihr könnt den Textbind auch auf eine Taste legen, um mit einer Taste zu angeln.`nGehe dazu einfach in die eigenen Binds, wähle eine beliebige Taste oder Tastenkombination`nund gebe als Befehl '/kfish' ein."
-	, "Mit dem Textbind siehst du schon vor dem Verkauf der Fische, wie viel diese ungefähr wert sind. Der genaue Wert ist abhängig von den`ngekauften Upgrades (/upgrades). Mit {999999}/kfishes single{FFFFFF} siehst du außerdem den Wert eines jeden einzelnen Fisches (und auch den Gesamtwert)."
 	, "Nach der Eingabe dieses Textbinds wird per /oldstats dein Vermögen ausgelesen und (zusammengerechnet) ausgegeben."
 	, "Schaltet die /me-Texte zu den Animationen an bzw. aus."
-	, "Es öffnen sich zwei Chatfelder, in die du die Zahlen des Paydays eingeben musst (KEIN BOT!).`nDanach werden die Zahlen addiert und es wird /payday [Ergebnis] gesendet."
-	, "Mit diesem Textbind verkauft der sBinder automatisch eure geangelten Fische und zeigt euch den Verdienst an.`nIhr könnt den Textbind auch auf eine Taste legen, um das Ganze komfortabler zu machen.`nGehe dazu einfach in die eigenen Binds, wähle eine beliebige Taste oder Tastenkombination und gebe als Befehl '/ksell' ein."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird dieser Person eine SMS geschickt (ihr braucht also nicht /nummer einzugeben)."
 	, "Nach der Eingabe dieses Textbinds wirst du nach der Nummer, dem Namen oder der ID einer Person gefragt.`nDann wird diese Person über eine Telefonzelle, also anonym, angerufen (ihr braucht also nicht /nummer einzugeben)."
 	, "Dieser Textbind zeigt die Leader der eingegebenen Fraktion (sowohl online als auch offline).`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"").`nMit {999999}/leaders id{FFFFFF} kannst du außerdem den /id-Befehl für jeden Leader ausgeben lassen,`nso siehst du z.B., wer von ihnen auf dem Friedhof oder im Gefängnis ist."
@@ -5199,6 +5116,7 @@ else{
 	, "Zeigt alle Mitglieder der angegebenen Fraktion an.`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"")."
 	, "Zeigt die Mitglieder der angegebenen Fraktion an, die aktuell online sind.`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"").`nMit {999999}/membersonline id{FFFFFF} bzw. {999999}/checkfrak id{FFFFFF} kannst du außerdem den /id-Befehl für jedes Fraktionsmitglied ausgeben lassen,`nso siehst du z.B., wer von ihnen auf dem Friedhof oder im Gefängnis ist."
 	, "Spielt Musik ab, ohne euch auf den Desktop zu werfen. Ihr benötigt dafür den VLC Media Player in der Version 2 oder höher.`nAußerdem müsst ihr in den Einstellungen den Ordner mit der zu spielenden Musik sowie eventuell den Pfad zur vlc.exe angeben."
+	, "Zeigt alle Mitglieder deiner Fraktion an, die aktuell online sind."
 	, "Der Textbind liest die /oldstats aus und rechnet aus diesen aus, wann der nächste Payday ist."
 	, "Dieser Textbind ermittelt einige Informationen über einen beliebigen Spieler. Dabei ist es vollkommen egal, ob dieser Spieler Zivilist ist oder einen Platz in einer Fraktion hat.`nAllerdings kann es sein, dass neue Spieler oder Spieler mit einem Namechange noch nicht gefunden werden."
 	, "Damit könnt ihr einen Radio-Stream starten, alle verfügbaren Streams könnt ihr über '/radio list' abrufen.`nIhr benötigt dafür den VLC Media Player in der Version 2 oder höher."
@@ -5214,8 +5132,8 @@ else{
 	, "Mit diesem Textbind werden Fraktionsbinds aktiviert oder deaktiviert."
 	, "Gibt euch ingame alle aktuell verfügbaren Truckermissionen bis zu eurem Truckerlevel aus. Dabei werden die Aufträge auch im Trucking-Fenster aktualisiert.`nDie Daten werden direkt von der Homepage heruntergeladen.`nFormat: {999999}Ort (Produkt) | Trucklevel | Erfahrung | Einkaufspreis -> Verkaufspreis (Gewinn) | Gewicht | (Anhänger){FFFFFF}`nEventuell funktioniert dieser Textbind bei Änderungen an der Homepage kurzzeitig nicht."
 	, "Zeigt dir die aktuelle Uhrzeit und das Datum."
-	, "Mit diesem Textbind kannst du dir das Ergebnis einer (englischen) Frage von der semantischen Suchmaschine Wolfram|Alpha liefern lassen. Achtung Informationsflut!"
 	, "Zeigt dir das Wetter in LS, SF, LV und der Umgebung."
+	, "Mit diesem Textbind kannst du dir das Ergebnis einer (englischen) Frage von der semantischen Suchmaschine Wolfram|Alpha liefern lassen. Achtung Informationsflut!"
 	, "Spielt den Sound eines YouTube-Videos über den VLC Player ab. Ihr benötigt dafür den VLC Media Player in der Version 2 oder höher.`nAußerdem müsst ihr in den Einstellungen eventuell den Pfad zur vlc.exe angeben.`nMit {999999}/youtube search{FFFFFF} kannst du dir außerdem 10 Ergebnisse einer Suche anzeigen lassen, aus denen du dann eines auswählen kannst."
 	, "Nach der Eingabe dieses Textbinds werdet ihr nach der Nummer (1-8) der Notiz gefragt. Nach der Eingabe der Nummer wird die Notiz ausgegeben.`nIhr könnt auch 'all' eingeben, dann werden alle Notizen im Chat ausgegeben."]
 		for i, k in cmd
@@ -5460,7 +5378,7 @@ GuiControlGet, TruckLevelLimit, SettingsGUI:
 if(TruckEPUpload AND TruckEP != ""){
 	StringReplace, TruckEP, TruckEP, .,, All
 	if(temp := (SAMPName ? SAMPName : Nickname)){
-		if(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=trucking-ep&name=" URLEncode(temp) "&ep=" TruckEP "&check=" SSMD5(TruckEP*2 temp TruckEP))){
+		if(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-ep&name=" URLEncode(temp) "&ep=" TruckEP "&check=" SSMD5(TruckEP*2 temp TruckEP))){
 			RegExMatch(data, "^(\d+)\|(\d+)$", data)
 			AddChatMessage("Du bist derzeit Platz " data1 " von " data2 " der Trucker Top 50.")
 		}
@@ -5574,8 +5492,7 @@ if(num1 < 0 OR num1 = ""){
 	return
 }
 SendChat("/oldstats")
-WaitFor()
-chat := ChatLine(6, "Bank:[$")
+chat := WaitForChatLine(6, "Bank:[$")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Bargeld:\[\$(.*?)\] Bank:\[\$(.*?)\] Handynummer:", chat)
 num1 -= chat1
@@ -5613,7 +5530,7 @@ return
 ::/wetter::
 Suspend Permit
 AddChatMessage("Wetterdaten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=weather",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=weather",,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5652,12 +5569,8 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
 	return
 }
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
-	return
-}
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5682,7 +5595,7 @@ else if(!members)
 else if(!online)
 	AddChatMessage("0/" members " der Fraktion {0022FF}" data1 "{FF6600} online.")
 else{
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) "%), davon " leaderonline "/" leader " Leader:")
+	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader:")
 	for i, k in FrakWebsite
 	{
 		if(k[4]){
@@ -5703,7 +5616,7 @@ num2 := leaderonline := leader := members := online := 0
 if(!num2 := FrakNums[Frak])
 	return
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5730,7 +5643,7 @@ else{
 			SendChat("/id " k[1])
 	}
 	WaitFor()
-	Sleep, 30
+	Sleep, 50
 	active := online
 	leaderactive := leaderonline
 	i2 := 0
@@ -5748,8 +5661,8 @@ else{
 			i2++
 		}
 	}
-	SendChat("/f Members online: " online "/" members " (" leaderonline "/" leader " Leader)")
-	SendChat("/f Davon ingame anwesend: " active "/" online " (" leaderactive "/" leaderonline " Leader)")
+	AddChatMessage("Members online: " online "/" members " (" leaderonline "/" leader " Leader)")
+	AddChatMessage("Davon ingame anwesend: " active "/" online " (" leaderactive "/" leaderonline " Leader)")
 }
 FrakWebsite := ""
 return
@@ -5831,12 +5744,8 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
 	return
 }
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
-	return
-}
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -5895,7 +5804,7 @@ if(is(id, "integer") AND (between(StrLen(id), 1, 3))){
 if(SubStr(id, -5, 6) = "_[AFK]")
 	id := SubStr(id, 1, -6)
 AddChatMessage("Spielerdaten werden geladen...")
-if((data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=player-v2.3&p=" URLEncode(id), "")) = -1){
+if((data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=player-v2.3&p=" URLEncode(id), "")) = -1){
 	AddChatMessage("Kein Spieler mit " (is(id, "integer") ? "der Nummer" : "dem Namen") " {0022FF}" id "{FF6600} gefunden")
 	return
 }
@@ -5911,7 +5820,7 @@ if(RegExMatch(data, "U)^(.+);(\d);(\d+);(\d+);(\d{5,6});(.+);(\d{1,2});(\d+)(;.+
 	AddChatMessage("--- [sBinder] Spieler-Informationen ---")
 	AddChatMessage("Name: {0022FF}" data1 "{FF6600} -- Status: " (data2 ? "{00AA00}on" : "{FF1100}off") "line{FF6600} -- Level: " data3)
 	AddChatMessage("Alter: " data4 " -- Fraktion: " num1 (InStr(data6, "[") ? " (Rang " num2 (num3 ? ", Leader" : "") ")" : ""))
-	AddChatMessage("Handynummer: " data5 " -- Achievements: " data7 "/" data8 " (" RoundEx(data7/data8*100) "%)")
+	AddChatMessage("Handynummer: " data5 " -- Achievements: " data7 "/" data8 " (" RoundEx(data7/data8*100) " Prozent)")
 	if(data9)
 		AddChatMessage("Verheiratet mit {E809B4}" SubStr(data9, 2))
 	if(data10)
@@ -5934,7 +5843,7 @@ if(!num1 := PlayerInput("Gib den Namen des Berufs ein: ")){
 	AddChatMessage("Du hast nichts eingegeben!")
 	return
 }
-SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erzarbeiter", "Erzlieferant|Erzfahrer", "Fahrzeug|Auto", "Farmer|Bauer", "Geld|Money", "Getreide", "Hure|Schlampe|Nutte|Prostituierte", "Liefer", "Makler|Haus", "Mech|Kfz", "Reinigung", "Tankstelle", "Wartung"]
+SetJob_Names := ["Kein|Arbeitslos|Hartz", "Anwalt", "Bus", "Dete", "Dieb|Ganove", "Erz", "Farm|Getreide", "Liefer", "Mech|Kfz", "Reinigung", "Tank", "Wartung", "Taxi|Cab", "Fisch|Angel", "Gärtner|Garten|Gras", "Holz", "Jäger|Jagen", "Müll", "Pizza", "Drogen|Schieber", "Waffen", "Fastfood"]
 if(!num2 := ArrayMatch(num1, SetJob_Names)){
 	AddChatMessage("Deine Eingabe ist kein gültiger Beruf")
 	return
@@ -5960,112 +5869,6 @@ else{
 	AddChatMessage("Dein Beruf wurde erfolgreich in {0022FF}" Jobnames[Job] "{FF6600} geändert!")
 }
 return
-::/kfish::
-Suspend Permit
-if(A_IsSuspended){
-	AddChatMessage("Der sBinder ist aktuell deaktiviert. Aktiviere ihn erst!")
-	return
-}
-chat := ""
-fishes := wait := currindex := 0
-IniRead, AutoReleaseFishes, %INIFile%, Settings, AutoReleaseFishes, 0
-if(AutoReleaseFishes AND !inOR(Nickname, "SAPlayer", "AudRay", "Sundosia", "[L]ucius", "Definitiv", "ChackN0rris"))
-	AutoReleaseFishes := 0
-if(AutoReleaseFishes)
-	fishprices := [["Pike", "Seebarsch", "Thunfisch", "Schildkröte", "Aal", "Penisfisch", "Makrele", "Dorsch", "Forelle", "Lachs", "Schwertfisch", "Roter Snapper", "Zackenbarsch", "Katzenfisch", "Blauer Marlin", "Amberjack"], [7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 1]]
-while(!(InStr(chat, "Du hast zu viele Fische gefangen") OR InStr(chat, "Tote können keine Befehle") OR InStr(chat, "Du bist nicht auf") OR InStr(chat, "Du darfst nicht") OR InStr(chat, "Mit einem Premiumaccount kannst du") OR InStr(chat, "Du musst noch etwas warten") OR InStr(chat, "Deine Taschen sind voll") OR InStr(chat, "Wirf welche weg oder verkauf") OR InStr(chat, "Angeln ist in dieser Umgebung nicht möglich"))){
-	SendChat("/fish")
-	currindex ++
-	WaitFor()
-	GetChatLine(0, chat)
-	if(InStr(chat, "Als Fraktionsmitglied kannst du nur alle 2 Sekunden angeln.")){
-		wait := 1
-		Sleep, 2000
-	}
-	else if(InStr(chat, "Du hast einen ") AND InStr(chat, "Gewicht: ")){
-		currindex := 0
-		if(AutoReleaseFishes AND (RegExMatch(chat, "Du hast einen (.+) .+ Gewicht: (\d+) Kg", chat) AND (chat2 < 10 OR (fishprices[2, ArrayMatch(chat1, fishprices[1])] * chat2) < AutoReleaseFishes)))
-			SendChat("/releasefish " fishes + 1)
-		else
-			fishes ++
-		if(wait AND (fishes != 5 AND fishes != 10))
-			Sleep, 2000
-	}
-	if(A_Index / (fishes+1) > 18 OR currindex > 14)
-		break
-}
-AddChatMessage("Fischen abge" (fishes ? "schlossen" : "brochen"))
-return
-::/ksell::
-Suspend Permit
-chat := ""
-fishes := 0
-loop, 10
-{
-	SendChat("/sell fisch " A_Index)
-	if(A_Index = 1 OR A_Index = 6){
-		WaitFor()
-		GetChatLine(0, chat)
-		if(InStr(chat, "Du bist nicht im") OR InStr(chat, "Premium") OR InStr(chat, "Die Nummer muss") OR InStr(chat, "Mit dieser Nummer hast du keinen"))
-			break
-	}
-	fishes := A_Index
-}
-if(fishes > 1){
-	SendChat("/throwbackall")
-	WaitFor()
-	fishes_old := fishes
-	fishes := price := 0
-	loop, % fishes_old + 4
-	{
-		GetChatLine(A_Index - 1, chat)
-		if(InStr(chat, "kg, Preis $") AND RegExMatch(chat, "Du hast deinen .+Er wog \d{1,2}kg, Preis \$(\d+)\.", chat)){
-			price += chat1
-			fishes ++
-		}
-	}
-	if(fishes)
-		AddChatMessage("Du hast " fishes " von " fishes_old " Fisch" (chat = 1 ? "" : "en") " verkauft und $" number_format(price) " verdient.")
-}
-return
-::/kfishes::
-::/kfishes single::
-Suspend Permit
-fishprices := [["Pike", "Seebarsch", "Thunfisch", "Schildkröte", "Aal", "Penisfisch", "Makrele", "Dorsch", "Forelle", "Lachs", "Schwertfisch", "Roter Snapper", "Zackenbarsch", "Katzenfisch", "Blauer Marlin", "Amberjack"], [7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 1]]
-SendChat("/fishes")
-WaitFor()
-chat := fullchat := ""
-fishes := price := sellable := 0
-loop
-{
-	GetChatLine(A_Index-1, chat)
-	if(InStr(chat, "|__________________ Fische __________________|"))
-		break
-	else if(A_Index >= 20){
-		AddChatMessage("Fehler beim Auslesen des Chats!")
-		return
-	}
-	fullchat := chat "`n" fullchat
-}
-loop, Parse, fullchat, `n, `r
-{
-	if(RegExMatch(A_LoopField, "U)\(\d+\) Fish: (.+)\.\s+Gewicht: (\d+)\.", chat) AND chat2 != 0){
-		fishes ++
-		if(chat2 > 9){
-			price += (price_ := fishprices[2, ArrayMatch(chat1, fishprices[1])] * chat2)
-			sellable ++
-		}
-		else
-			price_ := 0
-		if(A_ThisLabel = "::/kfishes single")
-			AddChatMessage("Fisch: " chat1 " -- Gewicht: " chat2 "kg -- Gewinn: $" number_format(price_))
-	}
-}
-if(fishes)
-	AddChatMessage("Du hast " fishes " Fisch" (fishes = 1 ? "" : "e") " gefangen" (fishes = sellable ? "" : " (" sellable " verkaufbar)") ", damit verdienst du {0022FF}~$" number_format(price) "{FF6600}.")
-else
-	AddChatMessage("Du hast keine Fische gefangen!")
-return
 ::/kautosetup::
 Suspend Permit
 AddChatMessage("Automatisches Setup des sBinders wird durchgeführt, bitte warten...")
@@ -6077,7 +5880,7 @@ if(FileExist(chatlogpath)){
 	{
 	}
 	temp2 := A_TickCount - start + 30
-	temp2 -= ping("nes-reallife.de")
+	temp2 -= ping("nes-newlife.de")
 	if(chat AND between(temp2, 20, 300)){
 		WaitFor := temp2
 		AddChatMessage("Die Zeit zum Warten auf den Chatlog wurde auf {0022FF}" WaitFor " ms{FF6600} gesetzt.")
@@ -6090,18 +5893,6 @@ if(FileExist(chatlogpath)){
 else
 	AddChatMessage("Die chatlog.txt konnte nicht gefunden werden. Bitte wähle in den Einstellungen (Datei->Einstellungen) den Pfad zur chatlog.txt aus.")
 return
-/*
-::/drugsystem::
-Suspend Permit
-Drugsystem := !Drugsystem
-IniWrite, % Drugsystem, %INIFile%, Settings, Drugsystem
-AddChatMessage("Das Drogensystem wurde " (Drugsystem ? "" : "de") "aktiviert.")
-if(!Drugsystem){
-	loop, 4
-		SetTimer, DrugTimer%A_Index%, Off
-}
-return
-*/
 ::/kbl::
 Suspend Permit
 SendChat("/bl")
@@ -6156,7 +5947,7 @@ return
 Suspend Permit
 members := online := fraks := 0
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=fraks",,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=fraks",,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -6175,8 +5966,7 @@ else{
 	AddChatMessage(online "/" members " Mitglieder von " fraks " Fraktionen online:")
 	for i, k in FrakWebsite
 	{
-		if(k[1] != "Hitmen")
-			AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) "%)")
+		AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) " Prozent)")
 	}
 }
 FrakWebsite := ""
@@ -6192,12 +5982,8 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 	AddChatMessage("Kein gültiger Fraktionsname!")
 	return
 }
-if(num2 = 8){
-	AddChatMessage("Diese Fraktion wird nicht unterstützt!")
-	return
-}
 AddChatMessage("Daten werden geladen...")
-if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
+if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
 	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
@@ -6222,7 +6008,7 @@ else if(!members)
 else{
 	for i, k in FrakWebsite
 		AddChatMessage(k[1] "{FF6600} [Rang " k[3] "; Level " k[2] (k[5] ? "; Leader" : "") "]" (k[4] ? ": online" : ""), k[4] ? 0x00AA00 : 0xFF1100)
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) "%), davon " leaderonline "/" leader " Leader.")
+	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader.")
 }
 FrakWebsite := ""
 return
@@ -6230,26 +6016,25 @@ return
 Suspend Permit
 SendChat("/vehinfo")
 SendChat("/addoninfo")
-WaitFor()
+WaitForChatLine(0, "Kofferraumerweiterung:")
 chat := GetChatLines(17)
-if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Sicherheitsschloss: (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Schloss, 9: Carheal (mit Text), 10: Handyakku, 11: Kofferraum
+if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Carheal (mit Text), 9: Handyakku, 10: Kofferraum
 	carvalue := Object()
 	;{
-	carvalues := ArrayParse("445:97800|602:124000|592:12450000|429:399000|499:39874|424:36300|581:33250|536:46200|496:32400|422:66200|498:54210|575:39800|518:27600|402:123300|541:690600|482:87500|483:78000|415:712000|542:19000|589:110200|480:279000|473:123200|593:870000|507:160200|562:96000|419:112000|587:145000|521:34400|533:33800|565:42800|463:76000|466:14800|492:28000|474:89000|434:168000|579:173400|545:120800|411:780000|559:191200|493:970000|508:87800|400:53600|403:321000|517:82200|484:3670000|487:980000|500:36100|418:56000|553:9450000|522:168000|467:110200|461:45700|404:76000|603:175000|600:24300|413:23540|426:260000|471:54000|534:42200|515:875650|475:72900|468:38400|567:31900|405:49000|519:2700000|535:56600|580:215600|439:98800|561:36000|409:478200|560:195000|550:67200|506:368000|566:31900|514:574000|576:33300|454:1780200|451:620800|558:68000|491:23500|412:41000|478:6450|421:143200|586:42100|555:118800|456:125421|554:19102|477:301200|")
+	carvalues := ArrayParse("445:31500|602:34000|592:2000000|429:125000|499:12000|424:19900|581:13900|509:3000|536:12500|496:7500|481:5000|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:22000|483:34000|415:274000|542:3999|589:44000|480:220000|473:12500|593:299000|507:23500|562:27900|419:14500|587:42500|521:15000|533:19500|565:24500|463:21000|474:28500|434:78000|579:32000|545:23000|411:275000|559:38900|493:240000|508:28000|400:12000|403:49000|517:14500|484:222000|487:700000|500:24999|418:18000|510:9000|553:945000|522:44900|467:10500|461:18000|404:6800|603:125000|413:8500|426:35000|471:9000|479:10700|534:37500|515:69000|475:28000|468:12900|567:8400|519:1400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:29000|531:14500|454:79999|451:144000|558:16500|552:24780|412:9800|478:4250|421:32500|586:36000|555:27200|456:17000|554:27500|477:59000|")
 	;}
 	carvalue["price"] := carvalue["carprice"] := carvalues[data1]
 	AddChatMessage("Neupreis (ohne Addons): {0022FF}$" number_format(carvalue["carprice"]))
-	carvalue["price"] += var1 = "Vorhanden" ? 3200 : 0
-	carvalue["price"] += var2 = "Vorhanden" ? 8500 : 0
-	carvalue["price"] += var3 = "Vorhanden" ? 4500 : 0
-	carvalue["price"] += var4 = "Vorhanden" ? 8200 : 0
-	carvalue["price"] += var5 = "Vorhanden" ? 12000 : 0
-	carvalue["price"] += RegExMatch(var6, "-> (\d+)", data) ? data1 * 800 : 0
-	carvalue["price"] += var7 = "Vorhanden" ? 105000 : 0
-	carvalue["price"] += var8 = "Vorhanden" ? Ceil(carvalue["carprice"] * 0.25) : 0
-	carvalue["price"] += RegExMatch(var9, "Stufe -> (\d+)", data) ? [258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500][data1] : 0
-	carvalue["price"] += var10 = "Vorhanden" ? 16000 : 0
-	carvalue["price"] += var11 = "Vorhanden" ? 5000 : 0
+	carvalue["price"] += var1 = "Vorhanden" ? 2000 : 0
+	carvalue["price"] += var2 = "Vorhanden" ? 899 : 0
+	carvalue["price"] += var3 = "Vorhanden" ? 500 : 0
+	carvalue["price"] += var4 = "Vorhanden" ? 2500 : 0
+	carvalue["price"] += var5 = "Vorhanden" ? 2700 : 0
+	carvalue["price"] += RegExMatch(var6, "-> (\d+)", data) ? data1 * 80 : 0
+	carvalue["price"] += var7 = "Vorhanden" ? 12000 : 0
+	carvalue["price"] += RegExMatch(var8, "Stufe -> (\d+)", data) ? [10000][data1] : 0
+	carvalue["price"] += var9 = "Vorhanden" ? 750 : 0
+	carvalue["price"] += var10 = "Vorhanden" ? 2500 : 0
 	AddChatMessage("Neupreis (mit Addons): {0022FF}$" number_format(carvalue["price"]))
 	AddChatMessage("Fahrzeugwert (/car sell): {0022FF}$" number_format(Round(carvalue["carprice"] * 0.25)))
 	AddChatMessage("Hinweis: Kennzeichenfarbe sowie Umrüstungen auf Diesel/LPG werden nicht berücksichtigt.", 0xFF1100)
@@ -6268,6 +6053,17 @@ return
 ::/car lock 7::
 ::/car lock 8::
 ::/car lock 9::
+::/car lock 10::
+::/car lock 11::
+::/car lock 12::
+::/car lock 13::
+::/car lock 14::
+::/car lock 15::
+::/car lock 16::
+::/car lock 17::
+::/car lock 18::
+::/car lock 19::
+::/car lock 20::
 Suspend Permit
 SendChat("/car lock")
 if(UseAPI){
@@ -6307,158 +6103,158 @@ return
 
 ;/me-Texte
 #If meTexte && active && WinActive("GTA:SA:MP")
-:b0:/handsup::
+:?b0:/handsup::
 Suspend Permit
 SendChat("/me hebt die Hände hoch.")
 return
-:b0:/drunk::
+:?b0:/drunk::
 Suspend Permit
 SendChat("/me torkelt betrunken durch die Gegend.")
 return
-:b0:/bomb::
+:?b0:/bomb::
 Suspend Permit
 SendChat("/me montiert etwas.")
 return
-:b0:/getarrested::
+:?b0:/getarrested::
 Suspend Permit
 SendChat("/me wird festgenommen.")
 return
-:b0:/lachen::
+:?b0:/lachen::
 Suspend Permit
 SendChat("/me lacht.")
 return
-:b0:/lookout::
+:?b0:/lookout::
 Suspend Permit
 SendChat("/me schaut sich um.")
 return
-:b0:/raub::
+:?b0:/raub::
 Suspend Permit
 SendChat("/me überfällt eine Person.")
 return
-:b0:/schreien::
+:?b0:/schreien::
 Suspend Permit
 SendChat("/me schreit.")
 return
-:b0:/denken::
+:?b0:/denken::
 Suspend Permit
 SendChat("/me denkt nach.")
 return
-:b0:/crossarms::
+:?b0:/crossarms::
 Suspend Permit
 SendChat("/me verschränkt die Arme.")
 return
-:b0:/lay::
-:b0:/lay2::
-:b0:/lay3::
+:?b0:/lay::
+:?b0:/lay2::
+:?b0:/lay3::
 Suspend Permit
 SendChat("/me legt sich hin.")
 return
-:b0:/hide::
-:b0:/hi::
+:?b0:/hide::
+:?b0:/hi::
 Suspend Permit
 SendChat("/me duckt sich.")
 return
-:b0:/kotzen::
+:?b0:/kotzen::
 Suspend Permit
 SendChat("/me erbricht.")
 return
-:b0:/eat::
+:?b0:/eat::
 Suspend Permit
 SendChat("/me isst etwas.")
 return
-:b0:/winken::
+:?b0:/winken::
 Suspend Permit
 SendChat("/me winkt.")
 return
-:b0:/taichi::
+:?b0:/taichi::
 Suspend Permit
 SendChat("/me meditiert.")
 return
-:b0:/anfeuern::
+:?b0:/anfeuern::
 Suspend Permit
 SendChat("/me feuert dich an.")
 return
-:b0:/sprung::
+:?b0:/sprung::
 Suspend Permit
 SendChat("/me springt zur Seite.")
 return
-:b0:/handstand::
+:?b0:/handstand::
 Suspend Permit
 SendChat("/me macht einen Handstand.")
 return
-:b0:/deal::
+:?b0:/deal::
 Suspend Permit
 SendChat("/me bietet etwas an.")
 return
-:b0:/crack::
+:?b0:/crack::
 Suspend Permit
 SendChat("/me krümmt sich.")
 return
-:b0:/smoke::
+:?b0:/smoke::
 Suspend Permit
 SendChat("/me raucht.")
 return
-:b0:/groundsit::
-:b0:/gro::
-:b0:/sit::
+:?b0:/groundsit::
+:?b0:/gro::
+:?b0:/sit::
 Suspend Permit
 SendChat("/me setzt sich.")
 return
-:b0:/chat::
+:?b0:/chat::
 Suspend Permit
 SendChat("/me erklärt etwas.")
 return
-:b0:/dance 1::
-:b0:/dance 2::
-:b0:/dance 3::
-:b0:/dance 4::
+:?b0:/dance 1::
+:?b0:/dance 2::
+:?b0:/dance 3::
+:?b0:/dance 4::
 Suspend Permit
 SendChat("/me tanzt.")
 return
-:b0:/fucku::
+:?b0:/fucku::
 Suspend Permit
 SendChat("/me ist wütend.")
 return
-:b0:/medic::
+:?b0:/medic::
 Suspend Permit
 SendChat("/me tut alles, um die Person wiederzubeleben.")
 return
-:b0:/verletzt::
+:?b0:/verletzt::
 Suspend Permit
 SendChat("/me ist verletzt.")
 return
-:b0:/prefight::
+:?b0:/prefight::
 Suspend Permit
 SendChat("/me bereitet sich auf den Kampf vor.")
 return
-:b0:/afun::
+:?b0:/afun::
 Suspend Permit
 BindReplace("/afun~/me krault seine Eier.")
 return
-:b0:/piss::
+:?b0:/piss::
 Suspend Permit
 SendChat("/me pinkelt.")
 return
-:b0:/dinfo::
+:?b0:/dinfo::
 Suspend Permit
 SendChat("/me schaut nach, wer gestorben ist.")
 return
-:b0:/wank::
+:?b0:/wank::
 Suspend Permit
 BindReplace("/wank~/me holt sich einen runter.")
 return
 ;WPs
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(5) OR IsFrak(6)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
-	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet2 (/sg2)", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/diebstahl", "/sdiebstahl", "/mdiebstahl", "/drohung", "/drogen50 (/drogen51)", "/drogen1000", "/drogentransport (/dtrans)", "/einbruch1", "/einbruch2", "/einbruchwh", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/öffland (/öffstart)", "/lsd", "/mord", "/kmord (/kanzlermord)", "/prüfungsstörung", "/raubwp", "/staatsgefährdung1", "/staatsgefährdung2", "/ssperrgebiet (/ssg)", "/schießen", "/smord", "/sgericht", "/lstvo", "/sstvo", "/ticketersatz", "/vmord", "/vmordkanzler", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
+	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/bpassv", "/craub", "/diebstahl", "/c4dieb", "/drohung", "/drogen", "/drogentransport (/dtrans)", "/seinbruch", "/peinbruch", "/erschleichen", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/ihandel", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/mord", "/ntl", "/pstörung", "/raubwp", "/gefährdung (/staatsgefährdung)", "/schießen", "/lstvo", "/sstvo", "/smord", "/ticketv", "/vmord", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (30 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet2 (/sg2){FFFFFF}: Betreten des Flugzeugträgers (30 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/sdiebstahl{FFFFFF}: Diebstahl von Schlüsselkarten (30 WPs)`n{0022FF}/mdiebstahl{FFFFFF}: Diebstahl militärischen Equipments (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (5 WPs)`n{0022FF}/drogen50 (/drogen51){FFFFFF}: Drogen (ab 51g) (10 WPs)`n{0022FF}/drogen1000{FFFFFF}: Drogen (ab 1000g) (15 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/einbruch1{FFFFFF}: Einbruch in SAPD/FBI/O-Amt/SA:RD (20 WPs)`n{0022FF}/einbruch2{FFFFFF}: Einbruch in Area 51/Alkatraz (61 WPs)`n{0022FF}/einbruchwh{FFFFFF}: Einbruch ins Weiße Haus (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (50 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken ins Banksystem (20 WPs)`n{0022FF}/shetze{FFFFFF}: Hetzen gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetzen gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/öffland (/öffstart){FFFFFF}: Landen und Abheben auf öffentlichen Straßen (10 WPs)`n{0022FF}/lsd{FFFFFF}: LSD Besitz (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/kmord (/kanzlermord){FFFFFF}: Mord des Kanzlers (61 WPs)`n{0022FF}/prüfungsstörung{FFFFFF}: Prüfungsstörung (15 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/staatsgefährdung1{FFFFFF}: Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken) (61 WPs)`n{0022FF}/staatsgefährdung2{FFFFFF}: Staatsgefährdung (Beschuss beim Passverkauf) (40 WPs)`n{0022FF}/ssperrgebiet (/ssg){FFFFFF}: Störung eines vorübergehend ausgerufenen Sperrgebietes (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (50 WPs)`n{0022FF}/sgericht{FFFFFF}: Störung eines Gerichtsverfahrens (20 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/ticketersatz{FFFFFF}: Ticketersatz (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vmordkanzler{FFFFFF}: Versuchter Mord am Kanzler (50 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (20 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von C4 (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen{FFFFFF}: Drogenbesitz (10 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Sozialleistungen (15 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen (15 WPs)`n{0022FF}/shetze{FFFFFF}: Hetze gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetze gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/pstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (15 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
 return
 ::/braub::
 Suspend Permit
-SendWPs("Bankraub", 30)
+SendWPs("Bankraub", 40)
 return
 ::/bflucht::
 ::/bhzf::
@@ -6468,11 +6264,6 @@ return
 ::/bsgen::
 Suspend Permit
 SendWPs("Beschädigung von Stromgeneratoren", 20)
-return
-::/sperrgebiet2::
-::/sg2::
-Suspend Permit
-SendWPs("Betreten des Flugzeugträgers", 30)
 return
 ::/sperrgebiet::
 ::/sg::
@@ -6498,47 +6289,46 @@ return
 Suspend Permit
 SendWPs("Behinderung von Löscharbeiten", 20)
 return
+::/bpassv::
+Suspend Permit
+SendWPs("Beschuss während des Passverkaufes", 40)
+return
+::/craub::
+Suspend Permit
+SendWPs("Casinoraub", 40)
+return
 ::/diebstahl::
 Suspend Permit
 SendWPs("Diebstahl", 15)
 return
-::/sdiebstahl::
+::/c4dieb::
 Suspend Permit
-SendWPs("Diebstahl von Schlüsselkarten", 30)
-return
-::/mdiebstahl::
-Suspend Permit
-SendWPs("Diebstahl militärischen Equipments", 61)
+SendWPs("Diebstahl von C4", 61)
 return
 ::/drohung::
 Suspend Permit
-SendWPs("Drohung", 5)
+SendWPs("Drohung", 10)
 return
-::/drogen50::
-::/drogen51::
+::/drogen::
 Suspend Permit
-SendWPs("Drogen (ab 51g)", 10)
-return
-::/drogen1000::
-Suspend Permit
-SendWPs("Drogen (ab 1000g)", 15)
+SendWPs("Drogenbesitz", 10)
 return
 ::/drogentransport::
 ::/dtrans::
 Suspend Permit
 SendWPs("Drogentransport", 20)
 return
-::/einbruch1::
+::/seinbruch::
 Suspend Permit
-SendWPs("Einbruch in SAPD/FBI/O-Amt/SA:RD", 20)
+SendWPs("Einbruch in staatliche Institutionen", 20)
 return
-::/einbruch2::
+::/peinbruch::
 Suspend Permit
-SendWPs("Einbruch in Area 51/Alkatraz", 61)
+SendWPs("Einbruch ins State Prison", 61)
 return
-::/einbruchwh::
+::/erschleichen::
 Suspend Permit
-SendWPs("Einbruch ins Weiße Haus", 61)
+SendWPs("Erschleichen von Sozialleistungen", 15)
 return
 ::/flucht::
 Suspend Permit
@@ -6550,19 +6340,23 @@ SendWPs("Geiselnahme", 30)
 return
 ::/ggs::
 Suspend Permit
-SendWPs("Gruppierung gegen den Staat", 50)
+SendWPs("Gruppierung gegen den Staat", 40)
 return
 ::/bhack::
 Suspend Permit
-SendWPs("Hacken ins Banksystem", 20)
+SendWPs("Hacken des Banksystems", 40)
+return
+::/ihandel::
+Suspend Permit
+SendWPs("Handel mit illegalen Substanzen", 15)
 return
 ::/shetze::
 Suspend Permit
-SendWPs("Hetzen gegen den Staat", 20)
+SendWPs("Hetze gegen den Staat", 20)
 return
 ::/shetzew::
 Suspend Permit
-SendWPs("Hetzen gegen den Staat mit Waffengewalt", 40)
+SendWPs("Hetze gegen den Staat mit Waffengewalt", 40)
 return
 ::/waffen::
 Suspend Permit
@@ -6580,56 +6374,30 @@ return
 Suspend Permit
 SendWPs("Körperverletzung", 10)
 return
-::/öffland::
-::/öffstart::
-Suspend Permit
-SendWPs("Landen und Abheben auf öffentlichen Straßen", 10)
-return
-::/lsd::
-Suspend Permit
-SendWPs("LSD Besitz", 15)
-return
 ::/mord::
 Suspend Permit
 SendWPs("Mord", 35)
 return
-::/kmord::
-::/kanzlermord::
+::/ntl::
 Suspend Permit
-SendWPs("Mord des Kanzlers", 61)
+SendWPs("Null-Toleranz-Liste (Beschuss auf Staatsbeamte)", 69)
 return
-::/prüfungsstörung::
+::/pstörung::
 Suspend Permit
-SendWPs("Prüfungsstörung", 15)
+SendWPs("Prüfungsstörung", 20)
 return
 ::/raubwp::
 Suspend Permit
 SendWPs("Raub", 20)
 return
-::/staatsgefährdung1::
+::/gefährdung::
+::/staatsgefährdung::
 Suspend Permit
-SendWPs("Staatsgefährdung (Angriff/Militärkolonne/Bombe/Hacken)", 61)
-return
-::/staatsgefährdung2::
-Suspend Permit
-SendWPs("Staatsgefährdung (Beschuss beim Passverkauf)", 40)
-return
-::/ssperrgebiet::
-::/ssg::
-Suspend Permit
-SendWPs("Störung eines vorübergehend ausgerufenen Sperrgebietes", 61)
+SendWPs("Staatsgefährdung", 61)
 return
 ::/schießen::
 Suspend Permit
 SendWPs("Schießen in der Öffentlichkeit", 10)
-return
-::/smord::
-Suspend Permit
-SendWPs("Serienmord", 50)
-return
-::/sgericht::
-Suspend Permit
-SendWPs("Störung eines Gerichtsverfahrens", 20)
 return
 ::/lstvo::
 Suspend Permit
@@ -6639,21 +6407,21 @@ return
 Suspend Permit
 SendWPs("Schweres StVO-Vergehen", 10)
 return
-::/ticketersatz::
+::/smord::
 Suspend Permit
-SendWPs("Ticketersatz", 10)
+SendWPs("Serienmord", 40)
+return
+::/ticketv::
+Suspend Permit
+SendWPs("Ticketverweigerung", 10)
 return
 ::/vmord::
 Suspend Permit
 SendWPs("Versuchter Mord", 25)
 return
-::/vmordkanzler::
-Suspend Permit
-SendWPs("Versuchter Mord am Kanzler", 50)
-return
 ::/vertuschung::
 Suspend Permit
-SendWPs("Vertuschung von Drogen, Werkstoffen oder Mord", 20)
+SendWPs("Vertuschung von Drogen, Werkstoffen oder Mord", 15)
 return
 ::/werkstoffe::
 Suspend Permit
@@ -6669,7 +6437,7 @@ SendWPs("Würfeln außerhalb des Casinos", 10)
 return
 ;Ende der WPs
 #If Tel AND pText AND active AND WinActive("GTA:SA:MP")
-:b0:/p::
+:?b0:/p::
 Suspend Permit
 WaitFor()
 BindReplace(pText)
@@ -6689,62 +6457,6 @@ WaitFor()
 BindReplace(abText)
 WaitFor()
 SendChat("/h")
-return
-#If Drugsystem AND WinActive("GTA:SA:MP")
-::/druginfo::
-Suspend Permit
-drugs := ["Green", "Widow", "Gold", "LSD"]
-loop, 4
-{
-	temp := A_Now
-	temp -= DrugLastUsed%A_Index%, Seconds
-	AddChatMessage(drugs[A_Index] ": Zuletzt benutzt: " (DrugLastUsed%A_Index% ? "vor " date(temp) " (" FormatTime(DrugLastUsed%A_Index%, "HH:mm:ss") ")" : "Nie"))
-}
-return
-:b0:/use Green::
-:b0:/use Gold::
-:b0:/use LSD::
-Suspend Permit
-RegExMatch(A_ThisLabel, ":b0:/use (.+)$", chat)
-drugs := ArrayMatch(chat1, ["Green", "Widow", "Gold", "LSD"])
-DrugLastUsed%drugs% := A_Now
-/*
-if(!inOR(A_WDay, 3, 5, 1) OR A_Hour != 19){
-	drugs := ArrayMatch(chat1, ["Green", "Widow|Gold", "LSD"])
-	drugtimer := [30, 80, 120]
-	DrugUsed%drugs% := 0
-	AddChatMessage("Willst du einen Timer starten, der dich vor den Nebenwirkungen von {0022FF}" chat1 "{FF6600} warnt? Drücke dazu innerhalb der nächsten 5 Sekunden {0022FF}J{FF6600}.")
-	s := A_IsSuspended
-	Suspend On
-	KeyWait, J, D T5
-	if(!s)
-		Suspend Off
-	if(!ErrorLevel){
-		AddChatMessage("Der Drogentimer für {0022FF}" chat1 "{FF6600} wurde aktiviert.")
-		SetTimer, DrugTimer%drugs%, % -drugtimer[drugs] * 55000 ;eig. 55000
-	}
-}
-else{
-	loop, 3
-		SetTimer, DrugTimer%A_Index%, Off
-}
-drugs := ""
-return
-DrugTimer1:
-DrugTimer2:
-DrugTimer3:
-if(!WinActive("GTA:SA:MP"))
-	return
-num := SubStr(A_ThisLabel, 0)
-DrugUsed%num% ++
-if(DrugUsed%num% = 3)
-	DrugUsed%num% := 0
-else
-	SetTimer, %A_ThisLabel%, % -drugtimer[num] / (DrugUsed%num%*25) * 60000
-drugs := ["Green", "Widow bzw. Gold", "LSD"]
-AddChatMessage("Du solltest wieder {0022FF}" drugs[num] " einnehmen!")
-drugs := ""
-*/
 return
 #IfWinActive GTA:SA:MP
 
@@ -6849,61 +6561,58 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(Job = 2)
 	SendChat("/knastmember")
-else if(Job = 3){
-	if(jobvar := PlayerInput("Gib den Preis ein: "))
-		SendChat("/fare " jobvar)
-}
+else if(Job = 3)
+	SendChat("/bus")
 else if(Job = 4)
 	SendChat("/find")
 else if(Job = 5)
 	SendChat("/rob haus")
 else if(Job = 6)
-	SendChat("/startgeterz")
-else if(Job = 7){
-	if(jobvar := PlayerInput("Gib die Erzmenge ein: "))
-		SendChat("/erzload " jobvar)
-}
-else if(Job = 8){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib die Vehicle-ID (/vehicles) ein: ")))
-		SendChat("/givecar " jobvar " " jobvar1)
-}
-else if(Job = 9)
+	SendChat("/stone")
+else if(Job = 7)
 	SendChat("/startfarm")
-else if(Job = 10){
-	SendChat("/moneyload 100")
-	if(JobOption1){
-		while(!IsDialogOpen() AND A_Index < 10)
-			Sleep, 50
-		if(IsDialogOpen())
-			SendInput, {Escape}
-	}
-}
-else if(Job = 11){
-	if(jobvar := PlayerInput("Gib die Menge an Getreide an, die du einladen willst (25/50/75/100): "))
-		SendChat("/cornload " jobvar)
-}
-else if(Job = 12){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "")
-		SendChat("/sex " jobvar)
-}
-else if(Job = 13){
-	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst: "))
+else if(Job = 8){
+	if(jobvar := PlayerInput("Gib die Menge an Produkten ein, die du laden willst [1-2500]: "))
 		SendChat("/buyprods " jobvar)
 }
-else if(Job = 14){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Verkäufers ein: ")) != "" AND Trim(jobvar1 := PlayerInput("Gib die ID des Käufers ein: ")) != "" AND Trim(jobvar2 := PlayerInput("Gib den Preis für die Immobilie ein: ")) != "")
-		SendChat("/angebot " jobvar " " jobvar1 " " jobvar2)
-}
-else if(Job = 15){
+else if(Job = 9){
 	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Reparieren ein: ")))
 		SendChat("/repair car " jobvar " " jobvar1)
 }
-else if(Job = 16)
+else if(Job = 10)
 	SendChat("/startclean")
-else if(Job = 17)
+else if(Job = 11)
 	SendChat("/filljob")
+else if(Job = 12){
+	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
+		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
+		SendChat("/repair " jobvar1)
+	}
+}
+else if(Job = 13){
+	if(jobvar := PlayerInput("Gib den Fahrpreis ein: "))
+		SendChat("/fare " jobvar)
+}
+else if(Job = 14)
+    SendChat("/startfish")
+else if(Job = 15)
+    SendChat("/lawns")
+else if(Job = 16)
+    SendChat("/wood")
+else if(Job = 17)
+    SendChat("/hunt")
 else if(Job = 18)
-	SendChat("/get ersatzteil")
+    SendChat("/starttrash")
+else if(Job = 19)
+    SendChat("/startpizza")
+else if(Job = 20){
+	if(jobvar := PlayerInput("Gib den Drogenbetrag ein: "))
+		SendChat("/get drogen " jobvar)
+}
+else if(Job = 21)
+    SendChat("/materials buy")
+else if(Job = 22)
+    SendChat("/foodload")
 return
 jBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6915,7 +6624,7 @@ if(Job = 2){
 		SendChat("/free " jobvar)
 }
 else if(Job = 3)
-	SendChat("/bus")
+	SendChat("/route")
 else if(Job = 4){
 	if(jobvar := PlayerInput("Gib die ID des Fahrzeuges ein, das du suchen willst (/vehicles): "))
 		SendChat("/findcar " jobvar)
@@ -6923,39 +6632,45 @@ else if(Job = 4){
 else if(Job = 5)
 	SendChat("/rob person")
 else if(Job = 6)
-	SendChat("/stopgeterz")
-else if(Job = 7)
-	SendChat("/releaseerz")
-else if(Job = 8){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein, mit dem du einen Vertrag aufstellen willst: ")) != "" AND (jobvar1 := PlayerInput("Gib die Vertragsbedingung ein: ")))
-		SendChat("/vertrag " jobvar " " jobvar1)
+	SendChat("/takestone")
+else if(Job = 7){
+	if(jobvar := PlayerInput("Gib die Menge an Getreide an, die du einladen willst (25/50/75/100): "))
+		SendChat("/cornload " jobvar)
 }
-else if(Job = 10)
-	SendChat("/moneydrop")
-else if(Job = 11)
-	SendChat("/releasecorn")
-else if(Job = 12){
-	if(jobvar := PlayerInput("Gib die Nummer des Strips ein: "))
-		SendChat("/strip " jobvar)
-}
-else if(Job = 13)
+else if(Job = 8)
 	SendChat("/sellprods")
-else if(Job = 14)
-	SendChat("/sellhouse")
-else if(Job = 15){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auftanken ein: ")))
-		SendChat("/refill " jobvar " " jobvar1)
-}
-else if(Job = 16)
-	SendChat("/stopclean")
-else if(Job = 17)
+else if(Job = 9)
+	SendChat("/get kanister")
+else if(Job = 10)
+	SendChat("/clean")
+else if(Job = 11)
 	SendChat("/fillstation")
-else if(Job = 18){
-	if(jobvar := Trim(PlayerInput("Gib ein, was du reparieren willst (tzelle/haustuer): "))){
-		jobvar1 := RegExMatch(jobvar, "tuer|tür|haus") ? "haustuer" : "tzelle"
-		SendChat("/repair " jobvar1)
-	}
+else if(Job = 12)
+    SendChat("/tzelle")
+else if(Job = 13){
+	if(jobvar := PlayerInput("Gib die ID des Fahrgastes ein: "))
+		SendChat("/startfare " jobvar)
 }
+else if(Job = 14)
+    SendChat("/trackfish")
+else if(Job = 15)
+    SendChat("/getgras")
+else if(Job = 16)
+    SendChat("/takewood")
+else if(Job = 17)
+    SendChat("/trackhunt")
+else if(Job = 18)
+    SendChat("/empty")
+else if(Job = 19)
+    SendChat("/getpizza")
+else if(Job = 20){
+	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib die Menge an Drogen ein: ")) AND (jobvar2 := PlayerInput("Gib den Preis für die Drogen ein: ")))
+		SendChat("/sellhand " jobvar " " jobvar1 " " jobvar2)
+}
+else if(Job = 21)
+    SendChat("/materials deliver")
+else if(Job = 22)
+    SendChat("/releasefood")
 return
 jBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -6967,35 +6682,155 @@ if(Job = 2){
 		SendChat("/checkjailtime " jobvar)
 }
 else if(Job = 3)
-	SendChat("/buslock")
+    SendChat("/buslock")
 else if(Job = 5)
 	SendChat("/rob vehicle")
+else if(Job = 6)
+    SendChat("/deliverstone")
 else if(Job = 7)
-	SendChat("/einfo")
-else if(Job = 10)
-	SendChat("/moneyloadstatus")
-else if(Job = 11)
-	SendChat("/pinfo")
-else if(Job = 13)
+	SendChat("/releasecorn")
+else if(Job = 8)
 	SendChat("/load")
-else if(Job = 15){
-	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Wechseln der Reifen ein: ")))
-		SendChat("/tirechange " jobvar " " jobvar1)
-}
+else if(Job = 9)
+    SendChat("/get werkzeug")
+else if(Job = 10)
+	SendChat("/stopclean")
+else if(Job = 12)
+	SendChat("/atminfo")
+else if(Job = 13)
+    SendChat("/fare")
+else if(Job = 14)
+    SendChat("/catchfish")
+else if(Job = 15)
+    SendChat("/unloadgras")
 else if(Job = 16)
-	SendChat("/exit")
+    SendChat("/deliverwood")
+else if(Job = 17)
+    SendChat("/takehunt")
 else if(Job = 18)
-	SendChat("/tzinfo")
+    SendChat("/unloadtrash")
+else if(Job = 19)
+    SendChat("/delivery")
+else if(Job = 20)
+    SendChat("/crackload")
+else if(Job = 21){
+	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "")
+		SendChat("/sellgun " jobvar)
+}
 return
 jBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(Job = 5)
+if(Job = 3)
+    SendChat("/delbus")
+else if(Job = 5)
 	SendChat("/printkey")
+else if(Job = 6)
+    SendChat("/stopstone")
+else if(Job = 7)
+	SendChat("/pinfo")
+else if(Job = 8)
+    SendChat("/prodinfo")
+else if(Job = 9){
+	if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis fürs Auffüllen ein: ")))
+		SendChat("/refill " jobvar " " jobvar1)
+}
+else if(Job = 12){
+    if(Trim(jobvar := PlayerInput("Gib die ID der Telefonzelle ein: ")))
+        SendChat("/marktz " jobvar)
+}
+else if(Job = 13)
+    SendChat("/accept taxi")
+else if(Job = 14)
+    SendChat("/unloadfish")
 else if(Job = 15)
-	SendChat("/duty")
+    SendChat("stopgras")
+else if(Job = 16)
+    SendChat("/stopwood")
+else if(Job = 17)
+    SendChat("/deliverhunt")
+else if(Job = 18)
+    SendChat("/stoptrash")
+else if(Job = 19)
+    SendChat("/unloadpizza")
+else if(Job = 20)
+    SendChat("/releasecrack")
+return
+jBind5:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(Job = 6)
+    SendChat("/startgeterz")
+else if(Job = 9){
+    if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für den Reifenwechsel ein: ")))
+		SendChat("/tirechange " jobvar " " jobvar1)
+}
+else if(Job = 12){
+    if(Trim(jobvar := PlayerInput("Gib die ID des ATM ein: ")))
+        SendChat("/markatm " jobvar)
+}
+else if(Job = 13)
+    SendChat("/cancel taxi")
+else if(Job = 14)
+    SendChat("/stopfish")
+else if(Job = 17)
+    SendChat("/stophunt")
+else if(Job = 18)
+    SendChat("/gettrash")
+else if(Job = 19)
+    SendChat("/stoppizza")
+return
+jBind6:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(Job = 6)
+    SendChat("/stopgeterz")
+else if(Job = 9)
+    SendChat("/mduty")
+else if(Job = 12)
+    SendChat("/get ersatzteil")
+return
+jBind7:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(Job = 6){
+	if(jobvar := PlayerInput("Gib die Menge an Erz an, die du einladen willst (50/100/150/200): "))
+		SendChat("/erzload " jobvar)
+}
+else if(Job = 9){
+    if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")) != "" AND (jobvar1 := PlayerInput("Gib den Preis für die Lackierung ein: ")))
+		SendChat("/respray " jobvar " " jobvar1)
+}
+return
+jBind8:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(Job = 6)
+    SendChat("/releaseerz")
+else if(Job = 9)
+    SendChat("/respraycolor")
+return
+jBind9:
+if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
+	SendHKey()
+	return
+}
+if(Job = 6)
+    SendChat("/einfo")
+else if(Job = 9){
+    if(Trim(jobvar := PlayerInput("Gib die ID des Spielers ein: ")))
+		SendChat("/showcolors " jobvar)
+}
 return
 
 ;fBinds
@@ -7006,153 +6841,79 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1)){
 	SendChat("/duty")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(InStr(chat, "Du bist nun als Ordnungsbeamter im Dienst! Du wirst Anrufe empfangen!!"))
-		BindReplace("/equip~/takku~/r Meldet sich zum Dienst")
-	else if(InStr(chat, "Du bist nun nicht mehr als Ordnungsbeamter im Dienst! Du wirst keine Anrufe empfangen!!"))
-		BindReplace("/r Meldet sich vom Dienst ab~/drop guns")
-}
-else if(IsFrak(3, 1)){
-	SendChat("/duty")
-	WaitFor()
-	if(ChatLine(0, " nimmt seine Marke aus dem Spint.", 4)){
+	chat := WaitForChatLine(0, " nimmt seine Marke aus dem Spint.")
+	if(chat){
 		BindReplace("/takku~/equip")
 		WaitFor()
 		SendInput, {enter}
 	}
 }
-else if(IsFrak(4, 1)){
+else if(IsFrak(3, 1)){
 	SendChat("/duty")
-	WaitFor()
-	chat := ChatLine(0, "Du bist n", 2)
-	if(InStr(chat, "Du bist nun als Arzt im Dienst und wirst Einsätze bekommen."))
-		BindReplace("/equip~/takku~/r " FrakOption%FrakOption4% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 1")
+	chat := WaitForChatLine(0, "Du befindest dich nun|Du bist nicht am Dutypunkt in", 1,, 1)
+	if(InStr(chat, "Du befindest dich nun im Dienst."))
+		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
 	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 1")
-	else if(InStr(chat, "Du bist nun nicht mehr als Arzt im Dienst."))
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 6")
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
+	else if(InStr(chat, "Du befindest dich nun nicht mehr im Dienst."))
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 }
+else if(IsFrak(4, 1))
+	BindReplace("/getbizflag~/dropbizflag~/gangflag")
 else if(IsFrak(5, 1))
-	BindReplace("/equip~/takku")
+	SendChat("/use lsd")
 else if(IsFrak(6, 1))
-	SendChat("/use donut")
-else if(IsFrak(7, 1))
-	SendChat("/use herbs")
-else if(IsFrak(8, 1)){
-	if(A_WDay = 1 OR A_WDay = 7){
-		if A_Hour between 6 and 11
-			fareprice := 12
-		else if A_Hour between 12 and 17
-			fareprice := 14
-		else if A_Hour between 18 and 23
-			fareprice := 17
-		else if A_Hour between 0 and 5
-			fareprice := 20
-	}
-	else{
-		if A_Hour between 6 and 11
-			fareprice := 10
-		else if A_Hour between 12 and 17
-			fareprice := 11
-		else if A_Hour between 18 and 23
-			fareprice := 14
-		else if A_Hour between 0 and 5
-			fareprice := 17
-	}
-	SendChat("/fare " fareprice)
-}
-else if(IsFrak(9, 1))
-	SendChat("/use lsd")
-else if(IsFrak(10, 1))
 	SendChat("/oos Yakuza | Spielst du mit uns, spielst du mit dem Tod!")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("/equip")
-else if(IsFrak(12, 1))
-	BindReplace("/s » San Fierro Rifa ÜBERFALL «~/s Sofort aussteigen!~/s Bei Verweigerung gibt es Stress!~/s » San Fierro Rifa ÜBERFALL «")
-else if(IsFrak(13, 1))
+else if(IsFrak(8, 1))
 	BindReplace("/duty~/equip")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/use gold")
-else if(IsFrak(15, 1))
-	BindReplace("/dropbizflag~/getbizflag~/getflagpos 9")
-else if(IsFrak(16, 1))
-	SendChat("/use lsd")
-else if(IsFrak(17, 1)){
-	temp := ""
-	while(A_Index < 100){
-		GetChatLine(A_Index-1, chat)
-		if(InStr(chat, "zu ermorden.") AND RegExMatch(chat, "U)Hitman .+, hat (.+) beauftragt: .+\(ID:(\d+)\), für \$\d+ zu ermorden\.", chat) AND chat1 = Nickname){
-			temp := chat2
-			break
-		}
-	}
-	if(temp)
-		SendChat("/findhit " temp)
-	else
-		AddChatMessage("Es konnte kein Auftrag für dich gefunden werden!")
-}
+else if(IsFrak(10, 1))
+	BindReplace("/dropbizflag~/getbizflag~/getflagpos")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Federal Bureau of Investigation im Einsatz «««~/m [»»» Machen Sie unverzüglich den Weg frei! «««")
+else if(IsFrak(12, 1))
+	BindReplace("/dropbizflag~/getbizflag~/getflagpos")
 return
 fBind2:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1)){
-	SendChat("/getcarowner")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(RegExMatch(chat, "Besitzer ist eine Person namens (.*), over\.", chat)){
-		SendChat("/me tippt das Kennzeichen in sein Handy ein.")
-		SendChat("/id " chat1)
-	}
-}
-else if(IsFrak(3, 1))
+if(IsFrak(2, 1))
 	SendChat("/use donut")
-else if(IsFrak(4, 1)){
+else if(IsFrak(3, 1)){
 	SendChat("/accept medic")
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		while(!chat := ChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.", 3)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
+		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
+		if (!chat)
+			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
-		BindReplace("/r " FrakOption%FrakOption4% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 3")
-		HTTPData("http://sard-interface.tk/activity/services.php?var=Posdw5mXyn4apXqXef&mname=" URLEncode(Nickname) "&sname=" URLEncode(chat1))
+		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 	}
 }
+else if(IsFrak(4, 1))
+	BindReplace("/mv~/oldmv")
 else if(IsFrak(5, 1))
-	SendChat("/checkwanted " PlayerInput("Gib die ID des Spielers ein: "))
+	SendChat("/use gold")
 else if(IsFrak(6, 1))
-	BindReplace("/m .:San Andreas Bundeswehr:.~/m Fahren Sie sofort rechts ran und machen Sie /handsup!~/m Sollten Sie uns nicht Folge leisten, wenden wir Gewalt an!")
-else if(IsFrak(7, 1))
-	SendChat("/use green")
-else if(IsFrak(8, 1)){
-	regex1 := ""
-	RegExMatch(ChatLine(0, "ist ins Taxi gestiegen", 5), "U)Kunde (.+) ist ins Taxi gestiegen", regex)
-	SendChat("/startfare " (regex1 ? regex1 : PlayerInput("Gib den Namen oder die ID des Kunden ein: ", 1)))
-}
-else if(IsFrak(9, 1))
-	SendChat("/use gold")
-else if(IsFrak(10, 1))
 	SendChat("Yakuza | Wir sehen, wir kommen, wir töten, wir gehen! | Yakuza")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("/use gold")
-else if(IsFrak(12, 1))
-	BindReplace("/me flüstert dir: [--------Becks Partyservice--------]~/me flüstert dir: Du brauchst ein frisches Becks?~/me flüstert dir: |_Gold_| """""" |_Widow_|~/me flüstert dir: |_200$/g_| """""" |_100$/g_|~/me flüstert dir: [--------Becks Partyservice--------]")
-else if(IsFrak(13, 1))
+else if(IsFrak(8, 1))
 	SendChat("/aufzug")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/use green")
-else if(IsFrak(15, 1))
+else if(IsFrak(10, 1))
 	BindReplace("/s LV²² | Überfall! Bleib sofort stehen!~/s LV²² | Geld her dann passiert dir nichts!")
-else if(IsFrak(16, 1))
-	SendChat("/use gold")
-else if(IsFrak(17, 1))
-	SendChat("/gethit")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Federal Bureau of Investigation «««~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
+else if(IsFrak(12, 1))
+	BindReplace("/s Varrios los Aztecas >|< Überfall >|< Halt sofort an, Puta Madre")
 return
 fBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7160,207 +6921,123 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1))
-	BindReplace("/mv~/towopen~/me drückt eine Taste auf seiner Fernbedienung.")
-else if(IsFrak(3, 1))
 	SendChat("/checkwanted " PlayerInput("Gib die ID des Spielers ein: "))
+else if(IsFrak(3, 1))
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
 else if(IsFrak(4, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 4")
-else if(IsFrak(5, 1))
-	BindReplace("/m « Hier spricht das Federal Bureau of Investigation »~/m « Machen Sie unverzüglich den Weg frei »")
-else if(IsFrak(6, 1))
-	BindReplace("Guten Tag, dies ist eine Passkontrolle.~Bitte zeigen Sie mir ihren Personalausweis und ihre Scheine.~/showstaat")
-else if(IsFrak(7, 1))
-	SendChat("/use gold")
-else if(IsFrak(8, 1))
-	BindReplace("/c Herzlich Willkommen beim San Andreas Taxiteam.~/c Wohin darf ich Sie bringen?")
-else if(IsFrak(9, 1))
 	SendChat("/use green")
-else if(IsFrak(10, 1))
+else if(IsFrak(5, 1))
+	SendChat("/use green")
+else if(IsFrak(6, 1))
 	BindReplace("/s Yakuza | »» Überfall «« /handsup & Kohle her! | Yakuza~/oos /pay " GetPlayerId() " [Betrag]~/s Gib mir sofort deine ganze Kohle~/s Sonst rollt dein Kopf die Straße entlang")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("/use lsd")
+else if(IsFrak(8, 1))
+	SendChat("/lottoinfo")
+else if(IsFrak(9, 1))
+	SendChat("/equip")
+else if(IsFrak(10, 1))
+	SendChat("/ad LV²² | Mobiler Tequilaverkäufer on Tour | LV²² Call/SMS")
+else if(IsFrak(11, 1))
+	BindReplace("/m [»»» Drug Enforcement Administration «««~/m [» Person- und Güterkontrolle im Bezug auf Drogenkriminalität «~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 else if(IsFrak(12, 1))
 	SendChat("/gangflag")
-else if(IsFrak(13, 1))
-	SendChat("/lottoinfo")
-else if(IsFrak(14, 1))
-	SendChat("/equip")
-else if(IsFrak(15, 1))
-	SendChat("/ad LV²² | Mobiler Tequilaverkäufer on Tour | LV²² Call/SMS")
-else if(IsFrak(16, 1))
-	SendChat("/dropbizflag")
-else if(IsFrak(17, 1))
-	SendChat("/portable")
 return
 fBind4:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1)){
-	BindReplace("/cveh licht")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(InStr(chat, "Info: Fahrzeuglicht eingeschaltet."))
-		SendChat("/cveh licht")
-	SendChat("/carticket")
-}
-else if(IsFrak(3, 1))
-	BindReplace("/m Hier spricht die Polizei~/m Fahren Sie rechts ran, stellen Sie den Motor ab und~/m entfernen sich 10m vom Fahrzeug.~/m Heben Sie die Hände (/handsup)!~/m Sollten Sie Widerstand leisten, werden wir Gewalt anwenden.")
-else if(IsFrak(4, 1)){
+if(IsFrak(2, 1))
+	BindReplace("/m [SA:PD] Fahren Sie rechts ran und stellen Sie den Motor ab.~/m Warten Sie auf weitere Anweisungen der Beamten! [SA:PD]")
+else if(IsFrak(3, 1)){
 	SendChat("/revive")
 	WaitFor()
-	GetChatLine(0, chat)
-	if(InStr(chat, "Du bist bei keiner Leiche!"))
-		SendChat("//")
-	else if(InStr(chat, "Die Person ist durch die Blacklist gestorben und kann nicht reanimiert werden."))
-		SendChat("/ame »» BL-Kill - Kann nicht wiederbelebt werden ««")
-	else if(InStr(chat, "Dieser Spieler kann nicht reanimiert werden, da er durch ein Kopfgeld gestorben ist."))
-		SendChat("/ame »» Hitman-Kill - Kann nicht wiederbelebt werden ««")
-	else if(InStr(chat, "Der Spieler ist wieder gespawnt. Du warst zu langsam."))
-		SendChat("/ame »» Spieler ist wieder gespawnt ««")
-	else if(!InStr(chat, "Du bist nicht im Dienst"))
-		SendChat("/ame »» Im Revive ««")
+	GetChatLine(0, chat1)
+	GetChatLine(2, chat2)
+	if(!InStr(chat1, "Du bist bei keiner Leiche") && !InStr(chat1, "Begib dich zur Verwaltung und gib /get medizin ein") && !InStr(chat1, "Du bist schon dabei einen toten Spieler zu reanimieren!"))
+	    if(InStr(chat2, "Die Person wird nicht hier spawnen, da sie AFK ist oder eine CP-Strafe hat"))
+	        SendChat("/ame »» Spieler AFK oder Checkpointstrafe ««")
+	    else
+	        SendChat("/ame »» im Revive ««")
+    if(RegExMatch(chat1, "INFO: Nach der Reanimation hast du noch ([0-9.]+) Medikamente\.", regex)){
+        if(StrReplace(regex1, ".") <= 10)
+            AddChatMessage("Du solltest demnächst das Krankenhaus aufsuchen und deine Medikamente aufstocken.")
+    }
 }
+else if(IsFrak(4, 1))
+    SendChat("/use gold")
 else if(IsFrak(5, 1))
-	BindReplace("/m « Hier spricht das Federal Bureau of Investigation »~/m « Bitte fahren Sie rechts ran! »~/m « Bei Widerstand müssen wir Gewalt anwenden »")
-else if(IsFrak(6, 1))
-	BindReplace("/m ..::Achtung Achtung::..~/m ..::Räumen Sie die Straße::..~/m ..::San Andreas Bundeswehr im Einsatz::..")
-else if(IsFrak(7, 1))
-	SendChat("/use lsd")
-else if(IsFrak(8, 1))
-	BindReplace("/c Alles klar, ich mache mich sofort auf den Weg!~/f ** (( Taxi " FrakOption1 " - Status: befördere Kunden zum Ziel~/ame Taxi belegt!")
-else if(IsFrak(9, 1))
 	SendChat("/equip")
-else if(IsFrak(10, 1)){
+else if(IsFrak(6, 1)){
 	SendChat("/nummer " Nickname)
-	WaitFor()
-	if(!RegExMatch(ChatLine(0, ", Ph: ", 2), "U)Name: .*, Ph: (\d+)$", chat) OR !chat1)
+	chat := WaitForChatLine(0, ", Ph: ")
+	if(!RegExMatch(chat, "U)Name: .*, Ph: (\d+)$", chat) OR !chat1)
 		chat1 := "me"
 	BindReplace("Yakuza - feinste Ware aus dem fernen Osten~Du brauchst was? /call " chat1 " | Yakuza~Nur bei mir, einfach aufsteigen~Munition der Klasse 1 & Klasse 2.~Waffen der Klasse 1 & Klasse 2.")
 }
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("/gangflag")
+else if(IsFrak(8, 1))
+	SendChat("/use donut")
+else if(IsFrak(9, 1))
+	SendChat("/use lsd")
+else if(IsFrak(10, 1))
+	SendChat("/gangflag")
+else if(IsFrak(11, 1))
+	BindReplace("/s » Federal Bureau of Investigation «~/s Stehen bleiben und Hände hoch~/oos Befehl: /handsup")
 else if(IsFrak(12, 1))
 	SendChat("/use lsd")
-else if(IsFrak(13, 1))
-	SendChat("/use donut")
-else if(IsFrak(14, 1))
-	SendChat("/use lsd")
-else if(IsFrak(15, 1))
-	SendChat("/gangflag")
-else if(IsFrak(16, 1))
-	SendChat("/getbizflag")
-else if(IsFrak(17, 1))
-	SendChat("/maskinfo")
 return
 fBind5:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1)){
-	BindReplace("/cveh licht~/cveh motor")
-	WaitFor()
-	GetChatLine(1, chat1)
-	GetChatLine(0, chat)
-	if(InStr(chat1, "Info: Fahrzeuglicht eingeschaltet."))
-		SendChat("/cveh licht")
-	if(InStr(chat, "Info: Motor eingeschaltet."))
-		SendChat("/cveh motor")
-	SendChat("/towpark")
-}
-else if(IsFrak(3, 1))
+if(IsFrak(2, 1))
 	BindReplace("/m »»»» Polizeieinsatz ««««~/m Bitte machen Sie den Weg frei und ermöglichen die Durchfahrt!")
+else if(IsFrak(3, 1))
+	BindReplace("/m SARD | ACHTUNG: Dienstfahrzeug im Einsatz!!~/m SARD | Bitte räumen Sie die Straße frei!!")
 else if(IsFrak(4, 1))
-	BindReplace("/m + ::::::::  S.A.R.D.  :::::::: +~/m + »» Vorsicht, Rettungsdienst im Einsatz! «« +~/m + Bitte räumen Sie die Straßen/Kreuzung! +")
+    SendChat("/use lsd")
 else if(IsFrak(5, 1))
-	SendChat("/m « Steigen Sie ab/aus ihrem Fahrzeug und machen Sie /handsup »")
-else if(IsFrak(6, 1))
-	BindReplace("/fucku~/me salutiert")
-else if(IsFrak(7, 1))
-	SendChat("/s » Devils MC × Überfall - Rechts ran und aussteigen")
-else if(IsFrak(8, 1))
-	BindReplace("/c Wir haben Ihr Wunschziel erreicht!~/c Vielen Dank und bis zur nächsten Fahrt mit dem SA:TT.~/f ** (( Taxi " FrakOption1 " - Status: Kundenauftrag erledigt~/ame Taxi frei!")
-else if(IsFrak(9, 1))
 	BindReplace("/s | LCN | Sofort stehen bleiben!~/s »» Dann passiert dir auch nichts! ««")
-else if(IsFrak(10, 1))
+else if(IsFrak(6, 1))
 	SendChat("/materials buildgun")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("/swapgun")
-else if(IsFrak(12, 1))
-	SendChat("/use green")
-else if(IsFrak(13, 1))
+else if(IsFrak(8, 1))
 	SendChat("/breaklive")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/gangfight")
-else if(IsFrak(15, 1))
+else if(IsFrak(10, 1))
 	SendChat("/use lsd")
-else if(IsFrak(16, 1))
-	SendChat("/accept sex")
-else if(IsFrak(17, 1)){
-	temp := ""
-	while(A_Index < 100){
-		GetChatLine(A_Index-1, chat)
-		if(InStr(chat, "zu ermorden.") AND RegExMatch(chat, "U)Hitman .+, hat (.+) beauftragt: .+\(ID:(\d+)\), für \$\d+ zu ermorden\.", chat) AND chat1 = Nickname){
-			temp := chat2
-			break
-		}
-	}
-	if(temp)
-		SendChat("/id " temp)
-	else
-		AddChatMessage("Es konnte kein Auftrag für dich gefunden werden!")
-}
+else if(IsFrak(12, 1))
+	SendChat("/use gold")
 return
 fBind6:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1)){
-	SendChat("/radar")
-	WaitFor()
-	chat := ChatLine(1, "Geschwindigkeit von einem", 2)
-	RegExMatch(chat, "U)Geschwindigkeit von einem .* gemessen \| Fahrer: (.*)\.$", chat)
-	if(chat1 AND chat1 != "Unbekannt")
-		SendChat("/id " chat1)
-}
+if(IsFrak(2, 1))
+	BindReplace("/m [SA:PD] Fahren Sie sofort rechts ran und stellen Sie den Motor ab.~/m Steigen Sie aus und legen sich auf den Boden!~/m Sollten Sie Widerstand leisten, wird dies Folgen haben! [SA:PD]~/oos /verletzt")
 else if(IsFrak(3, 1))
-	BindReplace("Guten Tag, Allgemeine Verkehrskontrolle.~Bitte zeigen Sie mir Ihre Papiere~/showstaat")
-else if(IsFrak(4, 1))
-	BindReplace("/m + ::::::::  S.A.R.D.  :::::::: +~/m + »» Vorsicht, Medicopter startet/landet! «« +~/m + Bitte räumen Sie die Straßen/Kreuzung! +")
+	BindReplace("/m SARD | ACHTUNG: Rettungshelikopter startet / landet!!~/m SARD | Bitte räumen Sie die Landefläche frei!!")
+else if(IsFrak(4,1))
+    BindReplace("/me spuckt auf den Boden und guckt Böse~/s Plata o' Plomo, hijo de Puta?~/fucku")
 else if(IsFrak(5, 1))
-	SendChat("/s « Stehen bleiben - FBI! »")
-else if(IsFrak(6, 1))
-	BindReplace("/m ..::Hier Spricht die San Andreas Bundeswehr::..~/m ..::Räumen Sie sofort den Platz::..~/m ..::Oder Sie müssen mit rechtlichen Konsequenzen rechnen::..")
-else if(IsFrak(7, 1))
 	SendChat("/gangflag")
-else if(IsFrak(8, 1)){
-	SendChat("/accept taxi")
-	WaitFor()
-	while(!chat := ChatLine(0, " angenommen, fahre zu dem Marker auf der MiniMap", 3)){
-		if(A_Index > 35)
-			return
-		Sleep, 100
-	}
-	RegExMatch(chat, "U)Du hast den Auftrag von (.+) angenommen, fahre zu dem Marker auf der MiniMap", chat)
-	BindReplace("/f ** (( Taxi " FrakOption1 " - Status: Kundenauftrag" (chat1 ? " von " chat1 : "") " angenommen~/ame Taxi belegt!")
-}
+else if(IsFrak(6, 1))
+	SendChat("/materials buildammo")
+else if(IsFrak(7, 1))
+	BindReplace("/s » Grove Street » ÜBERFALL « Grove Street «~/s Sofort aussteigen!~/s Sonst gibt es Stress!~/s » Grove Street » ÜBERFALL « Grove Street «")
 else if(IsFrak(9, 1))
 	SendChat("/gangflag")
 else if(IsFrak(10, 1))
-	SendChat("/materials buildammo")
-else if(IsFrak(11, 1))
-	BindReplace("/s » Grove Street » ÜBERFALL « Grove Street «~/s Sofort aussteigen!~/s Sonst gibt es Stress!~/s » Grove Street » ÜBERFALL « Grove Street «")
+	SendChat("/use gold")
 else if(IsFrak(12, 1))
-	SendChat("/use gold")
-else if(IsFrak(14, 1))
-	SendChat("/gangflag")
-else if(IsFrak(15, 1))
-	SendChat("/use gold")
-else if(IsFrak(16, 1))
-	BindReplace("/s ÜBERFALL !!! STEHEN BLEIBEN !!! KORSAKOW FAMILIE !!!~/s Keine Bewegung ! Oder wir machen Kopf bei Strasse !!!")
+	SendChat("/fpkeep wasser")
 return
 fBind7:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7368,71 +7045,45 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1))
-	SendChat("/tazer")
-else if(IsFrak(3, 1))
 	BindReplace("/s Stehenbleiben, Sie sind verhaftet!~/s Legen Sie sich auf den Boden (/verletzt)!")
+else if(IsFrak(3, 1))
+	BindReplace("/m SARD | ACHTUNG: Castor-Transport!!~/m SARD | Bitte halten Sie die Straße frei!!~/m SARD | Bei Entfernung unterhalb von 100m erfolgt Schussfreigabe!!")
 else if(IsFrak(4, 1))
-	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
+    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me zeigt seine Preisliste~/deal~/me Deagle=3000$ | Mp5=2850$| Shotgun=2800$| AK-47=4200$| M4=4200$| Rifle=5600$~/me Deagle-Muni=10$ | Mp5-Muni=12$ | Shotgun-Muni=12$~/me AK-47-Muni=17$ | M4-Muni=17$ | Rifle-Muni=20$~[Wait 800]/me flüstert: Und....Interesse ?~[Wait 800]/chat2~[Wait 2000]/rap1")
 else if(IsFrak(5, 1))
-	BindReplace("/cc Bitte bleiben Sie ruhig. Sie sind festgenommen.~/cc Sie haben das Recht zu schweigen. Alles, was Sie sagen~/cc kann vor Gericht gegen Sie verwendet werden~/cc Leisten Sie besser keinen Widerstand")
-else if(IsFrak(6, 1))
-	BindReplace("/m »»» Atommüllfahrt «««~/m »»» Fahren Sie sofort aus der Sichtreichweite der Kolonne «««~/m »»» Ansonsten wenden wir Gewalt an «««")
-else if(IsFrak(8, 1))
-	BindReplace("/f ** (( Taxi " FrakOption1 " - Status: am Taxistand/in Bereitschaft~/ame Taxi frei!")
-else if(IsFrak(9, 1))
 	BindReplace("/me ______________________________________~/me flüstert zu dir: Pizza Calzone | 25$~/me flüstert zu dir: Pizza Tonno | 29$~/me flüstert zu dir: Pizza Margarita | 21$~/me flüstert zu dir: Speziale Pizza | Zivi --> 750$~/me flüstert zu dir: Speziale Pizza | Fraktion --> 1000$~/me ______________________________________")
-else if(IsFrak(10, 1))
+else if(IsFrak(6, 1))
 	SendChat("/materials getgun")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("† We come we kill we go no one has seen it so it does a Nigga from GroveStreet †")
-else if(IsFrak(12, 1))
-	SendChat("/accept sex")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/gangwar")
-else if(IsFrak(15, 1))
-	SendChat("/use herbs")
-else if(IsFrak(16, 1))
-	SendChat("/gangflag")
+else if(IsFrak(10, 1))
+	SendChat("/fpkeep wasser")
+else if(IsFrak(12, 1))
+	SendChat("/fpkeep dueng")
 return
 fBind8:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1)){
-	SendChat("/accept ordnung")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(!InStr(chat, "Niemand benötigt das Ordnungsamt.")){
-		while(!chat := ChatLine(0, "'s Auftrag angenommen", 4)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
-		RegExMatch(chat, "U)Du hast (.*)'s Auftrag angenommen", chat)
-		SendChat("/r [Auftrag" (chat1 ? " von " chat1 : "") " angenommen]")
-	}
-}
+if(IsFrak(2, 1))
+	SendChat("/swapgun")
 else if(IsFrak(3, 1))
-	BindReplace("Ich möchte Sie nun auf die Einnahme von fahrtüchtigkeitseinschränkenden Substanzen untersuchen.~/Sind Sie mit einem Alkoholtest einverstanden?~/alktest " PlayerInput("Gib die ID des Spielers ein: "))
+	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
 else if(IsFrak(4, 1))
-	BindReplace("/r " FrakOption%FrakOption4% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption4%, "[/\-]") " 6")
-else if(IsFrak(5, 1))
-	BindReplace("Ich werde Sie nun durchsuchen.~Bitte nehmen Sie die Durchsuchung mit /accept frisk an.~/frisk [ID 1]")
+    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me holt frisch importierte kolumbianische Zigarren aus seiner Tasche.~[Wait 2000]/rap1~/me flüstert Und....Interesse ?")
 else if(IsFrak(6, 1))
-	BindReplace("/s Hier spricht die Bundeswehr!~/s Sie sind festgenommen!~/s Wenn Sie Widerstand leisten sind wir gezwungen zu schießen!")
-else if(isFrak(8, 1))
-	BindReplace("/me betätigt die Zentralverriegelung.~/flock")
-else if(IsFrak(10, 1))
 	SendChat("/materials getammo")
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	BindReplace("† When we come, stand at attention. When we stand before you, go on your knees.~When we speak, be quiet. This is the Grove Street mother fucker †")
-else if(IsFrak(12, 1))
-	SendChat("/equip")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/s † Don't fuck with the Ballas Family or we'll fuck your life †")
-else if(IsFrak(15, 1))
-	SendChat("/fpkeep wasser")
+else if(IsFrak(10, 1))
+	SendChat("/fpkeep dueng")
+else if(IsFrak(12, 1))
+	SendChat("/swapgun")
 return
 fBind9:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7440,23 +7091,21 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1))
-	BindReplace("/m »» Ordnungsamt ««~/m »» Wir sind im Einsatz ««~/m »» Machen Sie bitte den Weg frei ««~/m »» Ordnungsamt ««")
+	BindReplace("/mv~/oldmv~/towopen")
 else if(IsFrak(3, 1))
-	BindReplace("Sind Sie mit einem Drogentest einverstanden?~/drogentest " PlayerInput("Gib die ID des Spieler ein: "))
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
 else if(IsFrak(4, 1))
-	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
-else if(IsFrak(5, 1))
-	SendChat("/use donut")
+    BindReplace("/s Hijo de Puta, Sofort stehen bleiben oder ich schiebe dir paar Blei Kugeln in den Arsch")
 else if(IsFrak(6, 1))
-	BindReplace("/mv~/oldmv")
-else if(IsFrak(10, 1))
 	SendChat("/sellgun " PlayerInput("Gib den Namen oder die ID des Spielers ein: "))
-else if(IsFrak(11, 1))
+else if(IsFrak(7, 1))
 	SendChat("† Grove Street | If you fuck with one of us, you fuck with all of us | Grove Street †")
-else if(IsFrak(14, 1))
+else if(IsFrak(9, 1))
 	SendChat("/s Wir kommen wir sehen wir töten wir gehen | Saint Jefferson Ballas Family")
-else if(IsFrak(15, 1))
-	SendChat("/fpkeep dueng")
+else if(IsFrak(10, 1))
+	SendChat("/swapgun")
+else if(IsFrak(12, 1))
+	SendChat("/bl")
 return
 fBind10:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7464,19 +7113,15 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1))
-	BindReplace("/m »» ACHTUNG! Hier spricht das Ordnungsamt ««~/m »» Allgemeine Verkehrskontrolle ««~/m »» Stehen bleiben und aussteigen ««~/m »» Sonst wenden wir Gewalt an ««")
+	SendChat("/me funkt zur Zentrale")
 else if(IsFrak(3, 1))
-	BindReplace("Ich werde Sie nun auf illegale Drogen und Materialien untersuchen (/accept frisk).~/frisk " PlayerInput("Gib die ID des Spielers ein: "))
+	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
 else if(IsFrak(4, 1))
-	BindReplace("/mv~/oldmv")
-else if(IsFrak(5, 1))
-	BindReplace("/mv~/oldmv")
-else if(IsFrak(6, 1))
-	BindReplace("/cc Bitte bleiben Sie ruhig. Sie sind festgenommen.~/cc Sie haben das Recht zu schweigen. Alles, was Sie sagen~/cc kann vor Gericht gegen Sie verwendet werden~/cc Leisten Sie besser keinen Widerstand")
-else if(IsFrak(14, 1))
+    BindReplace("/raub~/s Hijo de Puta, Überfall sofort Aussteigen und auf den Boden~/oos /verletzt~/me guckt aggressiv.")
+else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
-else if(IsFrak(15, 1))
-	SendChat("/swapgun")
+else if(IsFrak(10, 1))
+	SendChat("/bl")
 return
 fBind11:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7484,40 +7129,28 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1)){
-	SendChat("/accept theft")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(!InStr(chat, "Es wurde kein Fahrzeugeinbruch gemeldet.")){
-		while(!ChatLine(2, "Du hast den Alarm erfolgreich angenommen", 2)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
-		SendChat("/r [Ich schnapp den Fahrzeugdieb!]")
+	SendChat("/wanted")
+	if(UseAPI){
+		while(!IsDialogOpen() AND A_Index < 60)
+			Sleep, 10
+		if(!IsDialogOpen())
+			return
 	}
+	else{
+		WaitFor()
+		Sleep, 20
+	}
+	SendInput, {down 9}{enter}
 }
-else if(IsFrak(3, 1))
-	SendChat("/swapgun")
-else if(IsFrak(4, 1)){
-	FrakOption4 := Mod(FrakOption4, 3) + 1
+else if(IsFrak(3, 1)){
+	FrakOption6 := Mod(FrakOption6, 5) + 1
 	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
-	IniWrite, %FrakOption4%, %INIFile%, Settings, FrakOption4
-	GuiControl, FrakGUI:, Funkrufnummer %FrakOption4%, 1
-	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption4 "{FF6600} ({00AA00}" FrakOption%FrakOption4% "{FF6600}) genutzt.")
+	IniWrite, %FrakOption6%, %INIFile%, Settings, FrakOption6
+	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
+	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
 }
-else if(IsFrak(5, 1))
-	SendChat("/me funkt zur Zentrale")
-else if(IsFrak(6, 1)){
-	Cars := ""
-	if(UseAPI)
-		Cars := CarModels[veh := GetVehicleModel()]
-	if(!Cars)
-		Cars := PlayerInput("Gib die Bezeichnung für dein Fahrzeug ein: ", 1)
-	SendChat("/r Betrete Mainbase mit " Cars)
-	Cars := ""
-}
-else if(IsFrak(15, 1))
-	SendChat("/bl")
+else if(IsFrak(4, 1))
+    SendChat("Adios, Dios te acompañe.")
 return
 fBind12:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7525,28 +7158,32 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	return
 }
 if(IsFrak(2, 1)){
-	SendChat("/accept alarm")
-	WaitFor()
-	GetChatLine(0, chat)
-	if(!InStr(chat, "FEHLER: Bitte beende erst deine anderen Aktionen.") AND !InStr(chat, "Aktuell wurden keine Einbrüche gemeldet.")){
-		while(!ChatLine(2, "Du hast den Alarm erfolgreich angenommen", 2)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
-		SendChat("/r [Ich schnapp den Einbrecher!]")
+	SendChat("/wanted")
+	if(UseAPI){
+		while(!IsDialogOpen() AND A_Index < 60)
+			Sleep, 10
+		if(!IsDialogOpen())
+			return
 	}
+	else{
+		WaitFor()
+		Sleep, 20
+	}
+	SendInput, {down 8}{enter}
 }
 else if(IsFrak(3, 1))
-	BindReplace("/mv~/oldmv")
-else if(IsFrak(6, 1)){
-	Cars := ""
-	if(UseAPI)
-		Cars := CarModels[GetVehicleModel()]
-	if(!Cars)
-		Cars := PlayerInput("Gib die Bezeichnung für dein Fahrzeug ein: ", 1)
-	SendChat("/r Verlasse Mainbase mit " Cars)
-	Cars := ""
+	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+else if(IsFrak(4, 1)){
+	SendChat("/kcheck")
+	WaitFor()
+	Sleep, 50
+	SendInput, {enter}{down 2}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, {down}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, 6{enter}
 }
 return
 fBind13:
@@ -7554,36 +7191,21 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 	SendHKey()
 	return
 }
-if(IsFrak(2, 1))
-	BindReplace("/m »» Ordnungsamt ««~/m »» Bitte räumen Sie die Start-/Landefläche des Helikopters ««~/m »» Ordnungsamt ««")
-else if(IsFrak(3, 1))
-	SendChat("/me funkt zur Zentrale")
-else if(IsFrak(6, 1))
-	SendChat("/checkwanted " PlayerInput("Gib die ID des Spielers ein: "))
-return
-fBind14:
-if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
-	SendHKey()
-	return
-}
 if(IsFrak(2, 1)){
-	SendChat("/accept mechaniker")
+    SendChat("/accept cop")
 	WaitFor()
 	GetChatLine(0, chat)
-	if(!InStr(chat, "Niemand benötigt einen Mechaniker") AND !InStr(chat, "Als Mechaniker musst du erst")){
-		while(!chat := ChatLine(0, "Du hast den Notruf von", 3)){
-			if(A_Index > 35)
-				return
-			Sleep, 100
-		}
-		RegExMatch(chat, "U)Du hast den Notruf von (.+) angenommen, gib Gummi!", chat)
-		SendChat("/r [Mechanikerservice" (chat1 ? " von " chat1 : "") " angenommen]")
+	if(!InStr(chat, "Niemand benötigt einen Streifenwagen.")){
+		chat := WaitForChatLine(0, "Du hast den Einsatz von ",, 45)
+		if (!chat)
+			return
+		RegExMatch(chat, "U)Du hast den Einsatz von (.*) angenommen \(Ort: (.*)\)\.", chat)
+		BindReplace("/r » Code 5 - Notruf " (chat1 ? " von " chat1 : "") " angenommen (Ort: " chat2 ") «")
 	}
 }
-else if(IsFrak(6, 1))
-	SendChat("/me funkt zur Zentrale")
+else if(IsFrak(4, 1))
+    SendChat("/f Flagge unsere & Clean")
 return
-
 /*
 ö::
 AddChatMessage(IsChatOpen())
