@@ -2468,6 +2468,7 @@ EnvGet, UserProfile, UserProfile
 IniRead, UseAPI, %INIFile%, Settings, UseAPI, 0
 IniRead, LastUsedBuild, %INIFile%, Settings, LastUsedBuild, 0
 AESPassword := "OmX5VSeNwiyUL6gB6XW1V71vYznXvUl5AEX81oAs9fjGGT0l9Shb6j5dizJIM8Iz"
+SARDIsFire := 0
 return
 GetArgs:
 Args := Object(), FullArgs := FullArgsQuoted := ""
@@ -6837,12 +6838,16 @@ if(IsFrak(2, 1)){
 else if(IsFrak(3, 1)){
 	SendChat("/duty")
 	chat := WaitForChatLine(0, "Du befindest dich nun|Du bist nicht am Dutypunkt in", 1,, 1)
-	if(InStr(chat, "Du befindest dich nun im Dienst."))
+	if(InStr(chat, "Du befindest dich nun im Dienst.")){
 		BindReplace("/equip~/takku~/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
-	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro."))
+	}
+	else if(InStr(chat, "Du bist nicht am Dutypunkt in Los Santos oder San Fierro.")){
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 1 »» Einsatzbereit über Funk ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 1")
-	else if(InStr(chat, "Du befindest dich nun nicht mehr im Dienst."))
+	 }
+	else if(InStr(chat, "Du befindest dich nun nicht mehr im Dienst.")){
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
+	}
+	SARDIsFire := 0
 }
 else if(IsFrak(4, 1))
 	BindReplace("/getbizflag~/dropbizflag~/gangflag")
@@ -6880,6 +6885,7 @@ else if(IsFrak(3, 1)){
 			return
 		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+	    SARDIsFire := 0
 	}
 }
 else if(IsFrak(4, 1))
@@ -6908,8 +6914,13 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1))
 	SendChat("/checkwanted " PlayerInput("Gib die ID des Spielers ein: "))
-else if(IsFrak(3, 1))
-	BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
+else if(IsFrak(3, 1)){
+    if(SARDIsFire == 1){
+        BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Brandort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
+    } else {
+        BindReplace("/r " FrakOption%FrakOption6% " «« Status 4 »» Am Einsatzort angekommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 4")
+    }
+}
 else if(IsFrak(4, 1))
 	SendChat("/use green")
 else if(IsFrak(5, 1))
@@ -7078,8 +7089,10 @@ if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
 }
 if(IsFrak(2, 1))
 	BindReplace("/mv~/oldmv~/towopen")
-else if(IsFrak(3, 1))
+else if(IsFrak(3, 1)){
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
+	SARDIsFire := 0
+}
 else if(IsFrak(4, 1))
     BindReplace("/s Hijo de Puta, Sofort stehen bleiben oder ich schiebe dir paar Blei Kugeln in den Arsch")
 else if(IsFrak(6, 1))
@@ -7157,8 +7170,10 @@ if(IsFrak(2, 1)){
 	}
 	SendInput, {down 8}{enter}
 }
-else if(IsFrak(3, 1))
+else if(IsFrak(3, 1)){
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
+	SARDIsFire := 1
+}
 else if(IsFrak(4, 1)){
 	SendChat("/kcheck")
 	WaitFor()
