@@ -6875,10 +6875,10 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
+		chat := WaitForChatLine(0, " angenommen, du hast 5min um zum Marker zufahren.",, 45)
 		if (!chat)
 			return
-		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
+		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 5min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 	}
 }
