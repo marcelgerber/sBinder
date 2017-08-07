@@ -4205,6 +4205,9 @@ return
 AutoHitsound:
 WinWaitClose, ahk_group GTASA
 WinWaitActive, ahk_group GTASA
+; Wait for game window to be renamed: GTA: San Andreas -> GTA:SA:MP or random name (SAMPCAC)
+while(WinActive("GTA: San Andreas"))
+	Sleep, 100
 if(!AutoHitsound)
 	return
 Loop, 50
