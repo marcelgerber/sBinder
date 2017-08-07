@@ -48,6 +48,9 @@ FileCreateDir, %A_AppData%\sBinder\Design
 gosub Variables
 gosub Arrays
 
+GroupAdd, GTASA, ahk_class Grand theft auto San Andreas ahk_exe gta_sa.exe
+GroupAdd, GTASA, Keybinder testen (Debug) ahk_class AutoHotkeyGUI
+
 if(LastUsedBuild < 40){
 	if(A_ScriptDir = A_Desktop OR A_ScriptDir = A_DesktopCommon){
 		MsgBox, 35, sBinder verschieben?, Du hast den sBinder vom Desktop aus gestartet.`nAllerdings wird er einige Dateien erstellen.`nWillst du den sBinder daher in einen anderen Ordner verschieben und nur eine Verknüpfung auf dem Desktop erstellen?`n`nMit einem Klick auf Ja wird der sBinder in einen von dir wählbaren Ordner verschoben und eine Verknüpfung auf dem Desktop erstellt, mit Nein wird der sBinder auf dem Desktop belassen. Mit Abbrechen wird er beendet, ohne Daten zu erstellen.
@@ -1909,8 +1912,8 @@ WM_HANDLER(wParam, lParam, msg, hwnd){
 
 ;#Include C:\Users\Marcel\Autohotkey\PHPFunctions.ahk
 
-#if frakbinds && WinActive("GTA:SA:MP")
-#IfWinActive, GTA:SA:MP
+#if frakbinds && WinActive("ahk_group GTASA")
+#IfWinActive, ahk_group GTASA
 #SingleInstance, force
 #UseHook
 #HotString EndChars `n
@@ -1935,7 +1938,7 @@ if(InStr(FullArgs, "--just-updated")){
 	Gui, TempGUI2:Add, Text,, Das Update wurde erfolgreich abgeschlossen.`nDu kannst den sBinder jetzt in der Version %Version%-%Build% nutzen.
 	Gui, TempGUI2:Add, Button, gChangelogOnline y50 x10 w120, Changelog anzeigen
 	Gui, TempGUI2:Add, Button, gTempGUI2GuiClose y50 x220 w80, Schließen
-	Gui, TempGUI2:Show, % (WinActive("GTA:SA:MP") ? "NA" : ""), Update abgeschlossen
+	Gui, TempGUI2:Show, % (WinActive("ahk_group GTASA") ? "NA" : ""), Update abgeschlossen
 }
 gosub HotkeysDefine
 gosub Downloads
@@ -2379,7 +2382,7 @@ if(pingsuccessful || FileExist(datacachefile)){
 	if(Build < vBuild){
 		UpdateAvailable := 1
 		SB_SetTextEx("Version " vVersion "-" vBuild " verfügbar. Ein Update kannst du über Datei->Update ausführen.")
-		if(!reloaded AND !WinActive("GTA:SA:MP"))
+		if(!reloaded AND !WinActive("ahk_group GTASA"))
 			gosub UpdateGUI
 	}
 	else
@@ -2663,7 +2666,7 @@ if(reloaded){
 	AddChatMessage("Um das Fenster zu öffnen, kannst du in der Trayleiste auf das Symbol klicken.")
 }
 else if(InStr(FullArgs, "--start-minimized")){
-	if(WinActive("GTA:SA:MP")){
+	if(WinActive("ahk_group GTASA")){
 		AddChatMessage("Der sBinder wurde {0022FF}minimiert gestartet{FF6600}!")
 		AddChatMessage("Um das Fenster zu öffnen, kannst du in der Trayleiste auf das Symbol klicken.")
 	}
@@ -2928,7 +2931,7 @@ loop, % Hotstrings
 }
 Gui, CustomBindsGUI:Menu, MenuBar
 ;CarCalcGUI:
-car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Bike", "Blade", "Blista Compact", "BMX", "Bobcat", "Boxville", "Broadway", "Buffalo", "Bullet", "Burrito [Premium]", "Cabbie", "Camper", "Cheetah [Premium]", "Clover", "Club [Premium]", "Comet [Premium]", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Freeway", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Mountain Bike", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Pony", "Premier [Premium]", "Quad", "Regina", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Shamal", "Slamvan", "Stafford", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tanker", "Taxi", "Tractor", "Tropic", "Turismo", "Uranus", "Utility", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
+car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Bike", "Blade", "Blista Compact", "BMX", "Bobcat", "Boxville", "Broadway", "Buffalo", "Bullet", "Burrito [Premium]", "Cabbie", "Camper", "Cheetah [Premium]", "Clover", "Club [Premium]", "Comet [Premium]", "DFT-30", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Flatbed", "Freeway", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Mountain Bike", "Mule", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Pony", "Premier [Premium]", "Quad", "Regina", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Shamal", "Slamvan", "Stafford", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tanker", "Taxi", "Tractor", "Tropic", "Turismo", "Uranus", "Utility", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
 Gui, CarCalcGUI:Add, Text, x10 y10, Fahrzeug:
 Gui, CarCalcGUI:Add, Text, x130 y10, Carheal:
 Gui, CarCalcGUI:Font, s15 cRed
@@ -3074,7 +3077,7 @@ for i, k in ["SAMP", "TS", "Fraps", "Other"]
 }
 return
 GTAActivate:
-WinActivate, GTA:SA:MP
+WinActivate, ahk_group GTASA
 return
 SettingsChangeTab:
 pages := [1, 1, 1, 2, 2, 2, 3, 4]
@@ -3168,9 +3171,9 @@ GuiControl, CarCalcGUI:, akku, %TogAll%
 GuiControl, CarCalcGUI:, neon, %TogAll%
 Calc:
 Gui, CarCalcGUI:Submit, Nohide
-car_shop := [12, 12, 10, 5, 13, 6, 7, 7, 3, 0, 7, 12, 13, 3, 5, 5, 11, 13, 1, 11, 0, 11, 11, 9, 10, 2, 2, 3, 2, 7, 0, 4, 7, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 10, 7, 3, 7, 12, 4, 13, 11, 7, 0, 1, 13, 4, 7, 0, 10, 1, 5, 2, 5, 2, 1, 4, 13, 13, 8, 9, 5, 0, 13, 1, 13, 12, 7, 3, 13, 4, 12]
-car_price := [31500, 34000, 2000000, 125000, 12000, 19900, 13900, 3000, 12500, 7500, 5000, 27500, 14000, 22700, 89000, 175000, 56000, 22000, 34000, 274000, 3999, 44000, 220000, 12500, 299000, 23500, 27900, 14500, 42500, 15000, 19500, 24500, 21000, 28500, 78000, 32000, 23000, 275000, 38900, 240000, 28000, 12000, 49000, 14500, 222000, 700000, 24999, 18000, 9000, 945000, 44900, 10500, 18000, 6800, 125000, 8500, 35000, 9000, 10700, 37500, 69000, 28000, 12900, 8400, 1400000, 16500, 48000, 23500, 112000, 39999, 23999, 98000, 59000, 29000, 14500, 79999, 144000, 16500, 24780, 9800, 4250, 32500, 36000, 27200, 17000, 27500, 59000]
-car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
+car_shop := [12, 12, 10, 5, 13, 6, 7, 7, 3, 0, 7, 12, 13, 3, 5, 5, 11, 13, 1, 11, 0, 11, 11, 13, 9, 10, 2, 2, 3, 2, 7, 0, 4, 13, 7, 3, 11, 4, 3, 5, 4, 9, 8, 0, 13, 4, 9, 10, 6, 12, 7, 13, 10, 7, 3, 7, 12, 4, 13, 11, 7, 0, 1, 13, 4, 7, 0, 10, 1, 5, 2, 5, 2, 1, 4, 13, 13, 8, 9, 5, 0, 13, 1, 13, 12, 7, 3, 13, 4, 12]
+car_price := [31500, 34000, 2000000, 125000, 12000, 19900, 13900, 3000, 12500, 7500, 5000, 27500, 14000, 22700, 89000, 175000, 56000, 22000, 34000, 274000, 3999, 44000, 220000, 22000, 12500, 299000, 23500, 27900, 14500, 42500, 15000, 19500, 24500, 28500, 21000, 28500, 78000, 32000, 23000, 275000, 38900, 240000, 28000, 12000, 49000, 14500, 222000, 700000, 24999, 18000, 9000, 19500, 945000, 44900, 10500, 18000, 6800, 125000, 8500, 35000, 9000, 10700, 37500, 69000, 28000, 12900, 8400, 1400000, 16500, 48000, 23500, 112000, 39999, 23999, 98000, 59000, 29000, 14500, 79999, 144000, 16500, 24780, 9800, 4250, 32500, 36000, 27200, 17000, 27500, 59000]
+car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0]
 shop_name := ["Autohaus Los Santos am Hotel", "GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Gewerbliches Autohaus East Los Santos"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
 ;carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
@@ -3201,7 +3204,7 @@ GuiControl, TruckerGUI:, TruckReloaded, % SubStr(temp, 1, 31) " (Wird aktualisie
 TruckDDOS := 0
 if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
 	TruckDDOS := 1
-	if(WinActive("GTA:SA:MP"))
+	if(WinActive("ahk_group GTASA"))
 		AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	else
 		ToolTip("Du musst noch " var1 " Sekunden warten`, bis du die Daten wieder abrufen kannst.`nGrund dafür ist`, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.", var1 * 1000)
@@ -3665,7 +3668,7 @@ FrakChangeGUI:
 Gui, FrakChangeGUI:Show,, sBinder: Fraktion ändern
 return
 TestGUI:
-Gui, TestGUI:Show,, GTA:SA:MP
+Gui, TestGUI:Show,, Keybinder testen (Debug)
 return
 OverlayGUI:
 Gui, Overlay:Show,, sBinder: Overlay-Einstellungen
@@ -3725,11 +3728,11 @@ if(IsObject(OldHotkeys)){
 		if(k != ""){
 			if(InStr(OldHotkeyLabels[i], "fBind")){
 				if(!currhotkeyif)
-					Hotkey, If, frakbinds && WinActive("GTA:SA:MP")
+					Hotkey, If, frakbinds && WinActive("ahk_group GTASA")
 				currhotkeyif := 1
 			}
 			else if(currhotkeyif){
-				Hotkey, IfWinActive, GTA:SA:MP
+				Hotkey, IfWinActive, ahk_group GTASA
 				currhotkeyif := 0
 			}
 			Hotkey, %k%, Off, UseErrorLevel
@@ -3755,7 +3758,7 @@ if(wBind1)
 if(wBind2)
 	NewHotkey("WheelRight", "wBind2")
 fBinds_used := 0
-Hotkey, If, frakbinds && WinActive("GTA:SA:MP")
+Hotkey, If, frakbinds && WinActive("ahk_group GTASA")
 loop, % fBinds_max
 {
 	if(fBind%A_Index% != "" AND fBinds >= A_Index){
@@ -3763,7 +3766,7 @@ loop, % fBinds_max
 		fBinds_used ++
 	}
 }
-Hotkey, IfWinActive, GTA:SA:MP
+Hotkey, IfWinActive, ahk_group GTASA
 hotstrings("", "del")
 hotstringsactive := 0
 loop, % Hotstrings
@@ -4187,7 +4190,7 @@ DisableAFKBoxTemp:
 Gui, AFKBox:Hide
 return
 AFKBox_CheckDesk:
-if(!AFKBox OR !WinExist("GTA:SA:MP") OR WinActive("GTA:SA:MP")){
+if(!AFKBox OR !WinExist("ahk_group GTASA") OR WinActive("ahk_group GTASA")){
 	if(AFKBox_shown){
 		Gui, AFKBox:Hide
 		AFKBox_shown := 0
@@ -4212,14 +4215,17 @@ IniWrite, %AFKBoxX%, %INIFile%, WindowPos, AFKBox_X
 IniWrite, %AFKBoxY%, %INIFile%, WindowPos, AFKBox_Y
 return
 AutoHitsound:
-WinWaitClose, GTA:SA:MP
-WinWaitActive, GTA:SA:MP
+WinWaitClose, ahk_group GTASA
+WinWaitActive, ahk_group GTASA
+; Wait for game window to be renamed: GTA: San Andreas -> GTA:SA:MP or random name (SAMPCAC)
+while(WinActive("GTA: San Andreas"))
+	Sleep, 100
 if(!AutoHitsound)
 	return
 Loop, 50
 {
 	FileRead, chat_hitsound, %chatlogpath%
-	if(InStr(chat_hitsound, "] {CC210A}SERVER:{FFFFFF} Willkommen ") AND WinActive("GTA:SA:MP")){
+	if(InStr(chat_hitsound, "] {CC210A}SERVER:{FFFFFF} Willkommen ") AND WinActive("ahk_group GTASA")){
 		chat_hitsound := ""
 		Sleep, 1000
 		if(!WinActive("ahk_class AutoHotkeyGUI")){
@@ -4239,8 +4245,8 @@ if(!UseAPI){
 	SetTimer, Overlay, Off
 	return
 }
-if(!WinActive("GTA:SA:MP") OR WinActive("ahk_class AutoHotkeyGUI")){
-	if(!WinExist("GTA:SA:MP"))
+if(!WinActive("ahk_group GTASA") OR WinActive("ahk_class AutoHotkeyGUI")){
+	if(!WinExist("ahk_group GTASA"))
 		Ov := [-1, -1, -1]
 	return
 }
@@ -4316,7 +4322,7 @@ Hotkey, ~Escape, Off
 if(hotstringsactive)
 	hotstrings("", "", "Enter")
 return
-#If hmv && WinActive("GTA:SA:MP")
+#If hmv && WinActive("ahk_group GTASA")
 ~h::
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen())
 	return
@@ -4328,7 +4334,7 @@ if(!ErrorLevel){
 		SendChat("/towopen")
 }
 return
-#IfWinActive GTA:SA:MP
+#IfWinActive ahk_group GTASA
 
 NotesGUIGuiClose:
 Gui, NotesGUI:Submit
@@ -4379,7 +4385,7 @@ BeforeExit:
 if(OverlayActive){
 	SetTimer, Overlay, Off
 	Sleep, 50
-	if(UseAPI AND WinExist("GTA:SA:MP"))
+	if(UseAPI AND WinExist("ahk_group GTASA"))
 		DllCall(DestroyAllVisual_func)
 }
 ExitApp
@@ -4409,8 +4415,8 @@ return
 StartNSC:
 nsc_win := ""
 if(nsc_win := WinExist("Nova Social Client")){
-	if(WinExist("GTA:SA:MP")){
-		WinActivate, GTA:SA:MP
+	if(WinExist("ahk_group GTASA")){
+		WinActivate, ahk_group GTASA
 		return
 	}
 	WinGet, nsc_win, PID, ahk_id %nsc_win%
@@ -4458,14 +4464,14 @@ return
 Suspend Permit
 Critical
 reconnected := 1
-WinClose, GTA:SA:MP,, 3
+WinClose, ahk_group GTASA,, 3
 gosub Connect
 return
 
 Connect:
 SetTimer, %A_ThisLabel%, Off
-if(WinExist("GTA:SA:MP"))
-	WinActivate, GTA:SA:MP
+if(WinExist("ahk_group GTASA"))
+	WinActivate, ahk_group GTASA
 else{
 	if(!samppath){
 		RegRead, samppath, HKLM, SOFTWARE\Classes\samp\shell\open\command
@@ -4633,7 +4639,7 @@ else{
 }	
 return
 ame:
-if((!A_IsSuspended OR UseAPI) AND WinActive("GTA:SA:MP")){
+if((!A_IsSuspended OR UseAPI) AND WinActive("ahk_group GTASA")){
 	if(IsObject(ame)){
 		multiame_current ++
 		if(multiame_current > ame._maxIndex())
@@ -4730,7 +4736,7 @@ AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
 AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
 return
-#If IsFrak(5) AND WinActive("GTA:SA:MP")
+#If IsFrak(5) AND WinActive("ahk_group GTASA")
 ::/sg::
 Suspend Permit
 List(["/sg add", "/sg delete", "/sg list", "/sg bezahlt"], "/sg-Befehle: ", 1)
@@ -4917,7 +4923,7 @@ else
 pizza := ""
 ;BindReplace("/me ______________________________________~/me flüstert zu dir: Pizza Calzone | 25$~/me flüstert zu dir: Pizza Tonno | 29$~/me flüstert zu dir: Pizza Margarita | 21$~/me flüstert zu dir: Speziale Pizza | Zivi --> 750$~/me flüstert zu dir: Speziale Pizza | Fraktion --> 1000$~/me ______________________________________")
 return
-#if IsFrak(8) AND WinActive("GTA:SA:MP")
+#if IsFrak(8) AND WinActive("ahk_group GTASA")
 ::/mixWord::
 Suspend Permit
 if((word := PlayerInput("Gib ein Wort zum Verdrehen ein: ")) = ""){
@@ -4937,7 +4943,7 @@ loop{
 }
 return
 
-#if IsFrak(3) AND WinActive("GTA:SA:MP") AND active
+#if IsFrak(3) AND WinActive("ahk_group GTASA") AND active
 :b0:/mpdrop::
 Suspend Permit
 chat := WaitForChatLine(0, "Du hast das Lager mit")
@@ -4961,7 +4967,7 @@ chat := WaitForChatLine(0, "Du hast das Lager erfolgreich")
 if(chat)
     SendChat("/r Es wurden 10 Medikamente in den Healpunkt gefüllt.")
 return
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("ahk_group GTASA")
 ::/vs::
 Suspend Permit
 if(UseAPI){
@@ -4995,13 +5001,13 @@ if((location := PlayerInput("Gib den Ort ein, an dem du Verstärkung brauchst: "
 else
 	AddChatMessage("Der /vs-Modus wird verlassen, da du nichts eingegeben hast.")
 return
-#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("ahk_group GTASA")
 ::/showstaat::
 Suspend Permit
 chat1 := GetPlayerId()
 BindReplace("/oos /showperso " chat1 "~/oos /showlicenses " chat1 "~/oos /showvisum " chat1)
 return
-#if (IsFrak(2) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(11)) AND WinActive("ahk_group GTASA")
 ::/takedrogenall::
 Suspend Permit
 SendChat("/knastmember")
@@ -5021,7 +5027,7 @@ for i, k in chat_Arr
 }
 chat_Arr := ""
 return
-#IfWinActive, GTA:SA:MP
+#IfWinActive, ahk_group GTASA
 ::/housewithdraw all::
 Suspend Permit
 SendChat("/housewithdraw")
@@ -5221,7 +5227,7 @@ SetTimer, Timer, Off
 SetTimer, TimerTone, -1
 string := "Der Timer ist nach {0022FF}" date(timer_s) "{FF6600} abgelaufen!"
 timer_time := 0
-if(WinActive("GTA:SA:MP"))
+if(WinActive("ahk_group GTASA"))
 	AddChatMessage(string)
 else
 	MsgBox, 64, sBinder: Timer abgelaufen, % RegExReplace(string, "Ui)\{[a-f0-9]{6}\}")
@@ -5243,7 +5249,7 @@ pre := PlayerInput("In welchen Chat willst du den Countdown schreiben? (z.B. /s,
 loop, % count := PlayerInput("Gib die erste Zahl des Countdowns ein: "){
 	if(A_IsSuspended)
 		break
-	if(!WinActive("GTA:SA:MP"))
+	if(!WinActive("ahk_group GTASA"))
 		return
 	SendChat((pre ? pre " " : "") (count-A_Index)+1)
 	Sleep, 1000
@@ -5500,7 +5506,7 @@ if(num1 > 0 AND chat2 < num1){
 	AddChatMessage("Du hast nicht genug Geld auf dem Konto")
 	return
 }
-;WinGetPos,,, money_w, money_h, GTA:SA:MP
+;WinGetPos,,, money_w, money_h, ahk_group GTASA
 if(!num1){
 	AddChatMessage("Du hast bereits so viel Geld auf der Hand!")
 	return
@@ -6021,7 +6027,7 @@ chat := GetChatLines(17)
 if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(chat, "Ui)Dieses Fahrzeug hat folgende Extras eingebaut:\s+-> Kennzeichen: .+\s+-> Navigationsgerät \(/car search\): (.+)\s+-> Funkfernbedienung \(/car lock\): (.+)\s+-> Alarmanlage: (.+)\s+-> Unterbodenbeleuchtung: (.+)\s+-> Waffenkiste: (.+)\s+-> Fahrzeugstatus: .+\s+-> Versicherung: (.+)\s+-> Unlimitedrespawn \(Premium\): (.+)\s+-> Fahrzeugpanzerung: (.+)\s+-> Handyladestation: (.+)\s+-> Kofferraumerweiterung: (.+)", var)){ ;1: Peilsender, 2: Funkfernbedienung, 3: Alarmanlage, 4: Neon, 5: Waffenlager, 6: Versicherung (mit Text), 7: Unlimited Respawn, 8: Carheal (mit Text), 9: Handyakku, 10: Kofferraum
 	carvalue := Object()
 	;{
-	carvalues := ArrayParse("445:31500|602:34000|592:2000000|429:125000|499:12000|424:19900|581:13900|509:3000|536:12500|496:7500|481:5000|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:22000|483:34000|415:274000|542:3999|589:44000|480:220000|473:12500|593:299000|507:23500|562:27900|419:14500|587:42500|521:15000|533:19500|565:24500|463:21000|474:28500|434:78000|579:32000|545:23000|411:275000|559:38900|493:240000|508:28000|400:12000|403:49000|517:14500|484:222000|487:700000|500:24999|418:18000|510:9000|553:945000|522:44900|467:10500|461:18000|404:6800|603:125000|413:8500|426:35000|471:9000|479:10700|534:37500|515:69000|475:28000|468:12900|567:8400|519:1400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:29000|531:14500|454:79999|451:144000|558:16500|552:24780|412:9800|478:4250|421:32500|586:36000|555:27200|456:17000|554:27500|477:59000|")
+	carvalues := ArrayParse("445:31500|602:34000|592:2000000|429:125000|499:12000|424:19900|581:13900|509:3000|536:12500|496:7500|481:5000|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:22000|483:34000|415:274000|542:3999|589:44000|480:220000|578:22000|473:12500|593:299000|507:23500|562:27900|419:14500|587:42500|521:15000|533:19500|565:24500|455:28500|463:21000|474:28500|434:78000|579:32000|545:23000|411:275000|559:38900|493:240000|508:28000|400:12000|403:49000|517:14500|484:222000|487:700000|500:24999|418:18000|510:9000|414:19500|553:945000|522:44900|467:10500|461:18000|404:6800|603:125000|413:8500|426:35000|471:9000|479:10700|534:37500|515:69000|475:28000|468:12900|567:8400|519:1400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:29000|531:14500|454:79999|451:144000|558:16500|552:24780|412:9800|478:4250|421:32500|586:36000|555:27200|456:17000|554:27500|477:59000|")
 	;}
 	carvalue["price"] := carvalue["carprice"] := carvalues[data1]
 	AddChatMessage("Neupreis (ohne Addons): {0022FF}$" number_format(carvalue["carprice"]))
@@ -6102,7 +6108,7 @@ return
 
 
 ;/me-Texte
-#If meTexte && active && WinActive("GTA:SA:MP")
+#If meTexte && active && WinActive("ahk_group GTASA")
 :?b0:/handsup::
 Suspend Permit
 SendChat("/me hebt die Hände hoch.")
@@ -6244,7 +6250,7 @@ Suspend Permit
 BindReplace("/wank~/me holt sich einen runter.")
 return
 ;WPs
-#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("GTA:SA:MP")
+#if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("ahk_group GTASA")
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI)
@@ -6436,20 +6442,20 @@ Suspend Permit
 SendWPs("Würfeln außerhalb des Casinos", 10)
 return
 ;Ende der WPs
-#If Tel AND pText AND active AND WinActive("GTA:SA:MP")
+#If Tel AND pText AND active AND WinActive("ahk_group GTASA")
 :?b0:/p::
 Suspend Permit
 WaitFor()
 BindReplace(pText)
 return
-#If Tel AND hText AND active AND WinActive("GTA:SA:MP")
+#If Tel AND hText AND active AND WinActive("ahk_group GTASA")
 ::/h::
 Suspend Permit
 BindReplace(hText)
 WaitFor()
 SendChat("/h")
 return
-#If Tel AND abText AND active AND WinActive("GTA:SA:MP")
+#If Tel AND abText AND active AND WinActive("ahk_group GTASA")
 ::/ab::
 Suspend Permit
 SendChat("/p")
@@ -6458,7 +6464,7 @@ BindReplace(abText)
 WaitFor()
 SendChat("/h")
 return
-#IfWinActive GTA:SA:MP
+#IfWinActive ahk_group GTASA
 
 ;Binds:
 ;Eigene Binds:
@@ -6889,10 +6895,10 @@ else if(IsFrak(3, 1)){
 	WaitFor()
 	GetChatLine(0, chat)
 	if(!InStr(chat, "Niemand benötigt einen Krankenwagen.")){
-		chat := WaitForChatLine(0, " angenommen, du hast 1min um zum Marker zufahren.",, 45)
+		chat := WaitForChatLine(0, " angenommen, du hast 5min um zum Marker zufahren.",, 45)
 		if (!chat)
 			return
-		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 1min um zum Marker zufahren.", chat)
+		RegExMatch(chat, "U)Du hast den Notruf von (.*) angenommen, du hast 5min um zum Marker zufahren.", chat)
 		BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Einsatz" (chat1 ? " von " chat1 : "") " angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
 	}
 }
