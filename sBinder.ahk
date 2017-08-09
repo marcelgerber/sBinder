@@ -4271,8 +4271,11 @@ return
 ::/kstop::
 Del::
 Suspend
-if(UseAPI)
+if(UseAPI){
 	AddChatMessage("Der sBinder wurde " (A_IsSuspended ? "{FF1100}de" : "{00AA00}") "aktiviert{FF6600}.")
+} else {
+    SendChat("/echo Der sBinder wurde " (A_IsSuspended ? "{FF1100}de" : "{00AA00}") "aktiviert{FF6600}.")
+}
 active := !A_IsSuspended
 loop, % (A_IsSuspended ? 2 : 1)
 {
