@@ -2484,10 +2484,10 @@ return
 Arrays:
 loop, %MaxOverlay%
 	Ov[A_Index] := -1
-Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Medellin Kartell", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
+Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Shanghai Syndikat", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Scarfo Family"]
 Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer & Drogenschieber", "Waffenhändler", "Fastfood AG"]
-FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "Medellin|Kartell|Kolumbien|Columbi|MK", "LV|Vagos"]
+FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas|Front Yard", "GS|Grove Street|Grove",,,, "Shanghai|Syndikat|China"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
@@ -6905,7 +6905,7 @@ else if(IsFrak(10, 1))
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Federal Bureau of Investigation «««~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 else if(IsFrak(12, 1))
-	BindReplace("/s Varrios los Aztecas >|< Überfall >|< Halt sofort an, Puta Madre")
+	BindReplace("/s Scarfo Family >|< Überfall >|< Halt sofort an, Puta Madre")
 return
 fBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
