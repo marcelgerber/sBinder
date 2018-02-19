@@ -6364,7 +6364,7 @@ SendWPs("Illegaler Waffenhandel", 15)
 return
 ::/kv::
 Suspend Permit
-SendWPs("Körperverletzung", 10)
+SendWPs("Körperverletzung", 15)
 return
 ::/mord::
 Suspend Permit
