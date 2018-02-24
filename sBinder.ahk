@@ -30,8 +30,6 @@ if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode){
 }
 
 #NoEnv
-#HotkeyInterval 1
-#MaxHotkeysPerInterval 2000
 #Persistent
 #KeyHistory 0
 OnExit, BeforeExit
@@ -815,104 +813,6 @@ HashFromString(string, algid, key=0){ ;http://www.autohotkey.com/board/topic/892
 	}
 	data := string
 	return HashFromAddr(&data, len, algid, key)
-}
-hotstrings(k, a="", hkey=""){ ;http://www.autohotkey.net/~polyethene/#hotstrings //polyethene
-	static z, m := "*~$", s, t, w := 2000, sd, d := "Left,Right,Up,Down,Home,End,RButton,LButton"
-	global $
-	if(z = ""){ ; init
-		RegRead, sd, HKCU, Control Panel\International, sDecimal
-		Loop, 94
-		{
-			c := Chr(A_Index + 32)
-			If A_Index not between 33 and 58
-				Hotkey, % m c, __hs, UseErrorLevel
-		}
-		Hotkey, ~$/, __hs, UseErrorLevel
-		e := "0,1,2,3,4,5,6,7,8,9,Dot,Div,Mult,Add,Sub,Enter"
-		Loop, Parse, e, `,
-			Hotkey, % m "Numpad" A_LoopField, __hs, UseErrorLevel
-		e := "BS,Space,Enter,Return,Tab," d
-		Loop, Parse, e, `,
-			Hotkey, % m A_LoopField, __hs, UseErrorLevel
-		z := 1
-	}
-	if(a == "" and k == ""){ ; poll
-		if(hkey != "")
-			q := hkey
-		else if(A_ThisHotkey == "~$/")
-			q := "/"
-		else
-			StringTrimLeft, q, A_ThisHotkey, StrLen(m)
-		if(q = "BS"){
-			if(SubStr(s, 0) != "}")
-				StringTrimRight, s, s, 1
-		}
-		else If q in %d%
-			s := ""
-		else{
-			if(q = "Space")
-				q := " "
-			else if(q = "Tab")
-				q := "`t"
-			else if q in Enter,Return,NumpadEnter
-				q := "`n"
-			else if(RegExMatch(q, "Numpad(.+)", n)){
-				q := n1 == "Div" ? "/" : n1 == "Mult" ? "*" : n1 == "Add" ? "+" : n1 == "Sub" ? "-" : n1 == "Dot" ? sd : ""
-				if n1 is digit
-					q := n1
-			}
-			else if(StrLen(q) != 1)
-				q := "{" q "}"
-			else if q is digit
-			{
-				if(GetKeyState("CapsLock", "T")){
-					tem := ["=", "!", """", "§", "$", "%", "&", "/", "(", ")"]
-					q := tem[q+1]
-				}
-			}
-			else if(GetKeyState("Shift") ^ GetKeyState("CapsLock", "T"))
-				StringUpper, q, q
-			s .= q
-		}
-		Loop, Parse, t, `n ; check
-		{
-			StringSplit, x, A_LoopField, `r
-			if(RegExMatch(s, x1 . "$", $)){ ; match
-				StringLen, l, $
-				StringTrimRight, s, s, l
-				SendInput, {BS %l%}
-				if(IsLabel(x2)){
-					y := A_IsSuspended
-					Suspend Off ; <--------------------------------- THIS!
-					Gosub, %x2%
-					if(y)
-						Suspend On
-				}
-			}
-		}
-		if(StrLen(s) > w)
-			StringTrimLeft, s, s, w // 2
-	}
-	else if(k = "" AND a == "del")
-		t := ""
-	else{ ; assert
-		StringReplace, k, k, `n, \n, All ; normalize
-		StringReplace, k, k, `r, \r, All
-		Loop, Parse, t, `n
-		{
-			l := A_LoopField
-			if(SubStr(l, 1, InStr(l, "`r") - 1) == k)
-				StringReplace, t, t, `n%l%
-		}
-		if(a != "")
-			t := t "`n" k "`r" a
-	}
-	return
-	__hs: ; event
-	Suspend Permit
-	;ToolTip, % A_ThisHotkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  <- zu Testzwecken
-	hotstrings("", "")
-	return
 }
 HTMLToString(html){
 	while(RegExMatch(html, "U)&#(\d+);", regex))
@@ -2459,6 +2359,7 @@ jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 0
 Hotstrings := 26
+hotstringsactive := []
 Notes := 8
 FrakOptions := 6
 frakbinds := 1
@@ -3755,14 +3656,16 @@ loop, % fBinds_max
 	}
 }
 Hotkey, IfWinActive, ahk_group GTASA
-hotstrings("", "del")
-hotstringsactive := 0
+for i, oldhotstring in hotstringsactive
+{
+	Hotstring(":X:" oldhotstring, "hBind" i, "Off")
+}
+hotstringsactive := []
 loop, % Hotstrings
 {
 	if(Hotstring%A_Index% != "" AND hBind%A_Index% != ""){
-		StringReplace, temp, Hotstring%A_Index%, \, \\, All
-		hotstrings("i)\Q" temp "\E`n", "hBind" A_Index)
-		hotstringsactive ++
+		Hotstring(":X:" Hotstring%A_Index%, "hBind" A_Index, "On")
+		hotstringsactive[A_Index] := Hotstring%A_Index%
 	}
 }
 loop, %jBinds_max%
@@ -4125,7 +4028,10 @@ SetTimer, HideToolTip, Off
 ToolTip
 return
 ReloadDebugGUI:
-GuiControl, DebugGUI:, Debug, % "[sBinder Debug-Informationen]`n`nNutzer: " Nickname " -- " Fraknames[Frak] " (" Frak ") <- " (IsFrak(Frak) ? "Bestätigt" : "Nicht bestätigt") "`nOS: " A_OSVersion " " (A_Is64BitOS ? "64bit" : "32bit") "`nAHK: " A_AhkVersion " " (A_IsUnicode ? "Unicode" : "ANSI") " " (A_PtrSize = 4 ? "32bit" : "64bit") ", "  (A_IsAdmin ? "A" : "Nicht a") "ls Administrator gestartet`nsBinder: Version " Version "-" Build " | Neueste gefundene Version: " vVersion "-" vBuild "`nDatum: " A_DD "." A_MM "." A_YYYY " " A_Hour ":" A_Min ":" A_Sec "`n" (A_IsCompiled ? "Kompiliert" : "Nicht kompiliert") "; " (A_IsPaused ? "Pausiert" : "Nicht pausiert") "; " (A_IsSuspended ? "Deaktiviert" : "Aktiviert") "; WaitFor: " WaitFor "ms; API " (UseAPI ? "wird genutzt" : "wird nicht genutzt") "; " (hotstringsactive ? hotstringsactive : 0) " Textbind" (hotstringsactive = 1 ? "" : "s") " aktiviert`nAFK-Box " (AFKBox ? "" : "de") "aktiviert, DownloadMode: " DownloadMode (OverlayActive ? ", Overlay " (OvText1 OR OvText2 OR OvText3 ? "wird genutzt" : "wird nicht genutzt") : "") "`nDesign: " Designs[UseDesign, "name"] (MainGuiVersion ? " Version " MainGuiVersion : "") (UseHTMLGUI ? " im IE " Round(_mainGUI.document.DocumentMode, 1) : "") "`nStartparameter: " FullArgs
+hotstringscount := 0
+for i in hotstringsactive
+	hotstringscount ++
+GuiControl, DebugGUI:, Debug, % "[sBinder Debug-Informationen]`n`nNutzer: " Nickname " -- " Fraknames[Frak] " (" Frak ") <- " (IsFrak(Frak) ? "Bestätigt" : "Nicht bestätigt") "`nOS: " A_OSVersion " " (A_Is64BitOS ? "64bit" : "32bit") "`nAHK: " A_AhkVersion " " (A_IsUnicode ? "Unicode" : "ANSI") " " (A_PtrSize = 4 ? "32bit" : "64bit") ", "  (A_IsAdmin ? "A" : "Nicht a") "ls Administrator gestartet`nsBinder: Version " Version "-" Build " | Neueste gefundene Version: " vVersion "-" vBuild "`nDatum: " A_DD "." A_MM "." A_YYYY " " A_Hour ":" A_Min ":" A_Sec "`n" (A_IsCompiled ? "Kompiliert" : "Nicht kompiliert") "; " (A_IsPaused ? "Pausiert" : "Nicht pausiert") "; " (A_IsSuspended ? "Deaktiviert" : "Aktiviert") "; WaitFor: " WaitFor "ms; API " (UseAPI ? "wird genutzt" : "wird nicht genutzt") "; " (hotstringscount ? hotstringscount : 0) " Textbind" (hotstringscount = 1 ? "" : "s") " aktiviert`nAFK-Box " (AFKBox ? "" : "de") "aktiviert, DownloadMode: " DownloadMode (OverlayActive ? ", Overlay " (OvText1 OR OvText2 OR OvText3 ? "wird genutzt" : "wird nicht genutzt") : "") "`nDesign: " Designs[UseDesign, "name"] (MainGuiVersion ? " Version " MainGuiVersion : "") (UseHTMLGUI ? " im IE " Round(_mainGUI.document.DocumentMode, 1) : "") "`nStartparameter: " FullArgs
 return
 ChatlogSearch:
 SplitPath, A_MyDocuments,,,,, clDrive
@@ -4296,8 +4202,6 @@ Suspend On
 Hotkey, ~NumpadEnter, On
 Hotkey, ~Enter, On
 Hotkey, ~Escape, On
-if(hotstringsactive)
-	hotstrings("", "", "t")
 return
 ~NumpadEnter::
 ~Enter::
@@ -4305,8 +4209,6 @@ Suspend Off
 Hotkey, ~NumpadEnter, Off
 Hotkey, ~Enter, Off
 Hotkey, ~Escape, Off
-if(hotstringsactive)
-	hotstrings("", "", "Enter")
 return
 #If hmv && WinActive("ahk_group GTASA")
 ~h::
@@ -6458,32 +6360,6 @@ xBind1:
 xBind2:
 wBind1:
 wBind2:
-hBind1:
-hBind2:
-hBind3:
-hBind4:
-hBind5:
-hBind6:
-hBind7:
-hBind8:
-hBind9:
-hBind10:
-hBind11:
-hBind12:
-hBind13:
-hBind14:
-hBind15:
-hBind16:
-hBind17:
-hBind18:
-hBind19:
-hBind20:
-hBind21:
-hBind22:
-hBind23:
-hBind24:
-hBind25:
-hBind26:
 Bind1:
 Bind2:
 Bind3:
@@ -6536,12 +6412,40 @@ Bind49:
 Bind50:
 Bind51:
 Bind52:
-if(UseAPI AND ((!InStr(A_ThisLabel, "hBind") AND IsChatOpen()) OR IsDialogOpen() OR IsMenuOpen())){
+if(UseAPI AND (IsChatOpen() OR IsDialogOpen() OR IsMenuOpen())){
 	SendHKey()
 	return
 }
-if(InStr(A_ThisLabel, "hBind") AND IsChatOpen())
-	SendInput, {enter}
+BindReplace(%A_ThisLabel%)
+return
+
+hBind1:
+hBind2:
+hBind3:
+hBind4:
+hBind5:
+hBind6:
+hBind7:
+hBind8:
+hBind9:
+hBind10:
+hBind11:
+hBind12:
+hBind13:
+hBind14:
+hBind15:
+hBind16:
+hBind17:
+hBind18:
+hBind19:
+hBind20:
+hBind21:
+hBind22:
+hBind23:
+hBind24:
+hBind25:
+hBind26:
+Suspend Permit
 BindReplace(%A_ThisLabel%)
 return
 
