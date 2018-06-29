@@ -30,8 +30,6 @@ if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode){
 }
 
 #NoEnv
-#HotkeyInterval 1
-#MaxHotkeysPerInterval 2000
 #Persistent
 #KeyHistory 0
 OnExit, BeforeExit
@@ -820,104 +818,6 @@ HashFromString(string, algid, key=0){ ;http://www.autohotkey.com/board/topic/892
 	}
 	data := string
 	return HashFromAddr(&data, len, algid, key)
-}
-hotstrings(k, a="", hkey=""){ ;http://www.autohotkey.net/~polyethene/#hotstrings //polyethene
-	static z, m := "*~$", s, t, w := 2000, sd, d := "Left,Right,Up,Down,Home,End,RButton,LButton"
-	global $
-	if(z = ""){ ; init
-		RegRead, sd, HKCU, Control Panel\International, sDecimal
-		Loop, 94
-		{
-			c := Chr(A_Index + 32)
-			If A_Index not between 33 and 58
-				Hotkey, % m c, __hs, UseErrorLevel
-		}
-		Hotkey, ~$/, __hs, UseErrorLevel
-		e := "0,1,2,3,4,5,6,7,8,9,Dot,Div,Mult,Add,Sub,Enter"
-		Loop, Parse, e, `,
-			Hotkey, % m "Numpad" A_LoopField, __hs, UseErrorLevel
-		e := "BS,Space,Enter,Return,Tab," d
-		Loop, Parse, e, `,
-			Hotkey, % m A_LoopField, __hs, UseErrorLevel
-		z := 1
-	}
-	if(a == "" and k == ""){ ; poll
-		if(hkey != "")
-			q := hkey
-		else if(A_ThisHotkey == "~$/")
-			q := "/"
-		else
-			StringTrimLeft, q, A_ThisHotkey, StrLen(m)
-		if(q = "BS"){
-			if(SubStr(s, 0) != "}")
-				StringTrimRight, s, s, 1
-		}
-		else If q in %d%
-			s := ""
-		else{
-			if(q = "Space")
-				q := " "
-			else if(q = "Tab")
-				q := "`t"
-			else if q in Enter,Return,NumpadEnter
-				q := "`n"
-			else if(RegExMatch(q, "Numpad(.+)", n)){
-				q := n1 == "Div" ? "/" : n1 == "Mult" ? "*" : n1 == "Add" ? "+" : n1 == "Sub" ? "-" : n1 == "Dot" ? sd : ""
-				if n1 is digit
-					q := n1
-			}
-			else if(StrLen(q) != 1)
-				q := "{" q "}"
-			else if q is digit
-			{
-				if(GetKeyState("CapsLock", "T")){
-					tem := ["=", "!", """", "§", "$", "%", "&", "/", "(", ")"]
-					q := tem[q+1]
-				}
-			}
-			else if(GetKeyState("Shift") ^ GetKeyState("CapsLock", "T"))
-				StringUpper, q, q
-			s .= q
-		}
-		Loop, Parse, t, `n ; check
-		{
-			StringSplit, x, A_LoopField, `r
-			if(RegExMatch(s, x1 . "$", $)){ ; match
-				StringLen, l, $
-				StringTrimRight, s, s, l
-				SendInput, {BS %l%}
-				if(IsLabel(x2)){
-					y := A_IsSuspended
-					Suspend Off ; <--------------------------------- THIS!
-					Gosub, %x2%
-					if(y)
-						Suspend On
-				}
-			}
-		}
-		if(StrLen(s) > w)
-			StringTrimLeft, s, s, w // 2
-	}
-	else if(k = "" AND a == "del")
-		t := ""
-	else{ ; assert
-		StringReplace, k, k, `n, \n, All ; normalize
-		StringReplace, k, k, `r, \r, All
-		Loop, Parse, t, `n
-		{
-			l := A_LoopField
-			if(SubStr(l, 1, InStr(l, "`r") - 1) == k)
-				StringReplace, t, t, `n%l%
-		}
-		if(a != "")
-			t := t "`n" k "`r" a
-	}
-	return
-	__hs: ; event
-	Suspend Permit
-	;ToolTip, % A_ThisHotkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  <- zu Testzwecken
-	hotstrings("", "")
-	return
 }
 HTMLToString(html){
 	while(RegExMatch(html, "U)&#(\d+);", regex))
@@ -2459,8 +2359,8 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "2.1.4"
-Build := 73
+Version := "2.1.8"
+Build := 77
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
@@ -2470,6 +2370,7 @@ jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 1
 Hotstrings := 26
+hotstringsactive := []
 Notes := 8
 FrakOptions := 6
 frakbinds := 1
@@ -2495,10 +2396,10 @@ return
 Arrays:
 loop, %MaxOverlay%
 	Ov[A_Index] := -1
-Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Medellin Kartell", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Varrios Los Aztecas"]
+Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Triaden", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Purple Ice Ballas", "Los Vagos", "FBI", "Scarfo Family"]
 Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer & Drogenschieber", "Waffenhändler", "Fastfood AG"]
-FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "O'Sullivan|Mob|Sullivan|Iren|Irish|Irland|OS?M", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas", "GS|Grove Street|Grove",,,, "Medellin|Kartell|Kolumbien|Columbi|MK", "LV|Vagos"]
+FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas|Front Yard|Purple", "GS|Grove Street|Grove",,,, "Triade|China"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
@@ -3336,7 +3237,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	TextArray := ["Onduty/Offduty gehen -- Status 1/6", "/accept medic -- Status 3", "Einsatzort erreicht -- Status 4", "/revive + /ame", "/m: Dienstfahrzeug", "/m: Rettungshelikopter", "/m: Castor-Transport", "Willkommen zurück im Leben", "Nicht einsatzbereit -- Status 6", "/cancel revive + /ame", "Funkrufnummer umschalten", "Brandeinsatz angenommen -- Status 3"]
 else if(IsFrak(4))
-	TextArray := ["/getbizflag & /dropbizflag & /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "/s: Plata O' Plomo", "/me: Waffenhandel", "/me: Zigarrenhandel", "/s: Stehen bleiben", "/s: Überfall", "Adios", "/kcheck", "/f: Flagge unsere"]
+	TextArray := ["/getbizflag & /dropbizflag & /gangflag", "/mv & /oldmv", "/use green", "/use gold", "/use lsd", "/kcheck"]
 else if(IsFrak(5))
 	TextArray := ["/use lsd", "/use gold", "/use green", "/equip", "/s: Überfall", "/gangflag", "/me: Pizza anbieten"]
 else if(IsFrak(6))
@@ -3767,14 +3668,16 @@ loop, % fBinds_max
 	}
 }
 Hotkey, IfWinActive, ahk_group GTASA
-hotstrings("", "del")
-hotstringsactive := 0
+for i, oldhotstring in hotstringsactive
+{
+	Hotstring(":X:" oldhotstring, "hBind" i, "Off")
+}
+hotstringsactive := []
 loop, % Hotstrings
 {
 	if(Hotstring%A_Index% != "" AND hBind%A_Index% != ""){
-		StringReplace, temp, Hotstring%A_Index%, \, \\, All
-		hotstrings("i)\Q" temp "\E`n", "hBind" A_Index)
-		hotstringsactive ++
+		Hotstring(":X:" Hotstring%A_Index%, "hBind" A_Index, "On")
+		hotstringsactive[A_Index] := Hotstring%A_Index%
 	}
 }
 loop, %jBinds_max%
@@ -4137,7 +4040,10 @@ SetTimer, HideToolTip, Off
 ToolTip
 return
 ReloadDebugGUI:
-GuiControl, DebugGUI:, Debug, % "[sBinder Debug-Informationen]`n`nNutzer: " Nickname " -- " Fraknames[Frak] " (" Frak ") <- " (IsFrak(Frak) ? "Bestätigt" : "Nicht bestätigt") "`nOS: " A_OSVersion " " (A_Is64BitOS ? "64bit" : "32bit") "`nAHK: " A_AhkVersion " " (A_IsUnicode ? "Unicode" : "ANSI") " " (A_PtrSize = 4 ? "32bit" : "64bit") ", "  (A_IsAdmin ? "A" : "Nicht a") "ls Administrator gestartet`nsBinder: Version " Version "-" Build " | Neueste gefundene Version: " vVersion "-" vBuild "`nDatum: " A_DD "." A_MM "." A_YYYY " " A_Hour ":" A_Min ":" A_Sec "`n" (A_IsCompiled ? "Kompiliert" : "Nicht kompiliert") "; " (A_IsPaused ? "Pausiert" : "Nicht pausiert") "; " (A_IsSuspended ? "Deaktiviert" : "Aktiviert") "; WaitFor: " WaitFor "ms; API " (UseAPI ? "wird genutzt" : "wird nicht genutzt") "; " (hotstringsactive ? hotstringsactive : 0) " Textbind" (hotstringsactive = 1 ? "" : "s") " aktiviert`nAFK-Box " (AFKBox ? "" : "de") "aktiviert, DownloadMode: " DownloadMode (OverlayActive ? ", Overlay " (OvText1 OR OvText2 OR OvText3 ? "wird genutzt" : "wird nicht genutzt") : "") "`nDesign: " Designs[UseDesign, "name"] (MainGuiVersion ? " Version " MainGuiVersion : "") (UseHTMLGUI ? " im IE " Round(_mainGUI.document.DocumentMode, 1) : "") "`nStartparameter: " FullArgs
+hotstringscount := 0
+for i in hotstringsactive
+	hotstringscount ++
+GuiControl, DebugGUI:, Debug, % "[sBinder Debug-Informationen]`n`nNutzer: " Nickname " -- " Fraknames[Frak] " (" Frak ") <- " (IsFrak(Frak) ? "Bestätigt" : "Nicht bestätigt") "`nOS: " A_OSVersion " " (A_Is64BitOS ? "64bit" : "32bit") "`nAHK: " A_AhkVersion " " (A_IsUnicode ? "Unicode" : "ANSI") " " (A_PtrSize = 4 ? "32bit" : "64bit") ", "  (A_IsAdmin ? "A" : "Nicht a") "ls Administrator gestartet`nsBinder: Version " Version "-" Build " | Neueste gefundene Version: " vVersion "-" vBuild "`nDatum: " A_DD "." A_MM "." A_YYYY " " A_Hour ":" A_Min ":" A_Sec "`n" (A_IsCompiled ? "Kompiliert" : "Nicht kompiliert") "; " (A_IsPaused ? "Pausiert" : "Nicht pausiert") "; " (A_IsSuspended ? "Deaktiviert" : "Aktiviert") "; WaitFor: " WaitFor "ms; API " (UseAPI ? "wird genutzt" : "wird nicht genutzt") "; " (hotstringscount ? hotstringscount : 0) " Textbind" (hotstringscount = 1 ? "" : "s") " aktiviert`nAFK-Box " (AFKBox ? "" : "de") "aktiviert, DownloadMode: " DownloadMode (OverlayActive ? ", Overlay " (OvText1 OR OvText2 OR OvText3 ? "wird genutzt" : "wird nicht genutzt") : "") "`nDesign: " Designs[UseDesign, "name"] (MainGuiVersion ? " Version " MainGuiVersion : "") (UseHTMLGUI ? " im IE " Round(_mainGUI.document.DocumentMode, 1) : "") "`nStartparameter: " FullArgs
 return
 ChatlogSearch:
 SplitPath, A_MyDocuments,,,,, clDrive
@@ -4310,8 +4216,6 @@ Suspend On
 Hotkey, ~NumpadEnter, On
 Hotkey, ~Enter, On
 Hotkey, ~Escape, On
-if(hotstringsactive)
-	hotstrings("", "", "t")
 return
 ~NumpadEnter::
 ~Enter::
@@ -4319,8 +4223,6 @@ Suspend Off
 Hotkey, ~NumpadEnter, Off
 Hotkey, ~Enter, Off
 Hotkey, ~Escape, Off
-if(hotstringsactive)
-	hotstrings("", "", "Enter")
 return
 #If hmv && WinActive("ahk_group GTASA")
 ~h::
@@ -6472,32 +6374,6 @@ xBind1:
 xBind2:
 wBind1:
 wBind2:
-hBind1:
-hBind2:
-hBind3:
-hBind4:
-hBind5:
-hBind6:
-hBind7:
-hBind8:
-hBind9:
-hBind10:
-hBind11:
-hBind12:
-hBind13:
-hBind14:
-hBind15:
-hBind16:
-hBind17:
-hBind18:
-hBind19:
-hBind20:
-hBind21:
-hBind22:
-hBind23:
-hBind24:
-hBind25:
-hBind26:
 Bind1:
 Bind2:
 Bind3:
@@ -6550,12 +6426,40 @@ Bind49:
 Bind50:
 Bind51:
 Bind52:
-if(UseAPI AND ((!InStr(A_ThisLabel, "hBind") AND IsChatOpen()) OR IsDialogOpen() OR IsMenuOpen())){
+if(UseAPI AND (IsChatOpen() OR IsDialogOpen() OR IsMenuOpen())){
 	SendHKey()
 	return
 }
-if(InStr(A_ThisLabel, "hBind") AND IsChatOpen())
-	SendInput, {enter}
+BindReplace(%A_ThisLabel%)
+return
+
+hBind1:
+hBind2:
+hBind3:
+hBind4:
+hBind5:
+hBind6:
+hBind7:
+hBind8:
+hBind9:
+hBind10:
+hBind11:
+hBind12:
+hBind13:
+hBind14:
+hBind15:
+hBind16:
+hBind17:
+hBind18:
+hBind19:
+hBind20:
+hBind21:
+hBind22:
+hBind23:
+hBind24:
+hBind25:
+hBind26:
+Suspend Permit
 BindReplace(%A_ThisLabel%)
 return
 
@@ -6919,7 +6823,7 @@ else if(IsFrak(10, 1))
 else if(IsFrak(11, 1))
 	BindReplace("/m [»»» Federal Bureau of Investigation «««~/m [» Fahren Sie an den Straßenrand und folgen den Anweisungen «")
 else if(IsFrak(12, 1))
-	BindReplace("/s Varrios los Aztecas >|< Überfall >|< Halt sofort an, Puta Madre")
+	BindReplace("/s Scarfo Family >|< Überfall >|< Halt sofort an, Puta Madre")
 return
 fBind3:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7030,8 +6934,18 @@ if(IsFrak(2, 1))
 	BindReplace("/m [SA:PD] Fahren Sie sofort rechts ran und stellen Sie den Motor ab.~/m Steigen Sie aus und legen sich auf den Boden!~/m Sollten Sie Widerstand leisten, wird dies Folgen haben! [SA:PD]~/oos /verletzt")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Rettungshelikopter startet / landet!!~/m SARD | Bitte räumen Sie die Landefläche frei!!")
-else if(IsFrak(4,1))
-    BindReplace("/me spuckt auf den Boden und guckt Böse~/s Plata o' Plomo, hijo de Puta?~/fucku")
+else if(IsFrak(4, 1)){
+	SendChat("/kcheck")
+	WaitFor()
+	Sleep, 50
+	SendInput, {enter}{down 2}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, {down}{enter}
+	WaitFor()
+	Sleep, 50
+	SendInput, 6{enter}
+}
 else if(IsFrak(5, 1))
 	SendChat("/gangflag")
 else if(IsFrak(6, 1))
@@ -7054,8 +6968,6 @@ if(IsFrak(2, 1))
 	BindReplace("/s Stehenbleiben, Sie sind verhaftet!~/s Legen Sie sich auf den Boden (/verletzt)!")
 else if(IsFrak(3, 1))
 	BindReplace("/m SARD | ACHTUNG: Castor-Transport!!~/m SARD | Bitte halten Sie die Straße frei!!~/m SARD | Bei Entfernung unterhalb von 100m erfolgt Schussfreigabe!!")
-else if(IsFrak(4, 1))
-    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me zeigt seine Preisliste~/deal~/me Deagle=3000$ | Mp5=2850$| Shotgun=2800$| AK-47=4200$| M4=4200$| Rifle=5600$~/me Deagle-Muni=10$ | Mp5-Muni=12$ | Shotgun-Muni=12$~/me AK-47-Muni=17$ | M4-Muni=17$ | Rifle-Muni=20$~[Wait 800]/me flüstert: Und....Interesse ?~[Wait 800]/chat2~[Wait 2000]/rap1")
 else if(IsFrak(5, 1))
 	BindReplace("/me ______________________________________~/me flüstert zu dir: Pizza Calzone | 25$~/me flüstert zu dir: Pizza Tonno | 29$~/me flüstert zu dir: Pizza Margarita | 21$~/me flüstert zu dir: Speziale Pizza | Zivi --> 750$~/me flüstert zu dir: Speziale Pizza | Fraktion --> 1000$~/me ______________________________________")
 else if(IsFrak(6, 1))
@@ -7078,8 +6990,6 @@ if(IsFrak(2, 1))
 	SendChat("/swapgun")
 else if(IsFrak(3, 1))
 	BindReplace("SARD | Willkommen zurück im Leben~SARD | Bitte passen Sie das nächste mal besser auf~SARD | Der SARD wünscht Ihnen noch einen schönen Tag :)")
-else if(IsFrak(4, 1))
-    BindReplace("/me flüstert: Hola, Señor.~/chat1~/me flüstert: Wie kann ich ihnen helfen?~/chat3~/me holt frisch importierte kolumbianische Zigarren aus seiner Tasche.~[Wait 2000]/rap1~/me flüstert Und....Interesse ?")
 else if(IsFrak(6, 1))
 	SendChat("/materials getammo")
 else if(IsFrak(7, 1))
@@ -7100,8 +7010,6 @@ if(IsFrak(2, 1))
 	BindReplace("/mv~/oldmv~/towopen")
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 6 »» Nicht Einsatzbereit ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 6")
-else if(IsFrak(4, 1))
-    BindReplace("/s Hijo de Puta, Sofort stehen bleiben oder ich schiebe dir paar Blei Kugeln in den Arsch")
 else if(IsFrak(6, 1))
 	SendChat("/sellgun " PlayerInput("Gib den Namen oder die ID des Spielers ein: "))
 else if(IsFrak(7, 1))
@@ -7122,8 +7030,6 @@ if(IsFrak(2, 1))
 	SendChat("/me funkt zur Zentrale")
 else if(IsFrak(3, 1))
 	BindReplace("/cancel revive~/ame »» Revive abgebrochen ««")
-else if(IsFrak(4, 1))
-    BindReplace("/raub~/s Hijo de Puta, Überfall sofort Aussteigen und auf den Boden~/oos /verletzt~/me guckt aggressiv.")
 else if(IsFrak(9, 1))
 	SendChat("/s Are you kidding me? I'm kidding your life motherfucka!")
 else if(IsFrak(10, 1))
@@ -7155,8 +7061,6 @@ else if(IsFrak(3, 1)){
 	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
 	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
 }
-else if(IsFrak(4, 1))
-    SendChat("Adios, Dios te acompañe.")
 return
 fBind12:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7179,18 +7083,6 @@ if(IsFrak(2, 1)){
 }
 else if(IsFrak(3, 1))
 	BindReplace("/r " FrakOption%FrakOption6% " «« Status 3 »» Brandeinsatz angenommen ««~/frn " RegExReplace(FrakOption%FrakOption6%, "[/\-]") " 3")
-else if(IsFrak(4, 1)){
-	SendChat("/kcheck")
-	WaitFor()
-	Sleep, 50
-	SendInput, {enter}{down 2}{enter}
-	WaitFor()
-	Sleep, 50
-	SendInput, {down}{enter}
-	WaitFor()
-	Sleep, 50
-	SendInput, 6{enter}
-}
 return
 fBind13:
 if(UseAPI AND IsChatOpen() OR IsDialogOpen() OR IsMenuOpen()){
@@ -7209,8 +7101,6 @@ if(IsFrak(2, 1)){
 		BindReplace("/r » Code 5 - Notruf " (chat1 ? " von " chat1 : "") " angenommen (Ort: " chat2 ") «")
 	}
 }
-else if(IsFrak(4, 1))
-    SendChat("/f Flagge unsere & Clean")
 return
 /*
 ö::
