@@ -161,7 +161,6 @@ if(UseAPI){
 		IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsMenuOpen")
 		;ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowDialog")
 		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetVehicleModelId")
-		ShowGameText_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowGameText")
 		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "SetParam")
 		IsPlayerInAnyVehicle_func := DllCall("GetProcAddress", UInt, hModule, Str, "IsPlayerInAnyVehicle")
 		GetPlayerPosition_func := DllCall("GetProcAddress", UInt, hModule, Str, "GetPlayerPosition")
@@ -320,10 +319,6 @@ ShowDialog(Style, Title, Text, Button="OK"){
 		return DllCall(ShowDialog_func, Int, Style, Str, Title, Str, Text, Str, Button)
 	else if(WinActive("ahk_class AutoHotkeyGUI"))
 		MsgBox, 64, % RegExReplace(Title, "Ui)\{[a-f\d]{6}\}"), % RegExReplace(Text, "Ui)\{[a-f\d]{6}\}")
-}
-ShowGameText(Text, Time, Style){
-	global ShowGameText_func
-	return DllCall(ShowGameText_func, Str, Text, Int, Time, Int, Style)
 }
 TextCreate(Font, fontsize, bold, italic, x, y, color, text, shadow, show){
 	global TextCreate_func
@@ -2170,6 +2165,7 @@ loop, %MaxOverlays%
 	IniWrite, % OvPosX%A_Index%, %INIFile%, Overlay, OvPosX%A_Index%
 	IniWrite, % OvPosY%A_Index%, %INIFile%, Overlay, OvPosY%A_Index%
 	IniWrite, % OvOnlyInVeh%A_Index%, %INIFile%, Overlay, OvCarOnly%A_Index%
+	OvNeedsUpdate%A_Index% := 1
 }
 return
 Downloads:
@@ -4173,8 +4169,8 @@ loop, %MaxOverlays%
 	if(Ov[A_Index] < 0){
 		if(!OvOnlyInVeh%A_Index% OR InVehicle){
 			RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
-			Ov[A_Index] := TextCreate(OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"), OvPosX%A_Index%, OvPosY%A_Index%, OvColor%A_Index% + 0xFF000000, OverlayReplace(OvText%A_Index%, InVehicle), OvShadow%A_Index%, 1)
-			if(!A_IsCompiled)
+			Ov[A_Index] := TextCreate(OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"), OvPosX%A_Index%, OvPosY%A_Index%, OvColor%A_Index% + 0xFF000000, "", OvShadow%A_Index%, 1)
+			if(!A_IsCompiled AND Ov[A_Index] != "")
 				AddChatMessage("Overlay " A_Index " wurde geladen. (" Ov[A_Index] ")")
 		}
 	}
@@ -4182,14 +4178,18 @@ loop, %MaxOverlays%
 		TextDestroy(Ov[A_Index])
 		Ov[A_Index] := -1
 	}
-	else{
+	if(Ov[A_Index] != "" AND Ov[A_Index] > -1){
 		TextSetString(Ov[A_Index], OverlayReplace(OvText%A_Index%, InVehicle))
-		TextSetPos(Ov[A_Index], OvPosX%A_Index%, OvPosY%A_Index%)
-		TextSetColor(Ov[A_Index], OvColor%A_Index% + 0xFF000000)
-		TextSetShadow(Ov[A_Index], OvShadow%A_Index%)
-		RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
-		TextUpdate(Ov[A_Index], OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"))
 		TextSetShown(Ov[A_Index], OverlayShown)
+		
+		if(OvNeedsUpdate%A_Index%){
+			OvNeedsUpdate%A_Index% := 0
+			TextSetPos(Ov[A_Index], OvPosX%A_Index%, OvPosY%A_Index%)
+			TextSetColor(Ov[A_Index], OvColor%A_Index% + 0xFF000000)
+			TextSetShadow(Ov[A_Index], OvShadow%A_Index%)
+			RegExMatch(OvFontStyle%A_Index%, "O)s(\d+)\b", OvRegEx)
+			TextUpdate(Ov[A_Index], OvFont%A_Index%, (OvRegEx.Value(1) ? OvRegEx.Value(1) : 11), !!InStr(OvFontStyle%A_Index%, "bold"), !!InStr(OvFontStyle%A_Index%, "italic"))
+		}
 	}
 }
 return
