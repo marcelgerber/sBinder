@@ -152,6 +152,7 @@ if(UseAPI){
 		IniWrite, %UseAPI%, %INIFile%, Settings, UseAPI
 	}
 	else{
+		Init_func := DllCall("GetProcAddress", UInt, hModule, Str, "Init")
 		SetParam_func := DllCall("GetProcAddress", UInt, hModule, Str, "SetParam")
 		AddChatMessage_func := DllCall("GetProcAddress", UInt, hModule, Str, "AddChatMessage")
 		SendChat_func := DllCall("GetProcAddress", UInt, hModule, Str, "SendChat")
@@ -175,7 +176,9 @@ if(UseAPI){
 		TextUpdate_func := DllCall("GetProcAddress", UInt, hModule, Str, "TextUpdate")
 		DestroyAllVisual_func := DllCall("GetProcAddress", UInt, hModule, Str, "DestroyAllVisual")
 		
-		SetParam("windowName", "GTA:SA:MP")
+		SetParam("process", "gta_sa.exe")
+		SetParam("use_window", "0")
+		DllCall(Init_func)
 		DllCall(DestroyAllVisual_func)
 	}
 }
