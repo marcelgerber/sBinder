@@ -1,6 +1,6 @@
 /*
-AddChatMessage-Farbe: 0xFF6600
-AddChatMessage-Akzentfarbe: 0x0022FF
+AddChatMessage-Farbe: {ffffff} weiß
+AddChatMessage-Akzentfarbe: {88aa62} olivgrün (wird auch von API selbst verwendet)
 */
 #Include Versioninfo.ahk
 
@@ -2566,12 +2566,12 @@ Gui, Menu, MenuBar
 Gui, Add, StatusBar, vSB
 if(reloaded){
 	IniDelete, %INIFile%, Settings, Reload
-	AddChatMessage("Der sBinder wurde {0022FF}neu gestartet{FF6600}!")
+	AddChatMessage("Der sBinder wurde {88AA62}neu gestartet{FFFFFF}!")
 	AddChatMessage("Um das Fenster zu öffnen, kannst du in der Trayleiste auf das Symbol klicken.")
 }
 else if(InStr(FullArgs, "--start-minimized")){
 	if(WinActive("ahk_group GTASA")){
-		AddChatMessage("Der sBinder wurde {0022FF}minimiert gestartet{FF6600}!")
+		AddChatMessage("Der sBinder wurde {88AA62}minimiert gestartet{FFFFFF}!")
 		AddChatMessage("Um das Fenster zu öffnen, kannst du in der Trayleiste auf das Symbol klicken.")
 	}
 }
@@ -3109,7 +3109,7 @@ TruckDDOS := 0
 if(RegExMatch(truck := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-v2",,, 1), "^\[\[(\d+)\]\]$", var)){
 	TruckDDOS := 1
 	if(WinActive("ahk_group GTASA"))
-		AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+		AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	else
 		ToolTip("Du musst noch " var1 " Sekunden warten`, bis du die Daten wieder abrufen kannst.`nGrund dafür ist`, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.", var1 * 1000)
 	GuiControl, TruckerGUI:, TruckReloaded, Letzte Aktualisierung: %A_Hour%:%A_Min%:%A_Sec% (DDOS-Sperre)
@@ -4198,7 +4198,7 @@ return
 Del::
 Suspend
 if(UseAPI)
-	AddChatMessage("Der sBinder wurde " (A_IsSuspended ? "{FF1100}de" : "{00AA00}") "aktiviert{FF6600}.")
+	AddChatMessage("Der sBinder wurde " (A_IsSuspended ? "{FF1100}de" : "{00AA00}") "aktiviert{FFFFFF}.")
 active := !A_IsSuspended
 loop, % (A_IsSuspended ? 2 : 1)
 {
@@ -4396,7 +4396,7 @@ Suspend Permit
 Sleep, 100
 AddChatMessage("Willst du den sBinder jetzt wirklich neu starten?")
 AddChatMessage("Dabei werden alle ungespeicherten Daten und alle Variablen gelöscht!")
-AddChatMessage("Wenn du den sBinder neu starten willst, drücke innerhalb der nächsten 5 Sekunden {0022FF}R{FF6600}.")
+AddChatMessage("Wenn du den sBinder neu starten willst, drücke innerhalb der nächsten 5 Sekunden {88AA62}R{FFFFFF}.")
 s := A_IsSuspended
 Suspend On
 KeyWait, R, T5 D
@@ -4407,7 +4407,7 @@ if(!ErrorLevel){
 	Reload
 }
 else
-	AddChatMessage("Der sBinder wurde nicht neu gestartet, da du nicht innerhalb von 5 Sekunden {0022FF}R{FF6600} gedrückt hast.")
+	AddChatMessage("Der sBinder wurde nicht neu gestartet, da du nicht innerhalb von 5 Sekunden {88AA62}R{FFFFFF} gedrückt hast.")
 return
 ::/znotiz::
 ::/zeige notiz::
@@ -4415,7 +4415,7 @@ Suspend Permit
 Gui, NotesGUI:Submit, Nohide
 notenum := Trim(PlayerInput("Gib die Nummer der gewünschten Notiz ein: "))
 if((notenum < 1 OR notenum > 8) AND notenum != "all")
-	AddChatMessage("Es sind nur Zahlen zwischen {0022FF}1 und 8{FF6600} oder {0022FF}all{FF6600} möglich.")
+	AddChatMessage("Es sind nur Zahlen zwischen {88AA62}1 und 8{FFFFFF} oder {88AA62}all{FFFFFF} möglich.")
 else if(InStr(notenum, "all")){
 	notenum := ""
 	loop, %Notes%
@@ -4442,9 +4442,9 @@ else if(InStr(notenum, "all")){
 }
 else{
 	if(Note%notenum% = "")
-		AddChatMessage("Notiz " notenum " ist leer. Du kannst Sie mit {0022FF}/bearbeite notiz " notenum "{FF6600} füllen.")
+		AddChatMessage("Notiz " notenum " ist leer. Du kannst Sie mit {88AA62}/bearbeite notiz " notenum "{FFFFFF} füllen.")
 	else
-		AddChatMessage("Notiz " notenum ":{FF6600} " Note%notenum%)
+		AddChatMessage("Notiz " notenum ":{FFFFFF} " Note%notenum%)
 }
 return
 ::/bnotiz::
@@ -4454,7 +4454,7 @@ Gui, NotesGUI:Submit, Nohide
 ClipboardBackup := ClipboardAll
 notenum := PlayerInput("Gib die Nummer der gewünschten Notiz ein: ")
 if(notenum < 1 OR notenum > 8){
-	AddChatMessage("Es sind nur Zahlen zwischen {0022FF}1 und 8{FF6600} möglich.")
+	AddChatMessage("Es sind nur Zahlen zwischen {88AA62}1 und 8{FFFFFF} möglich.")
 	return
 }
 KeyWait, Enter
@@ -4468,7 +4468,7 @@ Note%notenum% := Clipboard
 IniWrite,% Note%notenum%, %INIFile%, Notes, Note%notenum%
 SendInput ^a{backspace}{enter}
 Clipboard := ClipboardBackup
-AddChatMessage("Notiz " notenum " wurde {0022FF}erfolgreich gespeichert{FF6600}.")
+AddChatMessage("Notiz " notenum " wurde {88AA62}erfolgreich gespeichert{FFFFFF}.")
 ClipboardBackup := ""
 return
 ::/lnotiz::
@@ -4476,14 +4476,14 @@ return
 Suspend Permit
 notenum := PlayerInput("Gib die Nummer der zu löschenden Notiz ein: ")
 if((notenum < 1 OR notenum > 8) AND notenum != "all")
-	AddChatMessage("Es sind nur Zahlen zwischen {0022FF}1 und 8{FF6600} oder {0022FF}all{FF6600} möglich.")
+	AddChatMessage("Es sind nur Zahlen zwischen {88AA62}1 und 8{FFFFFF} oder {88AA62}all{FFFFFF} möglich.")
 else if(notenum = "all"){
 	loop, %Notes%
 	{
 		Note%A_Index% := ""
 		IniWrite, % "", %INIFile%, Notes, Note%A_Index%
 	}
-	AddChatMessage("Alle Notizen wurden {0022FF}erfolgreich gelöscht{FF6600}!")
+	AddChatMessage("Alle Notizen wurden {88AA62}erfolgreich gelöscht{FFFFFF}!")
 }
 else{
 	if(!Note%notenum%)
@@ -4491,17 +4491,17 @@ else{
 	else{
 		Note%notenum% := ""
 		IniWrite, % "", %INIFile%, Notes, Note%notenum%
-		AddChatMessage("Notiz " notenum " wurde {0022FF}erfolgreich gelöscht{FF6600}!")
+		AddChatMessage("Notiz " notenum " wurde {88AA62}erfolgreich gelöscht{FFFFFF}!")
 	}
 }
 return
 ::/inettest::
 Suspend Permit
 AddChatMessage("Ein Test der Internetverbindung wird durchgeführt...")
-AddChatMessage("Ping nes-newlife Gameserver: {0022FF}" clearping("server.nes-newlife.de", 400))
-AddChatMessage("Ping nes-newlife Homepage: {0022FF}" clearping("nes-newlife.de", 400))
-AddChatMessage("Ping nes-newlife Forum: {0022FF}" clearping("forum.nes-newlife.de", 400))
-AddChatMessage("Ping google.com (Referenz): {0022FF}" clearping("google.com", 400))
+AddChatMessage("Ping nes-newlife Gameserver: {88AA62}" clearping("server.nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Homepage: {88AA62}" clearping("nes-newlife.de", 400))
+AddChatMessage("Ping nes-newlife Forum: {88AA62}" clearping("forum.nes-newlife.de", 400))
+AddChatMessage("Ping google.com (Referenz): {88AA62}" clearping("google.com", 400))
 return
 ::/kdonut::
 Suspend Permit
@@ -4517,8 +4517,8 @@ return
 Suspend Permit
 if(ame := PlayerInput("Gib den /ame-Text ein: ")){
 	SetTimer, ame, 15000
-	AddChatMessage("Der Text {0022FF}" ame "{FF6600} wird jetzt über dir angezeigt.")
-	AddChatMessage("Du kannst diese Funktion mit {0022FF}/kcancel{FF6600} stoppen.")
+	AddChatMessage("Der Text {88AA62}" ame "{FFFFFF} wird jetzt über dir angezeigt.")
+	AddChatMessage("Du kannst diese Funktion mit {88AA62}/kcancel{FFFFFF} stoppen.")
 	gosub ame
 }
 else
@@ -4537,8 +4537,8 @@ else{
 	SetTimer, ame, 3000
 	AddChatMessage("Es werden nun insgesamt " ame._maxIndex() " Texte über deinem Kopf angezeigt:")
 	for i, k in ame
-		AddChatMessage("Text " i ": {0022FF}" k)
-	AddChatMessage("Sie werden alle 3 Sekunden gewechselt. Du kannst diese Funktion mit {0022FF}/kcancel{FF6600} stoppen.")
+		AddChatMessage("Text " i ": {88AA62}" k)
+	AddChatMessage("Sie werden alle 3 Sekunden gewechselt. Du kannst diese Funktion mit {88AA62}/kcancel{FFFFFF} stoppen.")
 	multiame_current := 0
 	gosub ame
 }	
@@ -4558,13 +4558,13 @@ return
 ::/togfrakbinds::
 Suspend Permit
 frakbinds := !frakbinds
-AddChatMessage("Die Fraktionsbinds wurden {0022FF}" (frakbinds ? "" : "de") "aktiviert{FF6600}.")
+AddChatMessage("Die Fraktionsbinds wurden {88AA62}" (frakbinds ? "" : "de") "aktiviert{FFFFFF}.")
 return
 ::/kcancel::
 Suspend Permit
 ame := ""
 SetTimer, ame, Off
-AddChatMessage("Alle Funktionen wurden {0022FF}deaktiviert{FF6600}.")
+AddChatMessage("Alle Funktionen wurden {88AA62}deaktiviert{FFFFFF}.")
 return
 ::/pdt::
 ::/paydaytime::
@@ -4573,7 +4573,7 @@ SendChat("/oldstats")
 chat := WaitForChatLine(1, "Spielzeit seit Payday: [")
 RegExMatch(chat, "Spielzeit seit Payday: \[(.*) Minuten\]", chat)
 chat1 := 60 - chat1
-AddChatMessage("Du musst noch {0022FF}" chat1 " Minute" (chat1 = 1 ? "" : "n") "{FF6600} bis zum Payday warten.")
+AddChatMessage("Du musst noch {88AA62}" chat1 " Minute" (chat1 = 1 ? "" : "n") "{FFFFFF} bis zum Payday warten.")
 return
 ::/respekt::
 Suspend Permit
@@ -4585,9 +4585,9 @@ RegExMatch(chat, "Respekt:\[(\d+)/(\d+)\]", chat)
 RegExMatch(num, "Level:\[(\d+)\] Geschlecht:\[", num)
 chat3 := chat2 - chat1
 ;if(chat1 < chat2)
-AddChatMessage("Du benötigst noch {0022FF}" chat3 " Respektpunkt" (chat3 = 1 ? "" : "e") "{FF6600}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat3 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {0022FF}Level " num1 + 1 "{FF6600}. {A6A6A6}[" chat1 "/" chat2 "]")
+AddChatMessage("Du benötigst noch {88AA62}" chat3 " Respektpunkt" (chat3 = 1 ? "" : "e") "{FFFFFF}" (InStr(stat, "Status:[Premium") ? " (ca. " (stat := Round(chat3 / 1.2)) " Payday" (stat = 1 ? "" : "s") " mit Premium)" : "") " bis {88AA62}Level " num1 + 1 "{FFFFFF}. {A6A6A6}[" chat1 "/" chat2 "]")
 ;else
-;	AddChatMessage("Du kannst dir {0022FF}Level " num1 + 1 "{FF6600} für {0022FF}$" number_format(chat1) "{FF6600} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
+;	AddChatMessage("Du kannst dir {88AA62}Level " num1 + 1 "{FFFFFF} für {88AA62}$" number_format(chat1) "{FFFFFF} kaufen. {A6A6A6}[" chat2 "/" chat3 "]")
 return
 ::/kcall::
 Suspend Permit
@@ -4637,9 +4637,9 @@ SendChat("/oldstats")
 chat := WaitForChatLine(6, "Bank:[$")
 StringReplace, chat, chat, .,, All
 RegExMatch(chat, "Bargeld:\[\$(.*?)\] Bank:\[\$(.*?)\] Handynummer:", chat)
-AddChatMessage("Geldbörse: {0022FF}$" number_format(chat1))
-AddChatMessage("Bankguthaben: {0022FF}$" number_format(chat2))
-AddChatMessage("Gesamt: {0022FF}$" number_format(chat1 + chat2))
+AddChatMessage("Geldbörse: {88AA62}$" number_format(chat1))
+AddChatMessage("Bankguthaben: {88AA62}$" number_format(chat2))
+AddChatMessage("Gesamt: {88AA62}$" number_format(chat1 + chat2))
 return
 #If IsFrak(5) AND WinActive("ahk_group GTASA")
 ::/sg::
@@ -4649,7 +4649,7 @@ return
 ::/sg add::
 Suspend Permit
 while((prob2 := StrLen(id1 := PlayerInput("Gib den Namen des Spielers ein: "))) AND (!between(prob2, 3, 20) OR (prob1 := RegExMatch(id1, "i)[^\w\d\._\[\]\(\)\$=]", chat))))
-	AddChatMessage("Gib den Namen nochmals ein! Erkanntes Problem: " (prob2 < 3 ? "Zu kurz (min. 3 Zeichen)" : prob2 > 20 ? "Zu lang (max. 20 Zeichen)" : prob1 ? "Ungültiges Zeichen: ""{0022FF}" chat "{FF6600}""" : "Unbekannt"))
+	AddChatMessage("Gib den Namen nochmals ein! Erkanntes Problem: " (prob2 < 3 ? "Zu kurz (min. 3 Zeichen)" : prob2 > 20 ? "Zu lang (max. 20 Zeichen)" : prob1 ? "Ungültiges Zeichen: ""{88AA62}" chat "{FFFFFF}""" : "Unbekannt"))
 if(prob2 AND id2 := toMoney(PlayerInput("Gib das Schutzgeld ein: "))){
 	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=add&n=" URLEncode(id1) "&m=" URLEncode(id2) "&u=" URLEncode(Nickname)) > 0)
 		AddChatMessage("Der Spieler wurde erfolgreich hinzugefügt")
@@ -4700,7 +4700,7 @@ i := 0
 loop, Parse, data, `n, `r
 {
 	if(RegExMatch(A_LoopField, "^(.+)\|(.+)\|(\d+)\|(\d)\|(.+)\|(.*)$", regex)){
-		AddChatMessage(regex1 "{FF6600}: seit " regex2 " -> $" number_format(regex3) (regex5 ? " (zuletzt bezahlt am " regex5 " bei " (regex6 ? regex6 : "?") ")" : ""), (regex4 ? 0x00AA00 : 0xFF1100))
+		AddChatMessage(regex1 "{FFFFFF}: seit " regex2 " -> $" number_format(regex3) (regex5 ? " (zuletzt bezahlt am " regex5 " bei " (regex6 ? regex6 : "?") ")" : ""), (regex4 ? 0x00AA00 : 0xFF1100))
 		i++
 		if(!regex4)
 			arr.Insert(regex1)
@@ -4724,7 +4724,7 @@ return
 ::/ml2 create::
 Suspend Permit
 if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=add&u=" URLEncode(Nickname) "&ml=" SubStr(A_ThisLabel, 6, 1)) > 0)
-	AddChatMessage("Du hast dein Munitionslager erfolgreich eingerichtet. Aktueller Stand: {0022FF}0")
+	AddChatMessage("Du hast dein Munitionslager erfolgreich eingerichtet. Aktueller Stand: {88AA62}0")
 else
 	AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. schon ein Lager?")
 return
@@ -4735,7 +4735,7 @@ if(id1 := PlayerInput("Wieviel willst du einzahlen?: ")){
 	if(!is(id1, "number"))
 		AddChatMessage("Die Eingabe ist keine Zahl!")
 	else if(RegExMatch(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=increase&u=" URLEncode(Nickname) "&num=" URLEncode(id1) "&ml=" SubStr(A_ThisLabel, 6, 1)), "^(\d+\|)?(\d+):(\d+)$", data) AND data2 > 0)
-		AddChatMessage("Du hast erfolgreich {0022FF}" number_format(id1) "{FF6600} eingezahlt. Neuer Stand: {0022FF}" number_format(data3))
+		AddChatMessage("Du hast erfolgreich {88AA62}" number_format(id1) "{FFFFFF} eingezahlt. Neuer Stand: {88AA62}" number_format(data3))
 	else
 		AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. noch kein Lager?")
 }
@@ -4750,9 +4750,9 @@ if(id1 := PlayerInput("Wieviel willst du nehmen?: ")){
 		AddChatMessage("Die Eingabe ist keine Zahl!")
 	else if(RegExMatch(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=increase&u=" URLEncode(Nickname) "&num=-" URLEncode(id1) "&ml=" SubStr(A_ThisLabel, 6, 1)), "^(\d+\|)?(\d+):(\d+)$", data) AND data2 > 0){
 		if(data1)
-			AddChatMessage("Du hast versucht, dein Lager um {0022FF}" number_format(Trim(data1, "|")) "{FF6600} zu überziehen. Es wurde auf {0022FF}0{FF6600} gesetzt.")
+			AddChatMessage("Du hast versucht, dein Lager um {88AA62}" number_format(Trim(data1, "|")) "{FFFFFF} zu überziehen. Es wurde auf {88AA62}0{FFFFFF} gesetzt.")
 		else
-			AddChatMessage("Du hast erfolgreich {0022FF}" number_format(id1) "{FF6600} aus dem Lager genommen. Neuer Stand: {0022FF}" number_format(data3))
+			AddChatMessage("Du hast erfolgreich {88AA62}" number_format(id1) "{FFFFFF} aus dem Lager genommen. Neuer Stand: {88AA62}" number_format(data3))
 	}
 	else
 		AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. noch kein Lager?")
@@ -4767,7 +4767,7 @@ if(data := HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=list&u=" 
 	loop, Parse, data, `n, `r
 	{
 		if(RegExMatch(A_LoopField, "^(.+):(\d+)$", regex))
-			AddChatMessage(regex1 ": {FF6600}" number_format(regex2), (regex1 = Nickname ? 0x00AA00 : 0xFF6600))
+			AddChatMessage(regex1 ": {FFFFFF}" number_format(regex2), (regex1 = Nickname ? 0x00AA00 : 0xFF6600))
 	}
 }
 else 
@@ -4806,7 +4806,7 @@ return
 ::/ssp::
 Suspend Permit
 if((id1 := PlayerInput("Gib den Namen oder die ID des Spielers ein: ")) != ""){
-	AddChatMessage("Gib den Anfangsbuchstaben der Pizza ein: {0022FF}C{FF6600}alzone, {0022FF}T{FF6600}onno, {0022FF}M{FF6600}argarita, {0022FF}S{FF6600}peziale")
+	AddChatMessage("Gib den Anfangsbuchstaben der Pizza ein: {88AA62}C{FFFFFF}alzone, {88AA62}T{FFFFFF}onno, {88AA62}M{FFFFFF}argarita, {88AA62}S{FFFFFF}peziale")
 	pizza := Object()
 	pizza["beginning"] := A_TickCount
 	s := A_IsSuspended
@@ -4836,12 +4836,12 @@ if((word := PlayerInput("Gib ein Wort zum Verdrehen ein: ")) = ""){
 	return
 }
 loop{
-	AddChatMessage(word ": {0022FF}" (mixedWord := mixWord(word)))
-	AddChatMessage("Drücke innerhalb der nächsten 3 Sekunden {0022FF}C{FF6600}, um das Wort zu kopieren, oder {0022FF}R{FF6600}, um es neu zu mischen.")
+	AddChatMessage(word ": {88AA62}" (mixedWord := mixWord(word)))
+	AddChatMessage("Drücke innerhalb der nächsten 3 Sekunden {88AA62}C{FFFFFF}, um das Wort zu kopieren, oder {88AA62}R{FFFFFF}, um es neu zu mischen.")
 	Input, temp, T3, CR
 	if(ErrorLevel = "EndKey:C"){
 		Clipboard := mixedWord
-		AddChatMessage("Das Wort wurde kopiert. Du kannst es mit {0022FF}Strg+V{FF6600} einfügen.")
+		AddChatMessage("Das Wort wurde kopiert. Du kannst es mit {88AA62}Strg+V{FFFFFF} einfügen.")
 	}
 	if(ErrorLevel != "EndKey:R")
 		break
@@ -4877,8 +4877,8 @@ return
 Suspend Permit
 if(UseAPI){
 	location := NextNovaLocation() ;Name, distance
-	AddChatMessage("Automatisch ermittelter Standort: {0022FF}" location["Name"] "{FF6600} (Distanz: " Round(location["distance"]) "m)")
-	AddChatMessage("Wenn du diesen Vorschlag übernehmen willst, drücke innerhalb der nächsten 3 Sekunden {0022FF}J{FF6600}. Nutze {0022FF}N{FF6600}, um einen eigenen Ort anzugeben, oder {0022FF}C{FF6600}, um abzubrechen.")
+	AddChatMessage("Automatisch ermittelter Standort: {88AA62}" location["Name"] "{FFFFFF} (Distanz: " Round(location["distance"]) "m)")
+	AddChatMessage("Wenn du diesen Vorschlag übernehmen willst, drücke innerhalb der nächsten 3 Sekunden {88AA62}J{FFFFFF}. Nutze {88AA62}N{FFFFFF}, um einen eigenen Ort anzugeben, oder {88AA62}C{FFFFFF}, um abzubrechen.")
 	location["beginning"] := A_TickCount
 	s := A_IsSuspended
 	Suspend On
@@ -4891,7 +4891,7 @@ if(UseAPI){
 		return
 	}
 	else if(location["key_c"]){
-		AddChatMessage("Der /vs-Modus wird verlassen, da du {0022FF}C{FF6600} gedrückt hast.")
+		AddChatMessage("Der /vs-Modus wird verlassen, da du {88AA62}C{FFFFFF} gedrückt hast.")
 		return
 	}
 	else if(!location["key_n"]){
@@ -4946,18 +4946,18 @@ return
 Suspend Permit
 AddChatMessage("Willst du den sBinder jetzt wirklich beenden?")
 AddChatMessage("Dabei werden alle ungespeicherten Daten und alle Variablen gelöscht!")
-AddChatMessage("Wenn du den sBinder beenden willst, drücke innerhalb der nächsten 5 Sekunden {0022FF}E{FF6600}.")
+AddChatMessage("Wenn du den sBinder beenden willst, drücke innerhalb der nächsten 5 Sekunden {88AA62}E{FFFFFF}.")
 s := A_IsSuspended
 Suspend On
 KeyWait, E, T5 D
 if(!s)
 	Suspend Off
 if(!ErrorLevel){
-	AddChatMessage("Der sBinder wird nun {0022FF}beendet{FF6600}.")
+	AddChatMessage("Der sBinder wird nun {88AA62}beendet{FFFFFF}.")
 	ExitApp
 }
 else
-	AddChatMessage("Der sBinder wurde nicht beendet, da du nicht innerhalb von 5 Sekunden {0022FF}E{FF6600} gedrückt hast.")
+	AddChatMessage("Der sBinder wurde nicht beendet, da du nicht innerhalb von 5 Sekunden {88AA62}E{FFFFFF} gedrückt hast.")
 return
 ::/textbinds::
 ::/textbinds 1::
@@ -4977,7 +4977,7 @@ if(A_ThisLabel = "::/textbinds"){
 				if A_Index between % index*10-9 and % index*10
 					tempvar.Insert(k)
 			}
-			AddChatMessage("Seite " A_Index ":{FFFFFF} Hilfe mit {0022FF}/textbinds " A_Index, 0x00FF00)
+			AddChatMessage("Seite " A_Index ":{FFFFFF} Hilfe mit {88AA62}/textbinds " A_Index, 0x00FF00)
 			List(tempvar)
 		}
 	}
@@ -4997,7 +4997,7 @@ else if(IsFrak(11))
 if(FrakCmd AND A_ThisLabel = "::/textbinds")
 	List(FrakCmd, Fraknames[Frak] ": ", 1)
 if(A_ThisLabel = "::/textbinds")
-	AddChatMessage("Die speziellen Textbinds siehst du mit {0022FF}/kcmd{FF6600}!")
+	AddChatMessage("Die speziellen Textbinds siehst du mit {88AA62}/kcmd{FFFFFF}!")
 else{
 	RegExMatch(A_ThisLabel, "::/textbinds (\d)", chat)
 	if(UseAPI){
@@ -5069,13 +5069,13 @@ return
 ::/kcmd::
 Suspend Permit
 List(["/krestart", "/kexit", "/textbinds", "/kstop", "/kautosetup", "/kstate"], "", 1)
-AddChatMessage("Die normalen Textbinds siehst du mit {0022FF}/textbinds{FF6600}!")
+AddChatMessage("Die normalen Textbinds siehst du mit {88AA62}/textbinds{FFFFFF}!")
 return
 ::/cpu::
 Suspend Permit
 GetCPULoad_Short()
 Sleep, 200
-AddChatMessage("Aktuelle Prozessorauslastung: etwa {0022FF}" Round(GetCPULoad_Short()) "%")
+AddChatMessage("Aktuelle Prozessorauslastung: etwa {88AA62}" Round(GetCPULoad_Short()) "%")
 ;http://www.autohotkey.com/board/topic/91322-mini-tool-info-zum-arbeitsspeicher-ram/ //jNizM
 try{
 	if(!(objWMIService := ComObjGet("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")) OR !(colItems := objWMIService.ExecQuery("Select * from Win32_OperatingSystem")._NewEnum))
@@ -5102,7 +5102,7 @@ if(DllCall("GetSystemPowerStatus", "UInt", &powerstatus)){
 			Battery["left"] := date(Battery["left"],, 0)
 		else
 			Battery["left"] := 0
-		AddChatMessage("Akku: {0022FF}" Battery["Status"] "{FF6600} (" Battery["Percent"] ")" (Battery["left"] ? " (" Battery["left"] " verbleiben)" : ""))
+		AddChatMessage("Akku: {88AA62}" Battery["Status"] "{FFFFFF} (" Battery["Percent"] ")" (Battery["left"] ? " (" Battery["left"] " verbleiben)" : ""))
 	}
 	Battery := ""
 }
@@ -5111,7 +5111,7 @@ return
 Suspend Permit
 if(timer_s := PlayerInput("Gib die Zeit in Sekunden ein: ")){
 	SetTimer, Timer, % timer_s * 1000
-	AddChatMessage("Du hast den Timer auf {0022FF}" RoundEx(timer_s) " Sekunde" (Round(timer_s) = 1 ? "" : "n") "{FF6600} gestellt.")
+	AddChatMessage("Du hast den Timer auf {88AA62}" RoundEx(timer_s) " Sekunde" (Round(timer_s) = 1 ? "" : "n") "{FFFFFF} gestellt.")
 	timer_time := A_Now
 	timer_time += timer_s, Seconds
 	AddChatMessage("Er wird um " FormatTime(timer_time, "HH:mm:ss") " ablaufen.")
@@ -5121,7 +5121,7 @@ return
 Suspend Permit
 if(timer_s := PlayerInput("Gib die Zeit in Minuten ein: ") * 60){
 	SetTimer, Timer, % timer_s * 1000
-	AddChatMessage("Du hast den Timer auf {0022FF}" RoundEx(timer_s/60, 2) " Minuten{FF6600} gestellt.")
+	AddChatMessage("Du hast den Timer auf {88AA62}" RoundEx(timer_s/60, 2) " Minuten{FFFFFF} gestellt.")
 	timer_time := A_Now
 	timer_time += timer_s, Seconds
 	AddChatMessage("Er wird um " FormatTime(timer_time, "HH:mm:ss") " ablaufen.")
@@ -5130,7 +5130,7 @@ return
 Timer:
 SetTimer, Timer, Off
 SetTimer, TimerTone, -1
-string := "Der Timer ist nach {0022FF}" date(timer_s) "{FF6600} abgelaufen!"
+string := "Der Timer ist nach {88AA62}" date(timer_s) "{FFFFFF} abgelaufen!"
 timer_time := 0
 if(WinActive("ahk_group GTASA"))
 	AddChatMessage(string)
@@ -5169,17 +5169,17 @@ return
 Suspend Permit
 if(stoppuhr){
 	stoppuhr := A_TickCount - stoppuhr
-	AddChatMessage("Die Stoppuhr wurde beendet. Zeit: {0022FF}" Floor(stoppuhr/3600000) ":" LeadingZero(Mod(Floor(stoppuhr/60000), 60)) ":" LeadingZero(Mod(Floor(stoppuhr/1000), 60)) ":" LeadingZero(SubStr(stoppuhr, -2), 3) "{FF6600} (h:min:sek:ms)")
+	AddChatMessage("Die Stoppuhr wurde beendet. Zeit: {88AA62}" Floor(stoppuhr/3600000) ":" LeadingZero(Mod(Floor(stoppuhr/60000), 60)) ":" LeadingZero(Mod(Floor(stoppuhr/1000), 60)) ":" LeadingZero(SubStr(stoppuhr, -2), 3) "{FFFFFF} (h:min:sek:ms)")
 	stoppuhr := 0
 }
 else{
-	AddChatMessage("Die Stoppuhr wurde gestartet. Du kannst sie mit {0022FF}/stoppuhr{FF6600} anhalten.")
+	AddChatMessage("Die Stoppuhr wurde gestartet. Du kannst sie mit {88AA62}/stoppuhr{FFFFFF} anhalten.")
 	stoppuhr := A_TickCount
 }
 return
 ::/uhr::
 Suspend Permit
-AddChatMessage("Es ist {0022FF}" A_Hour ":" A_Min ":" A_Sec " Uhr{FF6600} am " A_DDDD ", dem {0022FF}" A_DD "." A_MM "." A_YYYY "{FF6600}.")
+AddChatMessage("Es ist {88AA62}" A_Hour ":" A_Min ":" A_Sec " Uhr{FFFFFF} am " A_DDDD ", dem {88AA62}" A_DD "." A_MM "." A_YYYY "{FFFFFF}.")
 return
 ::/clearchat::
 Suspend Permit
@@ -5344,7 +5344,7 @@ if(!vlc){
 				AddChatMessage(Videos._maxIndex() " Ergebnisse:")
 				for i, k in Videos
 				{
-					AddChatMessage(i ": {0022FF}" (StrLen(k["title"]) > 60 ? SubStr(k["title"], 1, 57) "..." : k["title"]) (k["channel"] != "" ? "{FF6600} von {0022FF}" k["channel"] : ""))
+					AddChatMessage(i ": {88AA62}" (StrLen(k["title"]) > 60 ? SubStr(k["title"], 1, 57) "..." : k["title"]) (k["channel"] != "" ? "{FFFFFF} von {88AA62}" k["channel"] : ""))
 				}
 				if(match2 := PlayerInput("Gib die Nummer des Videos (1 - " Videos._maxIndex() ") ein: ")){
 					if(!between(match2, 1, Videos._maxIndex())){
@@ -5360,7 +5360,7 @@ if(!vlc){
 				}
 			}
 			else{
-				AddChatMessage("Es konnte kein Video für {0022FF}" query "{FF6600} gefunden werden.")
+				AddChatMessage("Es konnte kein Video für {88AA62}" query "{FFFFFF} gefunden werden.")
 				return
 			}
 		}
@@ -5369,7 +5369,7 @@ if(!vlc){
 			;RegExMatch(HTTPData("http://www.youtube.com/results?search_query=" URLEncode(query),, "utf-8"), "U`a)<h3.*><a .*href=""/watch\?v=(.+)"".*>(.+)</a></h3>", match)
 			RegExMatch(HTTPData("https://www.googleapis.com/youtube/v3/search?key=AIzaSyDsLW8zCCV0HMrTma8mZoQWVQxMZaE3ZYM&prettyPrint=false&part=snippet&maxResults=1&type=video&q=" URLEncode(query),, "utf-8"), "U`a),""videoId"":""(.+)""\}.+,""title"":""(.+)"",", match)
 			if(!match1){
-				AddChatMessage("Es konnte kein Video für {0022FF}" query "{FF6600} gefunden werden.")
+				AddChatMessage("Es konnte kein Video für {88AA62}" query "{FFFFFF} gefunden werden.")
 				return
 			}
 			match1 := RegExReplace(match1, "\\""", """")
@@ -5380,7 +5380,7 @@ if(!vlc){
 		Process, Wait, %vlc%, 5
 		if(ErrorLevel){
 			StringReplace, match2, match2, \", ", All
-			AddChatMessage("YouTube-Wiedergabe gestartet. Du hörst: {0022FF}" (StrLen(match2) > 70 ? SubStr(match2, 1, 67) "..." : match2))
+			AddChatMessage("YouTube-Wiedergabe gestartet. Du hörst: {88AA62}" (StrLen(match2) > 70 ? SubStr(match2, 1, 67) "..." : match2))
 		}
 		else
 			AddChatMessage("Der VLC Media Player konnte nicht gestartet werden!")
@@ -5442,7 +5442,7 @@ return
 Suspend Permit
 AddChatMessage("Wetterdaten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=weather",,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 i := 0
@@ -5482,7 +5482,7 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 }
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 FrakWebsite := Object()
@@ -5502,11 +5502,11 @@ FrakWebsite := ArrayReverse(ArrayMultiSort(ArrayMultiSort(ArrayMultiSort(FrakWeb
 if(!RegExMatch(data, "U)^\[(.+)\]", data))
 	AddChatMessage("Fehler beim Download")
 else if(!members)
-	AddChatMessage("Die Fraktion {0022FF}" data1 "{FF6600} hat keine Mitglieder")
+	AddChatMessage("Die Fraktion {88AA62}" data1 "{FFFFFF} hat keine Mitglieder")
 else if(!online)
-	AddChatMessage("0/" members " der Fraktion {0022FF}" data1 "{FF6600} online.")
+	AddChatMessage("0/" members " der Fraktion {88AA62}" data1 "{FFFFFF} online.")
 else{
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader:")
+	AddChatMessage(online "/" members " der Fraktion {88AA62}" data1 "{FFFFFF} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader:")
 	for i, k in FrakWebsite
 	{
 		if(k[4]){
@@ -5515,7 +5515,7 @@ else{
 			else if(SubStr(A_ThisLabel, -2) = " wp")
 				SendChat("/checkwanted " k[1])
 			else
-				AddChatMessage((k[5] ? "{00AA00}Leader:{FF6600} " : "") k[1] " [Rang " k[3] "; Level " k[2] "]")
+				AddChatMessage((k[5] ? "{00AA00}Leader:{FFFFFF} " : "") k[1] " [Rang " k[3] "; Level " k[2] "]")
 		}
 	}
 }
@@ -5528,7 +5528,7 @@ if(!num2 := FrakNums[Frak])
 	return
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 FrakWebsite := Object()
@@ -5657,7 +5657,7 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 }
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 FrakWebsite := Object()
@@ -5673,9 +5673,9 @@ while(pos := RegExMatch(data, "Um`a)^(.+);(\d+);(\d+);(\d*);(\d*);$", chat, pos+
 if(!RegExMatch(data, "U)^\[(.+)\]", data))
 	AddChatMessage("Fehler beim Download")
 else if(!leader)
-	AddChatMessage("Die Fraktion {0022FF}" data1 "{FF6600} hat keine Leader.")
+	AddChatMessage("Die Fraktion {88AA62}" data1 "{FFFFFF} hat keine Leader.")
 else{
-	AddChatMessage("Die Fraktion {0022FF}" data1 "{FF6600} hat " leader " Leader, davon " leaderonline " online:")
+	AddChatMessage("Die Fraktion {88AA62}" data1 "{FFFFFF} hat " leader " Leader, davon " leaderonline " online:")
 	FrakWebsite := ArrayReverse(ArrayMultiSort(ArrayMultiSort(FrakWebsite, 2), 3))
 	for i, k in FrakWebsite
 	{
@@ -5684,10 +5684,10 @@ else{
 				temp := "{00AA00}Online:"
 			else
 				temp := "{FF1100}Offline:"
-			AddChatMessage(temp "{FF6600} " k[1] " [Rang " k[3] "; Level " k[2] "]")
+			AddChatMessage(temp "{FFFFFF} " k[1] " [Rang " k[3] "; Level " k[2] "]")
 		}
 		else if(k[5] = -1)
-			AddChatMessage("{FF0000}Fehler: {FF6600}" k[1])
+			AddChatMessage("{FF0000}Fehler: {FFFFFF}" k[1])
 	}
 	if(SubStr(A_ThisLabel, -2) = " id"){
 		for i, k in FrakWebsite
@@ -5716,11 +5716,11 @@ if(SubStr(id, -5, 6) = "_[AFK]")
 	id := SubStr(id, 1, -6)
 AddChatMessage("Spielerdaten werden geladen...")
 if((data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=player-v2.3&p=" URLEncode(id), "")) = -1){
-	AddChatMessage("Kein Spieler mit " (is(id, "integer") ? "der Nummer" : "dem Namen") " {0022FF}" id "{FF6600} gefunden")
+	AddChatMessage("Kein Spieler mit " (is(id, "integer") ? "der Nummer" : "dem Namen") " {88AA62}" id "{FFFFFF} gefunden")
 	return
 }
 if(RegExMatch(data, "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 if(RegExMatch(data, "U)^(.+);(\d);(\d+);(\d+);(\d{5,6});(.+);(\d{1,2});(\d+)(;.+)?(\|.+)?(#.+)?$", data)){ ;Name, online/offline, Level, Alter, Tel.nummer, Frak + Rang + Leader, Achievements, Achievements insg., Ehepartner (mit ;), Adminrang (mit |), Frühere Namen (mit #)
@@ -5729,7 +5729,7 @@ if(RegExMatch(data, "U)^(.+);(\d);(\d+);(\d+);(\d{5,6});(.+);(\d{1,2});(\d+)(;.+
 	if(data4 = 0)
 		data4 := "Unbekannt"
 	AddChatMessage("--- [sBinder] Spieler-Informationen ---")
-	AddChatMessage("Name: {0022FF}" data1 "{FF6600} -- Status: " (data2 ? "{00AA00}on" : "{FF1100}off") "line{FF6600} -- Level: " data3)
+	AddChatMessage("Name: {88AA62}" data1 "{FFFFFF} -- Status: " (data2 ? "{00AA00}on" : "{FF1100}off") "line{FFFFFF} -- Level: " data3)
 	AddChatMessage("Alter: " data4 " -- Fraktion: " num1 (InStr(data6, "[") ? " (Rang " num2 (num3 ? ", Leader" : "") ")" : ""))
 	AddChatMessage("Handynummer: " data5 " -- Achievements: " data7 "/" data8 " (" RoundEx(data7/data8*100) " Prozent)")
 	if(data9)
@@ -5744,7 +5744,7 @@ if(RegExMatch(data, "U)^(.+);(\d);(\d+);(\d+);(\d{5,6});(.+);(\d{1,2});(\d+)(;.+
 else{
 	AddChatMessage("Fehler beim Download" (StrLen(id) > 3 AND is(id, "number") ? ". Eventuell hast du eine falsche Nummer eingegeben." : ""))
 	if(StrLen(id) > 3 AND is(id, "number"))
-		AddChatMessage("Überprüfe die Nummer {0022FF}" id)
+		AddChatMessage("Überprüfe die Nummer {88AA62}" id)
 }
 data := ""
 return
@@ -5761,23 +5761,23 @@ if(!num2 := ArrayMatch(num1, SetJob_Names)){
 }
 SetJob_Names := ""
 if(num2 = Job){
-	AddChatMessage("Der Beruf {0022FF}" Jobnames[Job] "{FF6600} ist bereits im sBinder ausgewählt!")
+	AddChatMessage("Der Beruf {88AA62}" Jobnames[Job] "{FFFFFF} ist bereits im sBinder ausgewählt!")
 	return
 }
-AddChatMessage("Willst du deinen Beruf {0022FF}" Jobnames[Job] "{FF6600} wirklich zu {0022FF}" Jobnames[num2] "{FF6600} ändern? Drücke dazu innerhalb der nächsten 5 Sekunden {0022FF}J{FF6600}.")
+AddChatMessage("Willst du deinen Beruf {88AA62}" Jobnames[Job] "{FFFFFF} wirklich zu {88AA62}" Jobnames[num2] "{FFFFFF} ändern? Drücke dazu innerhalb der nächsten 5 Sekunden {88AA62}J{FFFFFF}.")
 s := A_IsSuspended
 Suspend On
 KeyWait, J, D T5
 if(!s)
 	Suspend Off
 if(ErrorLevel)
-	AddChatMessage("Dein Beruf bleibt {0022FF}" Jobnames[Job] "{FF6600}, da du nicht innerhalb der letzten 5 Sekunden {0022FF}J{FF6600} gedrückt hast!")
+	AddChatMessage("Dein Beruf bleibt {88AA62}" Jobnames[Job] "{FFFFFF}, da du nicht innerhalb der letzten 5 Sekunden {88AA62}J{FFFFFF} gedrückt hast!")
 else{
 	Job := num2
 	IniWrite, %Job%, %INIFile%, Settings, Job
 	gosub JobGUIBuild
 	gosub HotkeysDefine
-	AddChatMessage("Dein Beruf wurde erfolgreich in {0022FF}" Jobnames[Job] "{FF6600} geändert!")
+	AddChatMessage("Dein Beruf wurde erfolgreich in {88AA62}" Jobnames[Job] "{FFFFFF} geändert!")
 }
 return
 ::/kautosetup::
@@ -5794,7 +5794,7 @@ if(FileExist(chatlogpath)){
 	temp2 -= ping("nes-newlife.de")
 	if(chat AND between(temp2, 20, 300)){
 		WaitFor := temp2
-		AddChatMessage("Die Zeit zum Warten auf den Chatlog wurde auf {0022FF}" WaitFor " ms{FF6600} gesetzt.")
+		AddChatMessage("Die Zeit zum Warten auf den Chatlog wurde auf {88AA62}" WaitFor " ms{FFFFFF} gesetzt.")
 		IniWrite, %WaitFor%, %INIFile%, Settings, WaitFor
 		GuiControl, SettingsGUI:, WaitFor, %WaitFor%
 	}
@@ -5831,7 +5831,7 @@ AddChatMessage("HINWEIS: Der Rechner ist noch in der Beta-Phase, es können evtl
 if((id := PlayerInput("Gib eine Rechnung ein: ")) = "")
 	AddChatMessage("Du hast nichts eingegeben...")
 else
-	AddChatMessage(id " = {0022FF}" (((id := StrCalc(id)) != "") ? TrimNum(id) : "Fehler"))
+	AddChatMessage(id " = {88AA62}" (((id := StrCalc(id)) != "") ? TrimNum(id) : "Fehler"))
 return
 ::/kstate::
 Suspend Permit
@@ -5839,27 +5839,27 @@ AddChatMessage("Status des sBinders " (UpdateAvailable ? "{FF1100}" : "{00AA00}"
 AddChatMessage("Der sBinder ist aktuell " (A_IsSuspended ? "{FF1100}de" : "{00AA00}") "aktiviert.")
 temp := timer_time
 temp -= A_Now, Seconds
-AddChatMessage("/timer: " (timer_time ? "{00AA00}aktiv. {FF6600}Er läuft in " date(temp) " (um " FormatTime(timer_time, "HH:mm:ss") ") ab." : "{FF1100}nicht aktiv."))
+AddChatMessage("/timer: " (timer_time ? "{00AA00}aktiv. {FFFFFF}Er läuft in " date(temp) " (um " FormatTime(timer_time, "HH:mm:ss") ") ab." : "{FF1100}nicht aktiv."))
 temp := A_TickCount - stoppuhr
-AddChatMessage("/stoppuhr: " (stoppuhr ? "{00AA00}aktiv{FF6600}. Sie steht aktuell bei {0022FF}" Floor(temp/3600000) ":" LeadingZero(Mod(Floor(temp/60000), 60)) ":" LeadingZero(Mod(Floor(temp/1000), 60)) ":" LeadingZero(SubStr(temp, -2), 3) "{FF6600} (h:min:sek:ms)." : "{FF1100}nicht aktiv."))
+AddChatMessage("/stoppuhr: " (stoppuhr ? "{00AA00}aktiv{FFFFFF}. Sie steht aktuell bei {88AA62}" Floor(temp/3600000) ":" LeadingZero(Mod(Floor(temp/60000), 60)) ":" LeadingZero(Mod(Floor(temp/1000), 60)) ":" LeadingZero(SubStr(temp, -2), 3) "{FFFFFF} (h:min:sek:ms)." : "{FF1100}nicht aktiv."))
 if(IsObject(ame)){
 	AddChatMessage("/kame multi: Es werden " ame._maxIndex() " Texte über deinem Kopf angezeigt:")
 	for i, k in ame
-		AddChatMessage("     Text " i ": {0022FF}" k)
+		AddChatMessage("     Text " i ": {88AA62}" k)
 }
 else if(ame)
-	AddChatMessage("/kame: {0022FF}" ame)
+	AddChatMessage("/kame: {88AA62}" ame)
 else
 	AddChatMessage("/kame: {FF1100}nicht aktiv.")7
-AddChatMessage("Fraktionsbinds für {0022FF}" (IsFrak(Frak) ? Fraknames[Frak] : "Fehler") ": " (Frak = 1 ? "{FF1100}nicht vorhanden" : frakbinds ? "{00AA00}aktiv{FF6600} (" fBinds_used "/" fBinds " belegt)" : "{FF1100}nicht aktiv"))
-AddChatMessage("Job: " (Job = 1 ? "{FF1100}" : "{0022FF}") Jobnames[Job])
+AddChatMessage("Fraktionsbinds für {88AA62}" (IsFrak(Frak) ? Fraknames[Frak] : "Fehler") ": " (Frak = 1 ? "{FF1100}nicht vorhanden" : frakbinds ? "{00AA00}aktiv{FFFFFF} (" fBinds_used "/" fBinds " belegt)" : "{FF1100}nicht aktiv"))
+AddChatMessage("Job: " (Job = 1 ? "{FF1100}" : "{88AA62}") Jobnames[Job])
 return
 ::/frakall::
 Suspend Permit
 members := online := fraks := 0
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=fraks",,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 FrakWebsite := Object()
@@ -5877,7 +5877,7 @@ else{
 	AddChatMessage(online "/" members " Mitglieder von " fraks " Fraktionen online:")
 	for i, k in FrakWebsite
 	{
-		AddChatMessage(k[1] ": {0022FF}" k[2] "/" k[3] "{FF6600} (" RoundEx(k[2]/k[3] * 100) " Prozent)")
+		AddChatMessage(k[1] ": {88AA62}" k[2] "/" k[3] "{FFFFFF} (" RoundEx(k[2]/k[3] * 100) " Prozent)")
 	}
 }
 FrakWebsite := ""
@@ -5895,7 +5895,7 @@ if(!num2 := ArrayMatch(num1, FrakRegEx)){
 }
 AddChatMessage("Daten werden geladen...")
 if(RegExMatch(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=members-v2&p=" num2,,, 1), "^\[\[(\d+)\]\]$", var)){
-	AddChatMessage("Du musst noch {0022FF}" var1 " Sekunden{FF6600} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
+	AddChatMessage("Du musst noch {88AA62}" var1 " Sekunden{FFFFFF} warten, bis du die Daten wieder abrufen kannst. Grund dafür ist, dass die Anfrage anderfalls aufgrund von DDOS-Verdacht gesperrt werden würde.")
 	return
 }
 FrakWebsite := Object()
@@ -5915,11 +5915,11 @@ FrakWebsite := ArrayReverse(ArrayMultiSort(ArrayMultiSort(ArrayMultiSort(FrakWeb
 if(!RegExMatch(data, "U)^\[(.+)\]", data))
 	AddChatMessage("Fehler beim Download")
 else if(!members)
-	AddChatMessage("Die Fraktion {0022FF}" data1 "{FF6600} hat keine Mitglieder")
+	AddChatMessage("Die Fraktion {88AA62}" data1 "{FFFFFF} hat keine Mitglieder")
 else{
 	for i, k in FrakWebsite
-		AddChatMessage(k[1] "{FF6600} [Rang " k[3] "; Level " k[2] (k[5] ? "; Leader" : "") "]" (k[4] ? ": online" : ""), k[4] ? 0x00AA00 : 0xFF1100)
-	AddChatMessage(online "/" members " der Fraktion {0022FF}" data1 "{FF6600} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader.")
+		AddChatMessage(k[1] "{FFFFFF} [Rang " k[3] "; Level " k[2] (k[5] ? "; Leader" : "") "]" (k[4] ? ": online" : ""), k[4] ? 0x00AA00 : 0xFF1100)
+	AddChatMessage(online "/" members " der Fraktion {88AA62}" data1 "{FFFFFF} online (" RoundEx(online/members*100) " Prozent), davon " leaderonline "/" leader " Leader.")
 }
 FrakWebsite := ""
 return
@@ -5935,7 +5935,7 @@ if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(cha
 	carvalues := ArrayParse("445:31500|602:34000|592:2000000|429:125000|499:12000|424:19900|581:13900|509:3000|536:12500|496:7500|481:5000|422:27500|498:14000|575:22700|402:89000|541:175000|482:56000|438:22000|483:34000|415:274000|542:3999|589:44000|480:220000|578:22000|473:12500|593:299000|507:23500|562:27900|419:14500|587:42500|521:15000|533:19500|565:24500|455:28500|463:21000|474:28500|434:78000|579:32000|545:23000|411:275000|559:38900|493:240000|508:28000|400:12000|403:49000|517:14500|484:222000|487:700000|500:24999|418:18000|510:9000|414:19500|553:945000|522:44900|467:10500|461:18000|404:6800|603:125000|413:8500|426:35000|471:9000|479:10700|534:37500|515:69000|475:28000|468:12900|567:8400|519:1400000|535:16500|580:48000|561:23500|409:112000|560:39999|550:23999|506:98000|514:59000|420:29000|531:14500|454:79999|451:144000|558:16500|552:24780|412:9800|478:4250|421:32500|586:36000|555:27200|456:17000|554:27500|477:59000|")
 	;}
 	carvalue["price"] := carvalue["carprice"] := carvalues[data1]
-	AddChatMessage("Neupreis (ohne Addons): {0022FF}$" number_format(carvalue["carprice"]))
+	AddChatMessage("Neupreis (ohne Addons): {88AA62}$" number_format(carvalue["carprice"]))
 	carvalue["price"] += var1 = "Vorhanden" ? 2000 : 0
 	carvalue["price"] += var2 = "Vorhanden" ? 899 : 0
 	carvalue["price"] += var3 = "Vorhanden" ? 500 : 0
@@ -5946,8 +5946,8 @@ if(RegExMatch(chat, "FahrzeugID: \d+\s+ModelID: (\d+)", data) AND RegExMatch(cha
 	carvalue["price"] += RegExMatch(var8, "Stufe -> (\d+)", data) ? [10000][data1] : 0
 	carvalue["price"] += var9 = "Vorhanden" ? 750 : 0
 	carvalue["price"] += var10 = "Vorhanden" ? 2500 : 0
-	AddChatMessage("Neupreis (mit Addons): {0022FF}$" number_format(carvalue["price"]))
-	AddChatMessage("Fahrzeugwert (/car sell): {0022FF}$" number_format(Round(carvalue["carprice"] * 0.25)))
+	AddChatMessage("Neupreis (mit Addons): {88AA62}$" number_format(carvalue["price"]))
+	AddChatMessage("Fahrzeugwert (/car sell): {88AA62}$" number_format(Round(carvalue["carprice"] * 0.25)))
 	AddChatMessage("Hinweis: Kennzeichenfarbe sowie Umrüstungen auf Diesel/LPG werden nicht berücksichtigt.", 0xFF1100)
 	AddChatMessage("Alle Angaben ohne Gewähr!", 0xFF1100)
 	carvalue := carvalues := ""
@@ -6004,7 +6004,7 @@ if((id1 := PlayerInput("Gib die (englische) Wolfam|Alpha-Anfrage ein: ")) = ""){
 	StringReplace, regex2, regex2, `}, », All
  	if(regex2 != ""){
 		index ++
-		AddChatMessage(regex1 ": {0022FF}" regex2,,, 1)
+		AddChatMessage(regex1 ": {88AA62}" regex2,,, 1)
 	}
 }
 if(!index)
@@ -6161,7 +6161,7 @@ Suspend Permit
 if(!UseAPI)
 	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/bpassv", "/craub", "/diebstahl", "/c4dieb", "/drohung", "/drogen", "/drogentransport (/dtrans)", "/seinbruch", "/peinbruch", "/erschleichen", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/ihandel", "/shetze", "/shetzew", "/waffen", "/aufenthalt", "/waffenhandel", "/kv", "/mord", "/ntl", "/pstörung", "/raubwp", "/gefährdung (/staatsgefährdung)", "/schießen", "/lstvo", "/sstvo", "/smord", "/ticketv", "/vmord", "/vertuschung", "/werkstoffe", "/iwerben", "/dicewp"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von C4 (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen{FFFFFF}: Drogenbesitz (10 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Sozialleistungen (15 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen (15 WPs)`n{0022FF}/shetze{FFFFFF}: Hetze gegen den Staat (20 WPs)`n{0022FF}/shetzew{FFFFFF}: Hetze gegen den Staat mit Waffengewalt (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/pstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (15 WPs)`n{0022FF}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+	ShowDialog(0, "sBinder: {88AA62}WP-Textbinds", "{88AA62}/braub{FFFFFF}: Bankraub (40 WPs)`n{88AA62}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{88AA62}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{88AA62}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{88AA62}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{88AA62}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{88AA62}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{88AA62}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{88AA62}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{88AA62}/craub{FFFFFF}: Casinoraub (40 WPs)`n{88AA62}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{88AA62}/c4dieb{FFFFFF}: Diebstahl von C4 (61 WPs)`n{88AA62}/drohung{FFFFFF}: Drohung (10 WPs)`n{88AA62}/drogen{FFFFFF}: Drogenbesitz (10 WPs)`n{88AA62}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{88AA62}/seinbruch{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{88AA62}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{88AA62}/erschleichen{FFFFFF}: Erschleichen von Sozialleistungen (15 WPs)`n{88AA62}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{88AA62}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{88AA62}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{88AA62}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{88AA62}/ihandel{FFFFFF}: Handel mit illegalen Substanzen (15 WPs)`n{88AA62}/shetze{FFFFFF}: Hetze gegen den Staat (20 WPs)`n{88AA62}/shetzew{FFFFFF}: Hetze gegen den Staat mit Waffengewalt (40 WPs)`n{88AA62}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{88AA62}/aufenthalt{FFFFFF}: Illegaler Aufenthalt in San Fierro/Bayside (15 WPs)`n{88AA62}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{88AA62}/kv{FFFFFF}: Körperverletzung (10 WPs)`n{88AA62}/mord{FFFFFF}: Mord (35 WPs)`n{88AA62}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{88AA62}/pstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{88AA62}/raubwp{FFFFFF}: Raub (20 WPs)`n{88AA62}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{88AA62}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{88AA62}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{88AA62}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{88AA62}/smord{FFFFFF}: Serienmord (40 WPs)`n{88AA62}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{88AA62}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{88AA62}/vertuschung{FFFFFF}: Vertuschung von Drogen, Werkstoffen oder Mord (15 WPs)`n{88AA62}/werkstoffe{FFFFFF}: Werkstoffe ab 100g (Eisen) (15 WPs)`n{88AA62}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (10 WPs)`n{88AA62}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
 return
 ::/braub::
 Suspend Permit
@@ -7062,7 +7062,7 @@ else if(IsFrak(3, 1)){
 	;FrakOption4 := FrakOption3 >= 2 ? 1 : FrakOption3 + 1
 	IniWrite, %FrakOption6%, %INIFile%, Settings, FrakOption6
 	GuiControl, FrakGUI:, Funkrufnummer %FrakOption6%, 1
-	AddChatMessage("Von nun an wird {0022FF}Funkrufnummer " FrakOption6 "{FF6600} ({00AA00}" FrakOption%FrakOption6% "{FF6600}) genutzt.")
+	AddChatMessage("Von nun an wird {88AA62}Funkrufnummer " FrakOption6 "{FFFFFF} ({00AA00}" FrakOption%FrakOption6% "{FFFFFF}) genutzt.")
 }
 return
 fBind12:
