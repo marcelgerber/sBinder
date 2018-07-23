@@ -2360,8 +2360,8 @@ TempGUI2GuiClose:
 Gui, TempGUI2:Destroy
 return
 Variables:
-Version := "2.1.8"
-Build := 77
+Version := "2.2.0"
+Build := 78
 active := 1
 ;INIFile := A_ScriptDir "\keybinder.ini"
 IniRead, INIFile, %A_AppData%\sBinder\global.ini, Path, %A_ScriptFullPath%, %A_ScriptDir%\keybinder.ini
