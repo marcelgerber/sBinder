@@ -1135,6 +1135,7 @@ OverlayReplace(text, InVehicle){
 		StringReplace, text, text, [HP], % DllCall(GetPlayerHealth_func), All
 	if(InStr(text, "[Armor]"))
 		StringReplace, text, text, [Armor], % DllCall(GetPlayerArmor_func), All
+	/*
 	if(InStr(text, "[ID]")){
 		if((id := DllCall(GetPlayerId_func)) = 65535){
 			if(old_id != "")
@@ -1146,6 +1147,7 @@ OverlayReplace(text, InVehicle){
 			old_id := id
 		StringReplace, text, text, [ID], %id%, All
 	}
+	*/
 	if(InStr(text, "[Money]"))
 		StringReplace, text, text, [Money], % number_format(DllCall(GetPlayerMoney_func)), All
 	if(InStr(text, "[Zone]"))
@@ -3743,7 +3745,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den TS-Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit Fraps gestartet werden soll.`nEventuell musst du dazu den Pfad von Fraps angeben."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit ein weiteres Programm gestartet werden soll.`nDu musst den Pfad dieses Programms angeben."
-, "Hier kannst du deine Overlays (maximal " MaxOverlays ") kofigurieren. Du kannst die Schriftfarbe wählen, die Schriftgröße und -art einstellen und natürlich einen individuellen Text wählen, der durch einige Variablen (siehe unten) ergänzt werden kann. Außerdem kannst du festlegen, dass ein Overlay nur in einem Fahrzeug angezeigt werden soll.`n`nHier findest du alle Variablen, die du nutzen kannst:`n[Armor]: Deine aktuelle Rüstung (0 falls nicht vorhanden)`n[CarHeal]: Dein aktuelles Carheal (wie bei /dl)`n[CarLight]: ""an"" oder ""aus"", je nachdem, ob das Licht an ist`n[CarLock]: Zeigt dir ""aufgeschlossen"" oder ""abgeschlossen"" an (bei Fraktionsfahrzeugen immer ""aufgeschlossen"")`n[CarModel]: Die Model-ID des aktuellen Fahrzeugs (nicht die Car-ID!)`n[CarMotor]: ""an"" oder ""aus"", je nachdem, ob der Motor an ist`n[CarName]: Der Name des aktuellen Fahrzeugs`n[CarSpeed]: Anzeige der Geschwindigkeit des Fahrzeugs in km/h (schneller als der Server-Tacho)`n[City]: Die Stadt, in der du dich aktuell aufhältst`n[Date]: Datum im Format dd.mm.yyyy`n[FPS]: Aktuelle FPS-Anzahl`n[HP]: Dein aktuelles Heal`n[ID]: Deine aktuelle ID`n[Money]: Dein aktuelles Geld (auf der Hand)`n[Name]: Der unter ""Dein Name"" angegebene Name`n[NL]: Nähester Ort auf Nova, zum Beispiel ""Stadthalle SF""`n[NLDistance]: Entfernung zum nächsten Ort auf Nova`n[Time]: Uhrzeit im Format hh:mm:ss`n[Zone]: Die Zone, in der du dich aktuell aufhältst"
+, "Hier kannst du deine Overlays (maximal " MaxOverlays ") kofigurieren. Du kannst die Schriftfarbe wählen, die Schriftgröße und -art einstellen und natürlich einen individuellen Text wählen, der durch einige Variablen (siehe unten) ergänzt werden kann. Außerdem kannst du festlegen, dass ein Overlay nur in einem Fahrzeug angezeigt werden soll.`n`nHier findest du alle Variablen, die du nutzen kannst:`n[Armor]: Deine aktuelle Rüstung (0 falls nicht vorhanden)`n[CarHeal]: Dein aktuelles Carheal (wie bei /dl)`n[CarLight]: ""an"" oder ""aus"", je nachdem, ob das Licht an ist`n[CarLock]: Zeigt dir ""aufgeschlossen"" oder ""abgeschlossen"" an (bei Fraktionsfahrzeugen immer ""aufgeschlossen"")`n[CarModel]: Die Model-ID des aktuellen Fahrzeugs (nicht die Car-ID!)`n[CarMotor]: ""an"" oder ""aus"", je nachdem, ob der Motor an ist`n[CarName]: Der Name des aktuellen Fahrzeugs`n[CarSpeed]: Anzeige der Geschwindigkeit des Fahrzeugs in km/h (schneller als der Server-Tacho)`n[City]: Die Stadt, in der du dich aktuell aufhältst`n[Date]: Datum im Format dd.mm.yyyy`n[FPS]: Aktuelle FPS-Anzahl`n[HP]: Dein aktuelles Heal`n[Money]: Dein aktuelles Geld (auf der Hand)`n[Name]: Der unter ""Dein Name"" angegebene Name`n[NL]: Nähester Ort auf Nova, zum Beispiel ""Stadthalle SF""`n[NLDistance]: Entfernung zum nächsten Ort auf Nova`n[Time]: Uhrzeit im Format hh:mm:ss`n[Zone]: Die Zone, in der du dich aktuell aufhältst"
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
