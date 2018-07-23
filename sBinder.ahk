@@ -87,7 +87,7 @@ if(!FileExist(A_AppData "\sBinder\bg.png")){
 	InfoProgress()
 }
 if(UseAPI AND !FileExist(A_AppData "\sBinder\Open-SAMP-API.dll")){
-	MsgBox, 36, API.dll herunterladen?, Die API.dll wurde nicht gefunden. Dies kann folgende Gründe haben:`n• Erster Start des sBinders`n• Löschen des AppData-Ordners`n• Aktivierung der API-Nutzung in den Einstellungen`n`nMit einem Klick auf Ja wird die API.dll heruntergeladen, wenn du auf Nein klickst, wird die API nicht genutzt. Du kannst die Nutzung der API jederzeit in den Optionen aktivieren oder deaktivieren.`n`n`nWas bringt mir die API?`nMit der API werden die zahlreichen Informationen, die der sBinder dir bietet, wirklich nur dir angezeigt. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge (wie auch die Passworteingabe) nicht gestört.
+	MsgBox, 36, Open-SAMP-API.dll herunterladen?, Die Open-SAMP-API.dll wurde nicht gefunden. Dies kann folgende Gründe haben:`n• Erster Start des sBinders`n• Löschen des AppData-Ordners`n• Aktivierung der API-Nutzung in den Einstellungen`n`nMit einem Klick auf Ja wird die Open-SAMP-API.dll heruntergeladen, wenn du auf Nein klickst, wird die API nicht genutzt. Du kannst die Nutzung der API jederzeit in den Optionen aktivieren oder deaktivieren.`n`n`nWas bringt mir die API?`nMit der API werden die zahlreichen Informationen, die der sBinder dir bietet, wirklich nur dir angezeigt. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge (wie auch die Passworteingabe) nicht gestört.
 	IfMsgBox, No
 	{
 		UseAPI := 0
@@ -95,12 +95,12 @@ if(UseAPI AND !FileExist(A_AppData "\sBinder\Open-SAMP-API.dll")){
 	}
 	IfMsgBox, Yes
 	{
-		MsgBox, 36, Virustotal?, Willst du die Virustotal-Analyse der API.dll ansehen?
+		MsgBox, 36, Virustotal?, Willst du die Virustotal-Analyse der Open-SAMP-API.dll ansehen?
 		IfMsgBox, Yes
 		{
 			Run, http://saplayer.lima-city.de/l/virustotal-API
 			Sleep, 2000
-			MsgBox, 36, Download fortsetzen?, Willst du die API.dll wirklich herunterladen?
+			MsgBox, 36, Download fortsetzen?, Willst du die Open-SAMP-API.dll wirklich herunterladen?
 			IfMsgBox, No
 			{
 				UseAPI := 0
@@ -109,8 +109,8 @@ if(UseAPI AND !FileExist(A_AppData "\sBinder\Open-SAMP-API.dll")){
 		}
 		if(UseAPI){
 			;Progress, A B1 M T CB000000 CWFFFFFF, Bitte habe etwas Geduld..., API.dll wird heruntergeladen..., sBinder Download
-			InfoProgress("Bitte habe etwas Geduld...", "API.dll wird heruntergeladen...", "sBinder Download")
-			URLDownloadToFile, http://saplayer.lima-city.de/l/API, %A_AppData%\sBinder\API.dll
+			InfoProgress("Bitte habe etwas Geduld...", "Open-SAMP-API.dll wird heruntergeladen...", "sBinder Download")
+			URLDownloadToFile, http://saplayer.lima-city.de/l/API, %A_AppData%\sBinder\Open-SAMP-API.dll
 			;Progress, Off
 			InfoProgress()
 		}
@@ -147,7 +147,7 @@ if(!A_IsCompiled){
 if(UseAPI){
 	hModule := DllCall("LoadLibrary", Str, A_AppData "\sBinder\Open-SAMP-API.dll")
 	if(hModule == -1 || hModule == 0){
-		MsgBox, 48, API-Fehler, Die API.dll konnte nicht gefunden werden.`nDaher wird sie nicht genutzt.
+		MsgBox, 48, API-Fehler, Die Open-SAMP-API.dll konnte nicht gefunden werden.`nDaher wird sie nicht genutzt.
 		UseAPI := 0
 		IniWrite, %UseAPI%, %INIFile%, Settings, UseAPI
 	}
@@ -2896,7 +2896,7 @@ Gui, DeleteGui:Add, Checkbox, vDel2 y+10, Registry-Daten löschen
 Gui, DeleteGUI:Add, Checkbox, vDel9 y+10, Designs löschen
 Gui, DeleteGUI:Add, Checkbox, vDel8 y+10, AppData-Ordner löschen
 Gui, DeleteGui:Add, Checkbox, vDel3 y+10, Chatlog-Backups löschen
-Gui, DeleteGui:Add, Checkbox, vDel7 y+10, API.dll löschen
+Gui, DeleteGui:Add, Checkbox, vDel7 y+10, Open-SAMP-API.dll löschen
 Gui, DeleteGui:Add, Checkbox, vDel4 y+10, Einstellungsdatei löschen
 Gui, DeleteGui:Add, Checkbox, vDel6 y+10, sBinder.exe löschen
 Gui, DeleteGui:Add, Button, gDelete y+10 x120, Weiter »»
@@ -3734,7 +3734,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nSAMP-Pfad ändern:`nDu kannst den Pfad zu SAMP angeben, um direkt im sBinder auf den Server zu verbinden (mit dem Button ""SAMP starten"")."
 , "Diesen Wert solltest du nur ändern, wenn es wirklich nötig ist!`n`nDiese Zeit bestimmt, wie lange (in Millisekunden) zusätzlich zum aktuellen Ping zum Server auf eine neue Zeile im Chatlog gewartet werden soll.`nStandardwert ist 90, falls der Chatlog nicht ausgelesen werden kann (z.B. bei /paydaytime), solltest du diese Zeit erhöhen.`nEs sind Werte zwischen 20 und 200 möglich."
 , "Hier findest du einige Möglichkeiten zum Löschen der Daten/Dateien, die der sBinder erzeugt.`nEs ist also ähnlich wie eine Deinstallation."
-, "API nutzen:`nDie API.dll wird benutzt, um Daten, die für dich bestimmt sind, auch nur dir anzuzeigen. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge nicht gestört.`nAllerdings funktioniert die API nicht bei jedem richtig, deshalb ist ihre Nutzung optional. Du kannst sie jederzeit aktivieren und deaktivieren.`nHINWEIS: Nach einer Änderung dieser Option wird der sBinder evtl. neu gestartet!`n`n`nOverlay-Einstellungen:`nDu kannst im sBinder ein komplett konfigurierbares Overlay nutzen, das dir im Spiel wichtige Daten anzeigt.`nDabei kannst du den Text mit einigen Variablen gestalten, außerdem sind dir bei der Wahl der Farbe, Schriftart, Schriftgröße und Position keine Grenzen gesetzt.`nMehr Informationen dazu findest du beim Klick auf den ?-Button in den Overlay-Einstellungen."
+, "API nutzen:`nDie Open-SAMP-API.dll wird benutzt, um Daten, die für dich bestimmt sind, auch nur dir anzuzeigen. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge nicht gestört.`nAllerdings funktioniert die API nicht bei jedem richtig, deshalb ist ihre Nutzung optional. Du kannst sie jederzeit aktivieren und deaktivieren.`nHINWEIS: Nach einer Änderung dieser Option wird der sBinder evtl. neu gestartet!`n`n`nOverlay-Einstellungen:`nDu kannst im sBinder ein komplett konfigurierbares Overlay nutzen, das dir im Spiel wichtige Daten anzeigt.`nDabei kannst du den Text mit einigen Variablen gestalten, außerdem sind dir bei der Wahl der Farbe, Schriftart, Schriftgröße und Position keine Grenzen gesetzt.`nMehr Informationen dazu findest du beim Klick auf den ?-Button in den Overlay-Einstellungen."
 , "Die Telefontexte werden geschrieben, wenn du einen Anruf annimmst, auflegst oder auf den Anrufbeantworter (/ab) umleitest.`nDu kannst sie nutzen wie die eigenen Binds.`nSie werden durch /p (Annehmen), /h (Auflegen) und /ab (Anrufbeantworter) ausgelöst, sofern sie aktiviert sind."
 , "Hier kannst du eigene Radiosender definieren (bzw. deren URL angeben), die du später mit /radio aufrufen kannst.`nDu musst dafür als Name Slot 1, Slot 2 oder Slot 3 eingeben.`n`nHINWEIS: Die URL muss mit http:// oder https:// beginnen!"
 , "Beim Login automatisch eingeben:`nWenn du diese Funktion aktivierst, wird nach dem Login automatisch der in dem nebenstehenden Textfeld angegebene Befehl eingegeben.`nDu kannst zum Beispiel /togphone oder /hitsound nutzen (oder eine Kombination aus beiden).`nHINWEIS: Damit die Funktion korrekt arbeitet, muss der Keybinder VOR dem Start von SAMP gestartet werden!"
@@ -3913,7 +3913,7 @@ loop, HKCU, Software, 2
 GuiControl, % "DeleteGUI:" (ErrorLevel ? "Disable" : "Enable"), Del2
 GuiControl, % "DeleteGUI:" (FileExist("ChatlogBackups") ? "Enable" : "Disable"), Del3
 GuiControl, % "DeleteGUI:" (FileExist(INIFile) ? "Enable" : "Disable"), Del4
-GuiControl, % "DeleteGUI:" (FileExist(A_AppData "\sBinder\API.dll") ? "Enable" : "Disable"), Del7
+GuiControl, % "DeleteGUI:" (FileExist(A_AppData "\sBinder\Open-SAMP-API.dll") ? "Enable" : "Disable"), Del7
 GuiControl, % "DeleteGUI:" (FileExist(A_AppData "\sBinder") ? "Enable" : "Disable"), Del8
 GuiControl, % "DeleteGUI:" (FileExist(A_AppData "\sBinder\Design") ? "Enable" : "Disable"), Del9
 Gui, DeleteGui:Show,, sBinder-Daten und -Dateien löschen
@@ -3971,12 +3971,12 @@ if(Del6){
 		return
 }
 if(Del7){
-	MsgBox, 35, API.dll wirklich löschen?, Willst du die API.dll wirklich löschen?`n`nDu kannst sie jederzeit wieder nutzen lassen, indem du die Option "API nutzen" in den Einstellungen wieder aktivierst.
+	MsgBox, 35, Open-SAMP-API.dll wirklich löschen?, Willst du die Open-SAMP-API.dll wirklich löschen?`n`nDu kannst sie jederzeit wieder nutzen lassen, indem du die Option "API nutzen" in den Einstellungen wieder aktivierst.
 	IfMsgBox, Yes
 	{
 		if hModule not between 1 and 0
 			DllCall("FreeLibrary", "Ptr", hModule)
-		FileDelete, %A_AppData%\sBinder\API.dll
+		FileDelete, %A_AppData%\sBinder\Open-SAMP-API.dll
 		UseAPI := 0
 		IniWrite, 0, %INIFile%, Settings, UseAPI
 		GuiControl, SettingsGUI:, UseAPI, %UseAPI%
@@ -3987,7 +3987,7 @@ if(Del7){
 		return
 }
 if(Del8){
-	MsgBox, 35, AppData-Ordner wirklich löschen?, Willst du den AppData-Ordner wirklich löschen?`n`nDabei wird der Ordner %A_AppData%\sBinder gelöscht.`nIn ihm werden z.B. die API.dll und der Schriftzug sowie die Designs (inklusive dem Custom-Design) gespeichert.
+	MsgBox, 35, AppData-Ordner wirklich löschen?, Willst du den AppData-Ordner wirklich löschen?`n`nDabei wird der Ordner %A_AppData%\sBinder gelöscht.`nIn ihm werden z.B. die Open-SAMP-API.dll und der Schriftzug sowie die Designs (inklusive dem Custom-Design) gespeichert.
 	IfMsgBox, Yes
 	{
 		if(FileExist(A_AppData "\sBinder\Design\custom.html")){
