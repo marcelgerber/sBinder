@@ -6071,7 +6071,11 @@ return
 ::/sperrgebiet::
 ::/sg::
 Suspend Permit
-SendWPs("Betreten eines vorübergehend ausgerufenen Sperrgebietes", 40)
+SendWPs("Betreten eines Sperrgebietes", 40)
+return
+::/bsg::
+Suspend Permit
+SendWPs("Beschuss im Sperrgebiet", 61)
 return
 ::/beleidigung::
 Suspend Permit
@@ -6106,15 +6110,28 @@ SendWPs("Diebstahl", 15)
 return
 ::/c4dieb::
 Suspend Permit
-SendWPs("Diebstahl von C4", 61)
+SendWPs("Diebstahl von staatseigenen Waffen", 61)
 return
 ::/drohung::
 Suspend Permit
 SendWPs("Drohung", 10)
 return
 ::/drogen::
+::/drogen1::
 Suspend Permit
-SendWPs("Drogenbesitz", 10)
+SendWPs("Drogenbesitz (bis 250g)", 10)
+return
+::/drogen2::
+Suspend Permit
+SendWPs("Drogenbesitz (251g bis 500g)", 15)
+return
+::/drogen3::
+Suspend Permit
+SendWPs("Drogenbesitz (ab 501g)", 20)
+return
+::/lsdwp::
+Suspend Permit
+SendWPs("Besitz von LSD", 10)
 return
 ::/drogentransport::
 ::/dtrans::
@@ -6131,7 +6148,7 @@ SendWPs("Einbruch ins State Prison", 61)
 return
 ::/erschleichen::
 Suspend Permit
-SendWPs("Erschleichen von Sozialleistungen", 15)
+SendWPs("Erschleichen von Arbeitslosengeld", 15)
 return
 ::/flucht::
 Suspend Permit
@@ -6153,29 +6170,21 @@ return
 Suspend Permit
 SendWPs("Handel mit illegalen Substanzen", 15)
 return
-::/shetze::
-Suspend Permit
-SendWPs("Hetze gegen den Staat", 20)
-return
-::/shetzew::
-Suspend Permit
-SendWPs("Hetze gegen den Staat mit Waffengewalt", 40)
-return
 ::/waffen::
 Suspend Permit
 SendWPs("Illegaler Waffenbesitz", 10)
-return
-::/aufenthalt::
-Suspend Permit
-SendWPs("Illegaler Aufenthalt in San Fierro/Bayside", 15)
 return
 ::/waffenhandel::
 Suspend Permit
 SendWPs("Illegaler Waffenhandel", 15)
 return
+::/waffenhandel2::
+Suspend Permit
+SendWPs("Illegaler Waffenhandel ohne Lizenz", 20)
+return
 ::/kv::
 Suspend Permit
-SendWPs("Körperverletzung", 10)
+SendWPs("Körperverletzung", 15)
 return
 ::/mord::
 Suspend Permit
@@ -6185,13 +6194,13 @@ return
 Suspend Permit
 SendWPs("Null-Toleranz-Liste (Beschuss auf Staatsbeamte)", 69)
 return
-::/pstörung::
+::/anschlag::
 Suspend Permit
-SendWPs("Prüfungsstörung", 20)
+SendWPs("Anschlag auf ein Staatsoberhaupt", 61)
 return
 ::/raubwp::
 Suspend Permit
-SendWPs("Raub", 20)
+SendWPs("Gewalttätiger Raub", 20)
 return
 ::/gefährdung::
 ::/staatsgefährdung::
@@ -6214,6 +6223,10 @@ return
 Suspend Permit
 SendWPs("Serienmord", 40)
 return
+::/lsflug::
+Suspend Permit
+SendWPs("Landen/Starten auf öffentlichen Straßen", 10)
+return
 ::/ticketv::
 Suspend Permit
 SendWPs("Ticketverweigerung", 10)
@@ -6224,15 +6237,15 @@ SendWPs("Versuchter Mord", 25)
 return
 ::/vertuschung::
 Suspend Permit
-SendWPs("Vertuschung von Drogen, Werkstoffen oder Mord", 15)
+SendWPs("Vertuschung von Drogen, Materialien oder Mord", 15)
 return
-::/werkstoffe::
+::/materialien::
 Suspend Permit
-SendWPs("Werkstoffe ab 100g (Eisen)", 15)
+SendWPs("Materialien ab 100g (Eisen)", 15)
 return
 ::/iwerben::
 Suspend Permit
-SendWPs("Werben für illegale Aktivitäten", 10)
+SendWPs("Werben für illegale Aktivitäten/Produkte", 10)
 return
 ::/dicewp::
 Suspend Permit
