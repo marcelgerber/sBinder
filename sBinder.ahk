@@ -2762,7 +2762,6 @@ Gui, CarCalcGUI:Add, Checkbox, x10 y130 vneon gCalc, Neon
 Gui, CarCalcGUI:Add, Checkbox, x330 y130 vvalue gCalc, Wert (/car sell)
 Gui, CarCalcGUI:Add, Checkbox, x10 y150 vDiesel gCalc, Umbau auf Diesel
 Gui, CarCalcGUI:Add, Checkbox, x330 y150 vLPG gCalc, Umbau auf LPG
-Gui, CarCalcGUI:Add, Button, x170 y150 h20 gOnlineCarCalc, Online-Fahrzeugrechner
 Gui, CarCalcGUI:Add, GroupBox, x10 y170 w480 h50
 Gui, CarCalcGUI:Add, Text, vInfo x15 y180 w470 h30 Center
 Gui, CarCalcGUI:Add, Text, x10 y225 w480 Center cred, Alle Angaben ohne Gewähr!
@@ -3080,9 +3079,6 @@ ShowPass:
 GuiControlGet, ShowPass, FrakChangeGUI:
 GuiControl, % "FrakChangeGUI:" (ShowPass ? "-" : "+") "Password•", NewFp
 GuiControl, FrakChangeGUI:Focus, NewFp
-return
-OnlineCarCalc:
-Run, http://saplayer.bplaced.net/public/fahrzeugrechner.php
 return
 FrakChangeGuiBuild:
 Gui, FrakChangeGUI:Destroy
