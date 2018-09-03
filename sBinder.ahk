@@ -2543,7 +2543,6 @@ Menu, DateiMenu, Add, Neu sta&rten, Restart
 Menu, SonstigesMenu, Add, &Textbinds, TextbindsOnline
 Menu, SonstigesMenu, Add, &Changelog, ChangelogOnline
 Menu, SonstigesMenu, Add, Thread im &Forum, ForumThread
-Menu, SonstigesMenu, Add, Umfragen, SurveyGUI
 Menu, SonstigesMenu, Add
 Menu, SonstigesMenu, Add, C&redits, CreditsGUI
 Menu, SonstigesMenu, Add, &Über, AboutGUI
@@ -2595,7 +2594,6 @@ Menu, DateiMenu, Icon, Neu sta&rten, shell32.dll, 239
 Menu, SonstigesMenu, Icon, &Textbinds, shell32.dll, 75
 Menu, SonstigesMenu, Icon, &Changelog, shell32.dll, 56
 Menu, SonstigesMenu, Icon, Thread im &Forum, shell32.dll, 14
-Menu, SonstigesMenu, Icon, Umfragen, shell32.dll, 167
 Menu, SonstigesMenu, Icon, Nach &Updates suchen, shell32.dll, 145
 Menu, SonstigesMenu, Icon, C&redits, shell32.dll, 225
 Menu, SonstigesMenu, Icon, &Über, shell32.dll, 225
@@ -2910,9 +2908,6 @@ Gui, DebugGUI:Font
 Gui, DebugGUI:Add, Button, h20 gCopyDebug, Kopieren
 Gui, DebugGUI:Add, Button, x430 y+-20 h20 gReloadDebugGUI Default, Aktualisieren
 gosub JobGUIBuild
-;SurveyGUI:
-Gui, Survey:Add, Text,, Hier kannst du anonym an einer Umfrage teilnehmen:
-Gui, Survey:Add, ActiveX, vSurv w350 h140, Shell.Explorer
 ;ChangelogGUI:
 Gui, Changelog:Color, FFFFFF
 Gui, Changelog:Add, ActiveX, x0 y0 w640 h480 vChangelog, Shell.Explorer
@@ -3544,11 +3539,6 @@ gosub Calc
 return
 CustomBindsGUI:
 Gui, CustomBindsGUI:Show,, sBinder: Eigene Binds
-return
-SurveyGUI:
-Gui, Survey:Show,, sBinder: Umfrage
-Surv.Silent := 1
-Surv.Navigate("http://saplayer.lima-city.de/sBinder/survey.php?n=" SSMD5(Nickname))
 return
 NotesGUI:
 Gui, NotesGUI:Font, underline
