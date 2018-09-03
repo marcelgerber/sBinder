@@ -4597,78 +4597,6 @@ else{
 }
 data := arr := ""
 return
-::/ml::
-::/ml1::
-::/ml2::
-Suspend Permit
-List(["/ml1 create", "/ml1 drop", "/ml1 get", "/ml1 list", "/ml2 create", "/ml2 drop", "/ml2 get", "/ml2 list"], "/ml-Befehle: ", 1)
-return
-::/ml1 create::
-::/ml2 create::
-Suspend Permit
-if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=add&u=" URLEncode(Nickname) "&ml=" SubStr(A_ThisLabel, 6, 1)) > 0)
-	AddChatMessage("Du hast dein Munitionslager erfolgreich eingerichtet. Aktueller Stand: {88AA62}0")
-else
-	AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. schon ein Lager?")
-return
-::/ml1 drop::
-::/ml2 drop::
-Suspend Permit
-if(id1 := PlayerInput("Wieviel willst du einzahlen?: ")){
-	if(!is(id1, "number"))
-		AddChatMessage("Die Eingabe ist keine Zahl!")
-	else if(RegExMatch(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=increase&u=" URLEncode(Nickname) "&num=" URLEncode(id1) "&ml=" SubStr(A_ThisLabel, 6, 1)), "^(\d+\|)?(\d+):(\d+)$", data) AND data2 > 0)
-		AddChatMessage("Du hast erfolgreich {88AA62}" number_format(id1) "{FFFFFF} eingezahlt. Neuer Stand: {88AA62}" number_format(data3))
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. noch kein Lager?")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/ml1 get::
-::/ml2 get::
-Suspend Permit
-if(id1 := PlayerInput("Wieviel willst du nehmen?: ")){
-	if(!is(id1, "number"))
-		AddChatMessage("Die Eingabe ist keine Zahl!")
-	else if(RegExMatch(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=increase&u=" URLEncode(Nickname) "&num=-" URLEncode(id1) "&ml=" SubStr(A_ThisLabel, 6, 1)), "^(\d+\|)?(\d+):(\d+)$", data) AND data2 > 0){
-		if(data1)
-			AddChatMessage("Du hast versucht, dein Lager um {88AA62}" number_format(Trim(data1, "|")) "{FFFFFF} zu überziehen. Es wurde auf {88AA62}0{FFFFFF} gesetzt.")
-		else
-			AddChatMessage("Du hast erfolgreich {88AA62}" number_format(id1) "{FFFFFF} aus dem Lager genommen. Neuer Stand: {88AA62}" number_format(data3))
-	}
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten! Hast du evtl. noch kein Lager?")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/ml1 list::
-::/ml2 list::
-Suspend Permit
-if(data := HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=list&u=" URLEncode(Nickname) "&ml=" SubStr(A_ThisLabel, 6, 1),,, 1)){
-	loop, Parse, data, `n, `r
-	{
-		if(RegExMatch(A_LoopField, "^(.+):(\d+)$", regex))
-			AddChatMessage(regex1 ": {FFFFFF}" number_format(regex2), (regex1 = Nickname ? 0x00AA00 : 0xFF6600))
-	}
-}
-else 
-	AddChatMessage("Die Liste ist leer")
-data := ""
-return
-::/ml1 deletekonto::
-::/ml2 deletekonto::
-Suspend Permit
-if(id1 := PlayerInput("Name des zu löschenden Kontos: ")){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/ml.php?a=delete&u=" URLEncode(Nickname) "&n=" URLEncode(id1) "&ml=" SubStr(A_ThisLabel, 6, 1)) > 0)
-		AddChatMessage("Du hast das Konto von " id1 " erfolgreich gelöscht.")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten! Gibt es dieses Konto überhaupt?")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
 ::/slsd::
 Suspend Permit
 if((id1 := PlayerInput("Gib den Namen oder die ID des Spielers ein: ")) != ""){
@@ -4872,7 +4800,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	FrakCmd := ["/vs"]
 else if(IsFrak(5))
-	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ml", "/ssp"]
+	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ssp"]
 else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
 else if(IsFrak(11))
