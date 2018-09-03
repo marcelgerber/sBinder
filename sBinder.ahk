@@ -2803,7 +2803,6 @@ Gui, DeleteGui:Add, Checkbox, vDel6 y+10, sBinder.exe löschen
 Gui, DeleteGui:Add, Button, gDelete y+10 x120, Weiter »»
 ;DebugGUI:
 Gui, DebugGUI:Add, Text, w500, Diese Informationen solltest du bei Problemen mit dem sBinder angeben. Dafür kannst du den Kopieren-Button nutzen.
-Gui, DebugGUI:Font, s10, Comic Sans MS
 Gui, DebugGUI:Add, Edit, ReadOnly h210 w500 vDebug, Wenn du diesen Text siehst, ist etwas schief gelaufen!
 Gui, DebugGUI:Font
 Gui, DebugGUI:Add, Button, h20 gCopyDebug, Kopieren
