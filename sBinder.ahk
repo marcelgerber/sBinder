@@ -1750,7 +1750,7 @@ wb_BeforeNavigate2(wb, url, flags, frame, postdata, headers, cancel){ ;AHK-Insta
 	if(m1 = "go" OR m1 = "g"){
 		loop, Parse, m2, `;
 		{
-			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^SimpleSAM$|^Feedback$|.*Online$")))
+			if(IsLabel(A_LoopField) AND (wb != _mainGui OR RegExMatch(A_LoopField, ".*GUI$|^Help\d*$|^Forum(Thread)?$|Connect$|^SimpleSAM$|.*Online$")))
 				gosub %A_LoopField%
 		}
 	}
@@ -2303,7 +2303,7 @@ Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer & Drogenschieber", "Waffenhändler", "Fastfood AG"]
 FrakRegEx := ["PD|Police|Polizei|LS|Los Santos|Bullen|Cops", "F\.?B\.?I\.?|Federal|Bureau|Investigation",, "Krankenhaus|SA:?RD|Rettungsdienst|Arzt|Ärzte|Medic", "LCN|La Cosa Nostra", "Yakuza", "Regierung|Government|Gov",, "SAM ?AG|Media|News|^SAM|Reporter", "", "Aztec|Varrios|Scarfo|Racing|Auto|Car|Rifa|VLA",, "Ballas|Front Yard|Purple", "GS|Grove Street|Grove",,,, "Triade|China"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
-Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_2.html", version: "1.2"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_1.html", version: "1.1"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
+Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_3.html", version: "1.3"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_2.html", version: "1.2"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
 CarModels := {400:"Landstalker",402:"Buffalo",403:"Linerunner",404:"Perenniel",405:"Sentinel",406:"Dumper",407:"Feuerwehr",408:"Müllwagen",409:"Stretch",411:"Infernus",412:"Voodoo",413:"Pony",415:"Cheetah",416:"Rettungswagen",417:"Leviathan",418:"Moonbeam",419:"Esperanto",420:"Taxi",421:"Washington",422:"Bobcat",424:"BF Injection",425:"Hunter",426:"Premier",427:"Enforcer",428:"Bankwagen",429:"Banshee",430:"Polizeischiff",431:"Bus",432:"Panzer",433:"Barracks",434:"Hotknife",437:"Coach",440:"Rumpo",445:"Admiral",451:"Turismo",454:"Tropic",456:"Yankee",457:"Golf-Caddy",459:"Drogenvan",461:"PCJ-600",462:"Faggio",463:"Freeway",467:"Oceanic",468:"Sanchez",470:"Patriot",471:"Quad",472:"Coastguard",473:"Dinghy",474:"Hermes",475:"Sabre",476:"Rustler",477:"ZR-350",478:"Walton",480:"Comet",482:"Burrito",483:"Camper",484:"Marquis",487:"Maverick",489:"Rancher",490:"FBI Rancher",493:"Jetmax",494:"Hotring Racer",495:"Sandking",496:"Blista Compact",497:"Polizei Maverick",498:"Boxville",499:"Benson",500:"Mesa",502:"Hotring Racer",503:"Hotring Racer",504:"Bloodring Banger",505:"Rancher",506:"Super GT",507:"Elegant",508:"Journey",514:"Tanker",515:"Roadtrain",517:"Majestic",519:"Shamal",520:"Hydra",521:"FCR-900",522:"NRG-500",523:"Polizei Bike",524:"Betonmischer",525:"Towtruck",528:"FBI Truck",532:"Mähdrescher",533:"Feltzer",534:"Remington",535:"Slamvan",536:"Blade",541:"Bullet",542:"Clover",544:"Feuerwehr mit Leiter",545:"Hustler",548:"Cargobob",550:"Sunrise",554:"Yosemite",555:"Windsor",558:"Uranus",559:"Jester",560:"Sultan",561:"Stratum",562:"Elegy",563:"Raindance",565:"Flash",566:"Tahoma",567:"Savanna",568:"Bandito",573:"Dune",574:"Sweeper",575:"Broadway",579:"Huntley",580:"Stafford",581:"BF-400",585:"Emperor",586:"Wayfarer",587:"Euros",589:"Club",593:"Dodo",596:"Polizei (LS)",597:"Polizei (SF)",598:"Army Car",599:"Noteinsatzfahrzeug",601:"Wasserwerfer",602:"Alpha",603:"Phoenix"}
 return
@@ -2337,8 +2337,6 @@ if(UseDesign = 1){
 	Gui, Add, Button, x265 y200 h20 w12 gHelp6, ?
 	Gui, Add, Button, x140 y230 w120 h20 gTruckerGUI, Trucking
 	Gui, Add, Button, x265 y230 h20 w12 gHelp9, ?
-	Gui, Add, Button, % "x10 y" 90+30*GuiButtons " w120 h20 gFeedback", Feedback
-	Gui, Add, Button, % "x135 y" 90+30*GuiButtons " h20 w12 gHelp8", ?
 	Gui, Add, Text, % "x212 y" 92+30*GuiButtons " h20", Dein Name:
 	Gui, Add, Edit, % "x270 y" 90+30*GuiButtons " w120 h20 vNickname", %Nickname%
 	Gui, Add, Button, % "x395 y" 90+30*GuiButtons " h20 w12 gHelp7", ?
@@ -3086,9 +3084,6 @@ return
 OnlineCarCalc:
 Run, http://saplayer.bplaced.net/public/fahrzeugrechner.php
 return
-Feedback:
-Run, % "http://saplayer.bplaced.net/contact.php?name=" URLEncode(Nickname) "&sBinder=" URLEncode(Build)
-return
 FrakChangeGuiBuild:
 Gui, FrakChangeGUI:Destroy
 RealFrak := 1
@@ -3617,7 +3612,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "In den Notizen kannst du persönliche Aufgaben für dich speichern, die du auch im Spiel anzeigen, bearbeiten und löschen kannst."
 , "Der Fahrzeugrechner kann euch die Preise der Fahrzeuge auf Nova anzeigen. Er wurde von mir entworfen."
 , "Du kannst hier deinen Nova-Nickname eingeben. In den eigenen Binds wird dann [Name] mit diesem Namen ersetzt."
-, "Mit der Feedback-Funktion kannst du Feedback (Bugs, Vorschläge, Probleme usw.) an das sBinder-Team senden. Wir werden schnellstmöglich antworten, die Antwort wird dir normalerweise per E-Mail gesendet. Eventuell werden wir aber auch versuchen, über andere Wege den Kontakt mit dir aufzunehmen."
+, ""
 , "Hier findest du die Aufträge für Trucker.`n`nDu kannst sie auch ingame mit /trucking abrufen. Außerdem kannst du die Bilder der Orte in den Einstellungen deaktivieren."
 , "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen.`n`n`nEffekt beim Schließen anzeigen:`nWenn du diese Option aktivierst, wird das Fenster beim Schließen des sBinders langsam ausgeblendet."
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
@@ -3641,7 +3636,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
 , "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Feedback", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
