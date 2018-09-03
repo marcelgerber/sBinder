@@ -3667,17 +3667,6 @@ if(!ErrorLevel){
 }
 Thread, NoTimers, false
 return
-;Unused
-SelectNSC:
-Thread, NoTimers
-FileSelectFile, temp, 1, % (FileExist(nscpath) ? nscpath : A_Desktop), Wähle den Nova Social Client aus, *.exe
-if(!ErrorLevel){
-	nscpath := temp
-	IniWrite, %nscpath%, %INIFile%, Settings, NSCPath
-	ToolTip("Der NSC-Pfad wurde erfolgreich geändert.`nAusgewählte Datei: " nscpath, 5000)
-}
-Thread, NoTimers, false
-return
 SelectCL:
 Thread, NoTimers
 FileSelectFile, temp, 1, % (FileExist(chatlogpath) ? chatlogpath : A_MyDocuments), Wähle den Pfad des Chatlogs, *.txt
@@ -4189,58 +4178,6 @@ ExitApp
 return
 GuiShow:
 Gui, 1:Show,, sBinder %Version%-%Build% by IcedWave
-return
-
-;Unused
-NSC:
-SetTimer, StartNSC, -1 ;prevent hanging on WinWait
-return
-StartNSC:
-nsc_win := ""
-if(nsc_win := WinExist("Nova Social Client")){
-	if(WinExist("ahk_group GTASA")){
-		WinActivate, ahk_group GTASA
-		return
-	}
-	WinGet, nsc_win, PID, ahk_id %nsc_win%
-}
-else{
-	if(!nscpath)
-		ErrorLevel := 1
-	else
-		Run, *RunAs %nscpath%,, UseErrorLevel, nsc_win
-	if(ErrorLevel){
-		gosub SelectNSC
-		if(FileExist(nscpath))
-			goto %A_ThisLabel%
-		else
-			return
-	}
-}
-
-if(nsc_win)
-	nsc_win := "ahk_pid " nsc_win
-else
-	nsc_win := "Nova Social Client"
-WinWait, %nsc_win%,, 10
-Sleep, 500
-if(WinExist(nsc_win)){
-	WinGetTitle, nsc_win_title, %nsc_win%
-	if(nsc_win_title = "Nova Social Client"){
-		WinActivate, %nsc_win%
-		try{
-			ControlClick, WindowsForms10.Window.8.app.0.2bf8098_r33_ad16, %nsc_win% ;v0.2.3
-		}
-		catch{
-			ErrorLevel := 1
-		}
-		if(ErrorLevel){
-			if(!A_IsCompiled)
-				MsgBox, [CustomError] Couldn't use NSC's ClassNN to connect
-			ControlClick, X440 Y100, %nsc_win%
-		}
-	}
-}
 return
 
 ::/reconnect::
