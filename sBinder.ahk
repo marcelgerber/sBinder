@@ -36,11 +36,7 @@ OnExit, BeforeExit
 CoordMode, Mouse, Client
 SetWorkingDir, %A_ScriptDir%
 FileCreateDir, %A_Temp%\sBinder\Trucking
-if(!FileExist(A_AppData "\sBinder")){
-	FileCreateDir, %A_AppData%\sBinder
-	FileMove, %A_Temp%\sBinder\bg.png, %A_AppData%\sBinder\bg.png
-	FileMove, %A_Temp%\sBinder\API.dll, %A_AppData%\sBinder\API.dll
-}
+FileCreateDir, %A_AppData%\sBinder
 FileCreateDir, %A_AppData%\sBinder\Design
 #Include lines.ahk
 gosub Variables
