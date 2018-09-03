@@ -49,7 +49,7 @@ gosub Arrays
 GroupAdd, GTASA, ahk_class Grand theft auto San Andreas ahk_exe gta_sa.exe
 GroupAdd, GTASA, Keybinder testen (Debug) ahk_class AutoHotkeyGUI
 
-if(LastUsedBuild < 40){
+if(LastUsedBuild = 0){
 	if(A_ScriptDir = A_Desktop OR A_ScriptDir = A_DesktopCommon){
 		MsgBox, 35, sBinder verschieben?, Du hast den sBinder vom Desktop aus gestartet.`nAllerdings wird er einige Dateien erstellen.`nWillst du den sBinder daher in einen anderen Ordner verschieben und nur eine Verknüpfung auf dem Desktop erstellen?`n`nMit einem Klick auf Ja wird der sBinder in einen von dir wählbaren Ordner verschoben und eine Verknüpfung auf dem Desktop erstellt, mit Nein wird der sBinder auf dem Desktop belassen. Mit Abbrechen wird er beendet, ohne Daten zu erstellen.
 		IfMsgBox, Cancel
@@ -1880,31 +1880,6 @@ IniRead, samppath, %INIFile%, Settings, SAMPPath, 0
 IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
 IniRead, Frak, %INIFile%, Settings, Fraktion, 1
-if (LastUsedBuild < 60 && Frak != 1) {
-	/*
-	1"Keine Fraktion"
-	2"Ordnungsamt"x
-	3"Police Department"2
-	4"Rettungsdienst"3
-	5"FBI"x
-	6"Bundeswehr"x
-	7"Medellin Kartell"4
-	8"Taxiteam"x
-	9"La Cosa Nostra"5
-	10"Yakuza"6
-	11"Grove Street"7
-	12"San Fierro Rifa"x
-	13"San Andreas Media AG"8
-	14"Ballas Family"9
-	15"Los Vagos"10
-	16"Korsakow Familie"x
-	17"Hitmen"x
-	*/
-	;Before: "Keine Fraktion", "Ordnungsamt", "Police Department", "Rettungsdienst", "FBI", "Bundeswehr", "Medellin Kartell", "Taxiteam", "La Cosa Nostra", "Yakuza", "Grove Street", "San Fierro Rifa", "San Andreas Media AG", "Ballas Family", "Los Vagos", "Korsakow Familie", "Hitmen"
-	;After: "Keine Fraktion", "Los Santos Polizei", "Rettungsdienst", "Medellin Kartell", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos"
-	Frak := [1, 1, 2, 3, 1, 1, 4, 1, 5, 6, 7, 1, 8, 9, 10, 1, 1][Frak]
-	IniWrite, %Frak%, %INIFile%, Settings, Fraktion
-}
 IniRead, hmv, %INIFile%, Settings, AutoMv, 0
 IniRead, vlc_Path, %INIFile%, Settings, VLCPath, %A_ProgramFiles%\VideoLAN\VLC\vlc.exe
 IniRead, musicfolder, %INIFile%, Settings, music, %A_ScriptDir%\sBinder_music
@@ -1916,20 +1891,6 @@ if(InStr(FullArgs, "--design=") AND RegExMatch(FullArgs, "--design=\s*(\d+)", re
 IniRead, meTexte, %INIFile%, Settings, me, 1
 loop, %FrakOptions%
 	IniRead, Frakoption%A_Index%, %INIFile%, Settings, Frakoption%A_Index%, %A_Space%
-if(Frak = 3 AND LastUsedBuild < 47){
-	Frakoption4 := Frakoption3
-	Frakoption3 := ""
-	IniWrite, %Frakoption3%, %INIFile%, Settings, Frakoption3
-	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
-}
-if (Frak = 3 AND LastUsedBuild < 68) {
-	Frakoption6 := Frakoption4
-	Frakoption4 := ""
-	Frakoption5 := ""
-	IniWrite, %Frakoption4%, %INIFile%, Settings, Frakoption4
-	IniWrite, %Frakoption5%, %INIFile%, Settings, Frakoption5
-	IniWrite, %Frakoption6%, %INIFile%, Settings, Frakoption6
-}
 IniRead, JobOption1, %INIFile%, Settings, JobOption1, 0
 IniRead, TrayMinimize, %INIFile%, Settings, MinimizeToTray, 0
 IniRead, FadeOut, %INIFile%, Settings, FadeOut, 1
@@ -1943,7 +1904,7 @@ IniRead, HitsoundText, %INIFile%, Settings, HitsoundText, %A_Space%
 IniRead, chatlogpath, %INIFile%, Settings, ChatlogPath, %A_MyDocuments%\GTA San Andreas User Files\SAMP\chatlog.txt
 if(!FileExist(chatlogpath))
 	chatlogpath := A_MyDocuments "\GTA San Andreas User Files\SAMP\chatlog.txt"
-if(LastUsedBuild < 49)
+if(LastUsedBuild = 0)
 	gosub ChatlogSearch
 IniRead, ServerIP, %INIFile%, IPs, Server, server.nes-newlife.de
 if(!IsIP(ServerIP))
@@ -1958,10 +1919,6 @@ IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
 IniRead, wBind2, %INIFile%, Binds, wBind2, %A_Space%
 IniRead, DownloadMode, %INIFile%, Settings, DownloadMode, 1
 IniRead, SkipPing, %INIFile%, Settings, SkipPing, 0
-if (LastUsedBuild < 58 && DownloadMode = 2) {
-	DownloadMode := 1
-	IniWrite, %DownloadMode%, %INIFile%, Settings, DownloadMode
-}
 IniRead, AFKBox, %INIFile%, Settings, AFKBox, 0
 IniRead, Tel, %INIFile%, Telefon, Active, 0
 IniRead, pText, %INIFile%, Telefon, p, Guten Tag, mein Name ist [Name].~Was kann ich für Sie tun?
@@ -2002,58 +1959,6 @@ loop, %Hotstrings%
 }
 loop, % fBinds_max
 	IniRead, fBind%A_Index%, %INIFile%, Keys, fBind%A_Index%, %A_Space%
-if(LastUsedBuild < 53 && LastUsedBuild > 0 && fBinds_reassign := {7: 3, 9: 3, 12: 6, 15: 7}[Frak])
-{
-	loop, % fBinds_max - fBinds_reassign
-	{
-		temp := fBinds_reassign + A_Index - 1
-		temp2 := temp + 1
-		fBind%temp% := fBind%temp2%
-		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
-	}
-}
-if (LastUsedBuild < 66 && Frak = 3)
-{
-	loop, % fBinds_max - 10
-	{
-		temp := 9 + A_Index
-		temp2 := temp + 1
-		fBind%temp% := fBind%temp2%
-		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
-	}
-}
-if (LastUsedBuild < 67 && Frak = 2)
-{
-	loop, % fBinds_max - 8
-	{
-		temp := 7 + A_Index
-		temp2 := temp + 3
-		fBind%temp% := fBind%temp2%
-		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
-	}
-}
-if(LastUsedBuild < 69 && fBinds_reassign := {4: 1, 10: 9}[Frak])
-{
-	loop, % fBinds_max - fBinds_reassign
-	{
-		temp := fBinds_reassign + A_Index - 1
-		temp2 := temp + 1
-		fBind%temp% := fBind%temp2%
-		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
-	}
-}
-if (LastUsedBuild < 69 && Frak = 3)
-{
-	loop, % fBinds_max - 7
-	{
-		temp := fBinds_max - A_Index + 1
-		temp2 := temp - 1
-		fBind%temp% := fBind%temp2%
-		IniWrite, % fBind%temp%, %INIFile%, Keys, fBind%temp%
-	}
-	fBind7 := ""
-	IniWrite, %fBind7%, %INIFile%, Keys, fBind7
-}
 Loop, %jBinds_max%
 	IniRead, jBind%A_Index%, %INIFile%, Keys, jBind%A_Index%, %A_Space%
 loop, %Notes%
@@ -4062,14 +3967,8 @@ if(temp >= 7){
 	if(temparr[data1] != chatlogpath && FileExist(temparr[data1])){
 		chatlogpath := temparr[data1]
 		IniWrite, %chatlogpath%, %INIFile%, Settings, ChatlogPath
-		if(LastUsedBuild != 0)
-			MsgBox, % "Der Chatlog-Pfad wurde eben automatisch in " chatlogpath " geändert, da diese Datei neuer ist. Das sollte etwaige Probleme beim Auslesen des Chats beheben."
 	}
-	else if(LastUsedBuild != 0)
-		ToolTip("Der Chatlog-Pfad wurde nicht geändert, da die gewählte Datei die neueste ist.", 5000)
 }
-else if(LastUsedBuild != 0)
-	ToolTip("Der Chatlog-Pfad wurde nicht geändert, da die Datei neu genug ist.", 5000)
 return
 CopyDebug:
 GuiControlGet, Debug, DebugGUI:
