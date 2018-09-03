@@ -2391,6 +2391,7 @@ else{
 		if(EL OR !FileExist(A_AppData "\sBinder\Design\" MainGuiDesign["file"])){
 			MsgBox, 16, % "Design " MainGuiDesign["name"] " konnte nicht aktualisiert werden", % "Das von dir gewählte Design " MainGuiDesign["name"] " konnte leider nicht aktualisiert werden.`n`nAus diesem Grund wird jetzt vorübergehend das alte Design genutzt.`n`nTipp: Sollte dir diese Meldung des Öfteren angezeigt werden, empfehlen wir, das Standard-Design in den Einstellungen zu wählen."
 		}
+		goto mainGUI
 	}
 	
 	mainGUIHTML := RegExReplace(RegExReplace(mainGUIHTML, "Usi)<sBinder>.*</sBinder>"), "%AppData%", RegExReplace(A_AppData, "\\", "/"))
