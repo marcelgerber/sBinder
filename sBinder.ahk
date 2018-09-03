@@ -410,43 +410,6 @@ ArraySort(arr, option="", order=""){
 		newarr.Insert(A_LoopField)
 	return newarr
 }
-BalloonTip(sText, sTitle = "sBinder", xpos="", ypos="", hIcon="1", iTimeout = "0", nColor=""){ ;http://www.autohotkey.com/board/topic/17891-balloontip/?p=116738 //toralf
-   static hWnd
-   hWnd := DllCall("CreateWindowEx", "Uint", 0x8, "str", "tooltips_class32", "str", "", "Uint", 0xC3, "int", 0, "int", 0, "int", 0, "int", 0, "Uint", 0, "Uint", 0, "Uint", 0, "Uint", 0) 
-   VarSetCapacity(ti, 40, 0) 
-   ti := Chr(40) 
-   DllCall("ntdll\RtlFillMemoryUlong", "Uint", &ti + 4, "Uint", 4, "Uint", 0x20)   ; TTF_TRACK 
-   DllCall("ntdll\RtlFillMemoryUlong", "Uint", &ti +36, "Uint", 4, "Uint", &sText) 
-	DllCall("GetCursorPos", "int64P", pt)
-	if(!xpos)
-		xpos := pt << 32 >> 32            ; can be negative 
-	if(!ypos)
-		ypos := pt >> 32            ; can be negative 
-	if(nColor = "Position"){
-		hDC_Scr := DllCall("GetDC", "Uint", 0) 
-		nColor  := DllCall("GetPixel", "Uint", hDC_Scr, "int", xpos, "int", ypos) 
-		DllCall("ReleaseDC", "Uint",0, "Uint", hDC_Scr) 
-	}
-	_DetectHiddenWindows_ := A_DetectHiddenWindows 
-	DetectHiddenWindows, On 
-	SendMessage, 1028, 0, &ti,, ahk_id %hWnd%      ; TTM_ADDTOOL 
-	SendMessage, 1041, 1, &ti,, ahk_id %hWnd%      ; TTM_TRACKACTIVATE 
-	SendMessage, 1042, 0, (xpos & 0xFFFF)|(ypos & 0xFFFF)<<16,, ahk_id %hWnd%   ; TTM_TRACKPOSITION 
-	if(nColor != ""){
-		SendMessage, 1043, nColor, 0,, ahk_id %hWnd%      ; TTM_SETTIPBKCOLOR 
-		SendMessage, 1044,~nColor & 0xFFFFFF, 0,, ahk_id %hWnd%   ; TTM_SETTIPTEXTCOLOR 
-	}
-	SendMessage, 1056, hIcon, &sTitle,, ahk_id %hWnd%      ; TTM_SETTITLE   ; 0: None, 1:Info, 2: Warning, 3: Error. n > 3: assumed to be an hIcon. 
-	SendMessage, 1036, 0, &ti,, ahk_id %hWnd%      ; TTM_UPDATETIPTEXT 
-	DetectHiddenWindows, %_DetectHiddenWindows_% 
-	if(iTimeOut)
-		SetTimer, BalloonTip_TimeOut, %iTimeOut%
-	return
-	BalloonTip_TimeOut:
-	SetTimer, BalloonTip_TimeOut, Off
-	WinClose, ahk_id %hWnd%
-	return
-}
 between(var, min, max){
 	if var between %min% and %max%
 		return 1
@@ -813,15 +776,6 @@ HashFromString(string, algid, key=0){ ;http://www.autohotkey.com/board/topic/892
 	data := string
 	return HashFromAddr(&data, len, algid, key)
 }
-HTMLToString(html){
-	while(RegExMatch(html, "U)&#(\d+);", regex))
-		StringReplace, html, html, &#%regex1%;, % Chr(regex1), All
-	StringReplace, html, html, &quot;, ", All
-	StringReplace, html, html, &amp;, &, All
-	StringReplace, html, html, &lt;, <, All
-	StringReplace, html, html, &gt;, >, All
-	return html
-}
 HTTPData(url, default="", encoding="cp1250", brton=0){
 	global DownloadMode
 	static useragent := "AutoHotkey/" A_AhkVersion
@@ -882,22 +836,6 @@ InfoProgress(text="", title="", windowName=""){
 	}
 	else
 		GUIs.Delete("InfoProgress")
-}
-IniSave(section, key, value, default, ini=""){
-	global INIFile
-	if(!ini)
-		ini := INIFile
-	if(value == default)
-		IniDelete, %ini%, %section%, %key%
-	else
-		IniWrite, %value%, %ini%, %section%, %key%
-}
-inOR(var, args*){
-	for i, args in args
-	{
-		if(args = var)
-			return 1
-	}
 }
 is(var, is){
 	if var is %is%
@@ -1425,18 +1363,6 @@ SendWPs(crime, wps){
 		SendChat("./" data2 " ID " data3 " | " wps " WPs | " crime " | bitte best." ia)
 	else
 		SendChat("/su " data3 " " wps " " crime ia)
-}
-SetEditPlaceholder(control, string, showalways=0, gui=""){
-	if control is not number
-		GuiControlGet, control, % (gui != "" ? gui ":" : "") "HWND", %control%
-	if(!A_IsUnicode){
-		VarSetCapacity(wstring, (StrLen(wstring) * 2) + 1)
-		DllCall("MultiByteToWideChar", UInt, 0, UInt, 0, UInt, &string, Int, -1, UInt, &wstring, Int, StrLen(string) + 1)
-	}
-	else
-		wstring := string
-	DllCall("SendMessageW", "UInt", control, "UInt", 0x1501, "UInt", showalways, "UInt", &wstring)
-	return
 }
 SetTimerNow(Label, time){
 	SetTimer, %Label%, %time%
