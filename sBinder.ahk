@@ -1115,40 +1115,6 @@ OverlayReplace(text, InVehicle){
 		text := RegExReplace(text, "i)" char, charMap[char])
 	return text
 }
-Overlay_SaveData(get, func="", p1=""){
-	static lastcall, saved := Object()
-	if(lastcall != "" AND A_TickCount  - lastcall < 100 AND saved[get] != "")
-		return saved[get]
-	AddChatMessage(A_TickCount ", " A_TickCount - lastcall ", " get "," saved[get])
-	lastcall := A_TickCount
-	if(get = "HP" OR get = "Armor" OR get = "Money" OR get = "CarHeal" OR get = "CarModel" OR get = "FPS")
-		return saved[get] := DllCall(func)
-	if(get = "id"){
-		if((id := DllCall(func)) = 65535){
-			if(saved[get] != "")
-				return saved[get]
-			else
-				return "[Fehler]"
-		}
-		else
-			return saved[get] := id
-	}
-	if(get = "City" OR get = "Zone" OR get = "CarName"){
-		VarSetCapacity(out, 32, 0)
-		DllCall(func, "StrP", out)
-		return (saved[get] := out) ? out : "[Fehler]"
-	}
-	if(get = "CarLock" OR get = "CarEngine" OR get = "CarLight")
-		return saved[get] := DllCall(func)-!p1+2
-	if(get = "CarSpeed"){
-		if(p1 AND (speed := DllCall(func, Float, 1.62) > -1))
-			return saved[get] := speed
-		else
-			return saved[get] := 0
-	}
-	if(get = "NL")
-		return saved[get] := NextNovaLocation()
-}
 ping(host, packagesize=32, timeout=5000){ ;http://www.autohotkey.com/de/forum/viewtopic.php?t=8710 //Bentschi
 	static packagecontent := "AHK PING TEST -+- "
 	if(packagesize < 12)
