@@ -1,4 +1,4 @@
-/*
+﻿/*
 AddChatMessage-Farbe: {ffffff} weiß
 AddChatMessage-Akzentfarbe: {88aa62} olivgrün (wird auch von API selbst verwendet)
 */
