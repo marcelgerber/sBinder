@@ -4086,7 +4086,8 @@ else{
 	Run, *RunAs "%samppath%" "%ServerIP%",, UseErrorLevel
 	if(ErrorLevel){
 		gosub SelectSAMP
-		goto %A_ThisLabel%
+		if (!ErrorLevel)
+			goto %A_ThisLabel%
 	}
 }
 return
