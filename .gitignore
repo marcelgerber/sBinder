@@ -1,4 +1,8 @@
 *.bak
+*.exe
+*.txt
+lines.ahk
+*.ini
 
 
 # Windows image file caches
