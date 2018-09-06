@@ -15,7 +15,8 @@ Menu, Tray, Icon,,, 1
 
 gosub GetArgs
 NoAdminMode := InStr(FullArgs, "--no-admin")
-if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode){
+IniRead, RunAsAdmin, %A_AppData%\sBinder\global.ini, RunAsAdmin, %A_ScriptFullPath%, 1
+if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode AND RunAsAdmin){
 	Run *RunAs "%A_ScriptFullPath%" %FullArgsQuoted%,, UseErrorLevel
 	if(ErrorLevel){
 		MsgBox, 0x126, Administatorrechte benötigt, Es wird empfohlen, den sBinder mit Administratorrechten zu starten, da so sichergestellt werden kann, dass er im Spiel auch wirklich verwendbar ist.`nKlickst du auf "Weiter", so wird er - auf eigenes Risiko - ohne Adminrechte gestartet.
@@ -1881,6 +1882,10 @@ if(!savewithoutsubmit){
 }
 if(UseHTMLGUI)
 	Nickname := _mainGUI.document.getElementById("Name").value
+; Global
+IniWrite, %RunAsAdmin%, %A_AppData%\sBinder\global.ini, RunAsAdmin, %A_ScriptFullPath%
+
+; Local
 IniWrite, %Nickname%, %INIFile%, Settings, Name
 IniWrite, %hmv%, %INIFile%, Settings, AutoMv
 IniWrite, %vlc_Path%, %INIFile%, Settings, VLCPath
@@ -2547,11 +2552,14 @@ gosub StartupSettingsChange
 Gui, SettingsGUI:Tab, 4
 ;Tab 4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
-Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vOtherSettings c000000", Erweiterte Optionen
+Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h115 w510 vOtherSettings c000000", Erweiterte Optionen
 Gui, SettingsGUI:Add, Text, x15 y%y% h20, Zeit zum Warten auf Chatlog (ms) (s. ?-Button):
 Gui, SettingsGUI:Add, Edit, y%y% x245 w45
 Gui, SettingsGUI:Add, UpDown, vWaitFor Range20-300, %WaitFor%
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp16, ?
+y += 25
+Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vRunAsAdmin Checked%RunAsAdmin%, Mit Administratorrechten starten
+Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp8, ?
 y += 25
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gDeleteData, sBinder-Dateien löschen
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp17, ?
@@ -3499,7 +3507,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "In den Notizen kannst du persönliche Aufgaben für dich speichern, die du auch im Spiel anzeigen, bearbeiten und löschen kannst."
 , "Der Fahrzeugrechner kann euch die Preise der Fahrzeuge auf Nova anzeigen. Er wurde von mir entworfen."
 , "Du kannst hier deinen Nova-Nickname eingeben. In den eigenen Binds wird dann [Name] mit diesem Namen ersetzt."
-, ""
+, "Mit Administratorrechten starten:`nIst diese Option aktiviert, so wird bei jedem Start nach Administratorrechten gefragt. Dies stellt sicher, dass der sBinder auch tatsächlich auf den SAMP-Prozess zugreifen und im entsprechenden Fenster Eingaben tätigen kann."
 , "Hier findest du die Aufträge für Trucker.`n`nDu kannst sie auch ingame mit /trucking abrufen. Außerdem kannst du die Bilder der Orte in den Einstellungen deaktivieren."
 , "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen."
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
@@ -3523,7 +3531,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
 , "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
