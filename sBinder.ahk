@@ -19,7 +19,7 @@ IniRead, RunAsAdmin, %A_AppData%\sBinder\global.ini, RunAsAdmin, %A_ScriptFullPa
 if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode AND RunAsAdmin){
 	Run *RunAs "%A_ScriptFullPath%" %FullArgsQuoted%,, UseErrorLevel
 	if(ErrorLevel){
-		MsgBox, 0x126, Administatorrechte benötigt, Es wird empfohlen, den sBinder mit Administratorrechten zu starten, da so sichergestellt werden kann, dass er im Spiel auch wirklich verwendbar ist.`nKlickst du auf "Weiter", so wird er - auf eigenes Risiko - ohne Adminrechte gestartet.
+		MsgBox, 0x126, Administatorrechte benötigt, Es wird empfohlen, den sBinder mit Administratorrechten zu starten, da so sichergestellt werden kann, dass er im Spiel auch wirklich verwendbar ist.`nKlickst du auf "Weiter", so wird er - auf eigenes Risiko - ohne Adminrechte gestartet.`n`nWillst du diese Abfrage nicht mehr sehen, so kannst du sie unter "Datei > Einstellungen > Erweiterte Optionen > Mit Administratorrechten starten" deaktivieren.
 		IfMsgBox, TryAgain
 			Reload
 		IfMsgBox, Cancel
