@@ -57,7 +57,7 @@ if(LastUsedBuild = 0){
 				FileCreateDir, %musicfolder%
 				FileDelete, sBinder_move.bat
 				FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nping 1.1.1.1 -n 1 -w 800`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
-				Run, *RunAs sBinder_move.bat
+				Run, %RunPrivileges%sBinder_move.bat
 				ExitApp
 			}
 		}
@@ -2138,7 +2138,7 @@ FileGetSize, size_curr, sBinder_new.exe
 if(size_curr >= vSize){
 	FileDelete, sUpdate.bat
 	FileAppend, % "@echo off`nping 1.1.1.1 -n 1 -w 800`ndel """ A_ScriptDir "\sBinder.exe""`nmove """ A_ScriptDir "\sBinder_new.exe"" """ A_ScriptDir "\sBinder.exe""`nping 1.1.1.1 -n 1 -w 800`nstart """" """ A_ScriptDir "\sBinder.exe"" ""--just-updated""`ndel """ A_ScriptDir "\sUpdate.bat""", sUpdate.bat
-	Run, *RunAs sUpdate.bat,, Hide
+	Run, %RunPrivileges%sUpdate.bat,, Hide
 	ExitApp
 }
 else{
@@ -2182,6 +2182,8 @@ EnvGet, UserProfile, UserProfile
 IniRead, UseAPI, %INIFile%, Settings, UseAPI, 0
 IniRead, LastUsedBuild, %INIFile%, Settings, LastUsedBuild, 0
 AESPassword := "OmX5VSeNwiyUL6gB6XW1V71vYznXvUl5AEX81oAs9fjGGT0l9Shb6j5dizJIM8Iz"
+ ; Use in Run commands to run another program if and only if the sBinder itself has admin privileges (don't show a UAC dialog!)
+RunPrivileges := A_IsAdmin ? "*RunAs " : ""
 return
 GetArgs:
 Args := Object(), FullArgs := FullArgsQuoted := ""
@@ -3297,7 +3299,7 @@ if(temp AND ErrorLevel)
 	ToolTip("Das ausgewählte Programm zum Mitstarten ist bereits aktiv`nBeende es erst`, bevor du es neu startest!", 5000)
 else{
 	if(FileExist(Startup_Other_Path))
-		Run, *RunAs %Startup_Other_Path%,, UseErrorLevel
+		Run, %RunPrivileges%%Startup_Other_Path%,, UseErrorLevel
 	else
 		ErrorLevel := 1
 	if(ErrorLevel){
@@ -3314,7 +3316,7 @@ Process, Exist, %temp%
 if(ErrorLevel)
 	ToolTip("Fraps ist bereits aktiv`nBeende es erst`, bevor du es neu startest!", 5000)
 else{
-	Run, *RunAs %Startup_Fraps_Path%,, UseErrorLevel
+	Run, %RunPrivileges%%Startup_Fraps_Path%,, UseErrorLevel
 	if(ErrorLevel)
 		ToolTip("Fehler beim Starten von Fraps`n`nFraps konnte nicht gestartet werden.`nEventuell ist es auf diesem nicht oder nicht richtig installiert.", 5000)
 }
@@ -3734,7 +3736,7 @@ if(Del6){
 	{
 		FileDelete, delete.bat
 		FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`ndel "%A_ScriptDir%\sBinder.exe"`ndel "%A_ScriptDir%\delete.bat", delete.bat
-		Run, *RunAs delete.bat
+		Run, %RunPrivileges%delete.bat
 		ExitApp
 	}
 	IfMsgBox, No
@@ -4091,7 +4093,7 @@ else{
 		samppath := samppath.Value(1)
 		IniWrite, %samppath%, %INIFile%, Settings, SAMPPath
 	}
-	Run, *RunAs "%samppath%" "%ServerIP%",, UseErrorLevel
+	Run, %RunPrivileges%"%samppath%" "%ServerIP%",, UseErrorLevel
 	if(ErrorLevel){
 		gosub SelectSAMP
 		if (!ErrorLevel)
