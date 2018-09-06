@@ -18,14 +18,13 @@ NoAdminMode := InStr(FullArgs, "--no-admin")
 if(!A_IsAdmin AND A_OSVersion != "WIN_XP" AND !NoAdminMode){
 	Run *RunAs "%A_ScriptFullPath%" %FullArgsQuoted%,, UseErrorLevel
 	if(ErrorLevel){
-		MsgBox, 53, Administatorrechte benötigt, Du musst den sBinder mit Administratorrechten starten, damit er richtig funktioniert!
-		IfMsgBox, Retry
+		MsgBox, 0x126, Administatorrechte benötigt, Es wird empfohlen, den sBinder mit Administratorrechten zu starten, da so sichergestellt werden kann, dass er im Spiel auch wirklich verwendbar ist.`nKlickst du auf "Weiter", so wird er - auf eigenes Risiko - ohne Adminrechte gestartet.
+		IfMsgBox, TryAgain
 			Reload
-		else
+		IfMsgBox, Cancel
 			ExitApp
-	}
-	ExitApp
-	return
+	} else
+		ExitApp
 }
 
 #NoEnv
