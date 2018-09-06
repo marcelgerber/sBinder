@@ -1783,7 +1783,6 @@ loop, %FrakOptions%
 	IniRead, Frakoption%A_Index%, %INIFile%, Settings, Frakoption%A_Index%, %A_Space%
 IniRead, JobOption1, %INIFile%, Settings, JobOption1, 0
 IniRead, TrayMinimize, %INIFile%, Settings, MinimizeToTray, 0
-IniRead, FadeOut, %INIFile%, Settings, FadeOut, 1
 IniRead, TruckPics, %INIFile%, Settings, TruckPics, 1
 IniRead, Job, %INIFile%, Settings, Job, 1
 IniRead, TruckingSort, %INIFile%, Settings, TruckSort, 1
@@ -1893,7 +1892,6 @@ loop, %FrakOptions%
 	IniWrite, % Frakoption%A_Index%, %INIFile%, Settings, Frakoption%A_Index%
 IniWrite, %JobOption1%, %INIFile%, Settings, JobOption1
 IniWrite, %TrayMinimize%, %INIFile%, Settings, MinimizeToTray
-IniWrite, %FadeOut%, %INIFile%, Settings, FadeOut
 IniWrite, %TruckPics%, %INIFile%, Settings, TruckPics
 IniWrite, %WaitFor%, %INIFile%, Settings, WaitFor
 IniWrite, %AutoHitsound%, %INIFile%, Settings, AutoHitsound
@@ -2424,7 +2422,6 @@ Gui, SettingsGUI:Tab, 1
 y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vGenericSettings c000000", Allgemeine Einstellungen
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vTrayMinimize Checked%TrayMinimize%, Ins Tray minimieren
-Gui, SettingsGUI:Add, Checkbox, x145 y%y% h20 vFadeOut Checked%FadeOut%, Effekt beim Schließen anzeigen
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp10, ?
 y += 25
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vTruckPics Checked%TruckPics%, Bilder im Trucking-Fenster anzeigen
@@ -3504,7 +3501,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Du kannst hier deinen Nova-Nickname eingeben. In den eigenen Binds wird dann [Name] mit diesem Namen ersetzt."
 , ""
 , "Hier findest du die Aufträge für Trucker.`n`nDu kannst sie auch ingame mit /trucking abrufen. Außerdem kannst du die Bilder der Orte in den Einstellungen deaktivieren."
-, "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen.`n`n`nEffekt beim Schließen anzeigen:`nWenn du diese Option aktivierst, wird das Fenster beim Schließen des sBinders langsam ausgeblendet."
+, "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen."
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
 , "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden."
 , "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
@@ -4061,13 +4058,6 @@ GuiClose:
 savemsg := 0
 if(FileExist(INIFile))
 	gosub SaveExit
-if(FadeOut){
-	loop, 25
-	{
-		WinSet, Transparent, % 255 - A_Index * 10, ahk_id %mainGUI%
-		Sleep, % 25 - A_Index
-	}
-}
 ExitApp
 return
 GuiShow:
