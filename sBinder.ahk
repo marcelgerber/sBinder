@@ -150,7 +150,7 @@ if(UseAPI){
 		IsDialogOpen_func := DllCall("GetProcAddress", UInt, hModule, AStr, "IsDialogOpen")
 		IsChatOpen_func := DllCall("GetProcAddress", UInt, hModule, AStr, "IsChatOpen")
 		IsMenuOpen_func := DllCall("GetProcAddress", UInt, hModule, AStr, "IsMenuOpen")
-		;ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, Str, "ShowDialog")
+		ShowDialog_func := DllCall("GetProcAddress", UInt, hModule, AStr, "ShowDialog")
 		GetVehicleModelId_func := DllCall("GetProcAddress", UInt, hModule, AStr, "GetVehicleModelId")
 		SetParam_func := DllCall("GetProcAddress", UInt, hModule, AStr, "SetParam")
 		IsPlayerInAnyVehicle_func := DllCall("GetProcAddress", UInt, hModule, AStr, "IsPlayerInAnyVehicle")
@@ -301,12 +301,12 @@ SetParam(str_Name, str_Value){
 	global SetParam_func
 	return DllCall(SetParam_func, AStr, str_Name, AStr, str_Value)
 }
-ShowDialog(Style, Title, Text, Button="OK"){
+ShowDialog(Style, Title, Text, Button="OK", Button2="Schließen", Id=522){
 	global ShowDialog_func, UseAPI
 	KeyWait, Enter
 	Sleep, 200
 	if(UseAPI AND !WinActive("ahk_class AutoHotkeyGUI"))
-		return DllCall(ShowDialog_func, Int, Style, AStr, Title, AStr, Text, AStr, Button)
+		return DllCall(ShowDialog_func, Int, Id, Int, Style, AStr, Title, AStr, Text, AStr, Button, AStr, Button2)
 	else if(WinActive("ahk_class AutoHotkeyGUI"))
 		MsgBox, 64, % RegExReplace(Title, "Ui)\{[a-f\d]{6}\}"), % RegExReplace(Text, "Ui)\{[a-f\d]{6}\}")
 }
