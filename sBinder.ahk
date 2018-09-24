@@ -168,8 +168,6 @@ if(UseAPI){
 		
 		SetParam("process", "gta_sa.exe")
 		SetParam("use_window", "0")
-		DllCall(Init_func)
-		DllCall(DestroyAllVisual_func)
 	}
 }
 
@@ -1712,6 +1710,12 @@ WM_HANDLER(wParam, lParam, msg, hwnd){
 
 
 gosub Open
+GroupAdd, GTASA, ahk_class Grand theft auto San Andreas ahk_exe %GTAProcessName%
+if (UseAPI) {
+	SetParam("process", GTAProcessName)
+	DllCall(Init_func)
+	DllCall(DestroyAllVisual_func)
+}
 GUIs := Object()
 GUIs.Insert(0, "AboutGUI", "SettingsGUI", "CreditsGUI", "CustomBindsGUI", "CarCalcGUI", "TruckerGUI", "FrakGUI", "JobGUI", "NotesGUI")
 gosub mainGUI
@@ -1733,7 +1737,7 @@ if(InStr(FullArgs, "--just-updated")){
 }
 gosub HotkeysDefine
 gosub Downloads
-gosub HotkeysDefine
+gosub HotkeysDefine ; Call again for frak binds
 if(OverlayActive AND UseAPI)
 	SetTimerNow("Overlay", 500)
 Sleep, 20
@@ -1803,6 +1807,7 @@ IniRead, TSIP, %INIFile%, IPs, TS, ts.nes-newlife.de
 if(!IsIP(TSIP))
 	TSIP := "ts.nes-newlife.de"
 IniRead, WaitFor, %INIFile%, Settings, WaitFor, 90
+IniRead, GTAProcessName, %IniFile%, Settings, GTAProcessName, gta_sa.exe
 IniRead, xBind1, %INIFile%, Binds, xBind1, %A_Space%
 IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
@@ -1899,6 +1904,7 @@ IniWrite, %JobOption1%, %INIFile%, Settings, JobOption1
 IniWrite, %TrayMinimize%, %INIFile%, Settings, MinimizeToTray
 IniWrite, %TruckPics%, %INIFile%, Settings, TruckPics
 IniWrite, %WaitFor%, %INIFile%, Settings, WaitFor
+IniWrite, %GTAProcessName%, %IniFile%, Settings, GTAProcessName
 IniWrite, %AutoHitsound%, %INIFile%, Settings, AutoHitsound
 IniWrite, %HitsoundText%, %INIFile%, Settings, HitsoundText
 IniWrite, %AFKBox%, %INIFile%, Settings, AFKBox
@@ -2429,6 +2435,8 @@ Gui, SettingsGUI:Tab, 1
 y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vGenericSettings c000000", Allgemeine Einstellungen
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vTrayMinimize Checked%TrayMinimize%, Ins Tray minimieren
+Gui, SettingsGUI:Add, Text, x180 y%y%, Name des GTA-Prozesses:
+Gui, SettingsGUI:Add, Edit, x310 y%y% w135 vGTAProcessName, %GTAProcessName%
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp10, ?
 y += 25
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vTruckPics Checked%TruckPics%, Bilder im Trucking-Fenster anzeigen
@@ -3511,7 +3519,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Du kannst hier deinen Nova-Nickname eingeben. In den eigenen Binds wird dann [Name] mit diesem Namen ersetzt."
 , "Mit Administratorrechten starten:`nIst diese Option aktiviert, so wird bei jedem Start nach Administratorrechten gefragt. Dies stellt sicher, dass der sBinder auch tatsächlich auf den SAMP-Prozess zugreifen und im entsprechenden Fenster Eingaben tätigen kann."
 , "Hier findest du die Aufträge für Trucker.`n`nDu kannst sie auch ingame mit /trucking abrufen. Außerdem kannst du die Bilder der Orte in den Einstellungen deaktivieren."
-, "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen."
+, "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen.`n`n`nName des GTA-Prozesses:`nDer Name des GTA San Andreas-Prozesses. Dieser wird benötigt, damit die API richtig funktioniert.`nGib hier keinen Pfad an, nur den Namen der .exe-Datei. Standardmäßig heißt diese gta_sa.exe`n(Erfordert einen Neustart)"
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
 , "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden."
 , "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
