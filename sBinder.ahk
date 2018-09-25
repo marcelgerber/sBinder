@@ -3932,7 +3932,7 @@ if(!WinActive("ahk_group GTASA") OR WinActive("ahk_class AutoHotkeyGUI")){
 	return
 }
 InVehicle := IsPlayerInAnyVehicle()
-OverlayShown := !(IsMenuOpen() OR IsDialogOpen())
+OverlayShown := !(IsMenuOpen() OR IsDialogOpen()) AND active
 loop, %MaxOverlays%
 {
 	if(OvText%A_Index% = ""){
