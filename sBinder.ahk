@@ -2642,7 +2642,7 @@ Gui, CustomBindsGUI:Menu, MenuBar
 ;CarCalcGUI:
 car_name := ["Admiral", "Alpha", "Andromada", "Banshee", "Benson", "BF Injection", "BF-400", "Bike", "Blade", "Blista Compact", "BMX", "Bobcat", "Boxville", "Broadway", "Buccaneer", "Buffalo", "Bullet", "Burrito [Premium]", "Cabbie", "Camper", "Cheetah [Premium]", "Clover", "Club [Premium]", "Comet [Premium]", "DFT-30", "Dinghy", "Dodo", "Elegant", "Elegy", "Esperanto", "Euros", "FCR-900", "Feltzer", "Flash", "Flatbed", "Freeway", "Glendale", "Greenwood", "Hermes", "Hotknife [Premium]", "Huntley", "Hustler", "Infernus", "Jester", "Jetmax", "Journey", "Landstalker", "Linerunner", "Majestic", "Marquis", "Maverick", "Mesa", "Moonbeam", "Mountain Bike", "Mule", "Nevada", "NRG-500", "Oceanic", "PCJ-600", "Perenniel", "Phoenix", "Picador", "Pony", "Premier [Premium]", "Quad", "Regina", "Remington", "Roadtrain", "Sabre", "Sanchez", "Savanna", "Sentinel", "Shamal", "Slamvan", "Stafford", "Stallion", "Stratum", "Stretch", "Sultan", "Sunrise", "Super GT", "Tahoma", "Tanker", "Taxi", "Tornado", "Tractor", "Tropic", "Turismo", "Uranus", "Utility", "Virgo", "Voodoo", "Walton", "Washington", "Wayfarer", "Windsor", "Yankee", "Yosemite", "ZR-350"]
 Gui, CarCalcGUI:Add, Text, x10 y10, Fahrzeug:
-Gui, CarCalcGUI:Add, Text, x130 y10, Carheal:
+Gui, CarCalcGUI:Add, Text, x130 y10, Panzerung:
 Gui, CarCalcGUI:Font, s15 cRed
 Gui, CarCalcGUI:Add, Text, vprice Border x280 y10 w180 Center, $0
 Gui, CarCalcGUI:Font
@@ -2655,7 +2655,7 @@ for i, v in car_name
 }
 Gui, CarCalcGUI:Add, DDL, AltSubmit vcar gCalc x10 y30 w110, % SubStr(ddl, 2)
 ddl := ""
-Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250
+Gui, CarCalcGUI:Add, DDL, AltSubmit vcarheal gCalc x130 y30 w140, Standard: 1.000||Stufe 1: 1.250|Stufe 2: 1.500|Stufe 3: 1.750|Stufe 4: 2.000
 Gui, CarCalcGUI:Add, Checkbox, vTogAll gTogAll x280 y40, Alle auswählen
 Gui, CarCalcGUI:Add, Checkbox, vOnlyAddons gCalc x375 y40, Nur Addonpreise
 Gui, CarCalcGUI:Add, Checkbox, x10 y70 vpeilsender gCalc, Peilsender
@@ -2881,7 +2881,7 @@ car_info := [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 shop_name := ["GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Gewerbliches Autohaus East Los Santos", "Autohaus Los Santos am Hotel", "El Corrona Autohaus (nähe LS Airport)"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
 ;carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
-carhealprices := [0, 10000]
+carhealprices := [0, 10000, 15000, 20000, 25000]
 GuiControl, % "CarCalcGUI:" (Diesel ? "Disable" : "Enable"), LPG
 GuiControl, % "CarCalcGUI:" (LPG ? "Disable" : "Enable"), Diesel
 /*if(value){
