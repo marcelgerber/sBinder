@@ -37,7 +37,6 @@ SetWorkingDir, %A_ScriptDir%
 FileCreateDir, %A_Temp%\sBinder\Trucking
 FileCreateDir, %A_AppData%\sBinder
 FileCreateDir, %A_AppData%\sBinder\Design
-#Include lines.ahk
 gosub Variables
 gosub Arrays
 
@@ -121,20 +120,6 @@ if(UseAPI){
 	}
 }
 */
-;@Ahk2Exe-IgnoreBegin
-if(!A_IsCompiled){
-	FileRead, temp, %A_ScriptFullPath%
-	script_chars := 0
-	loop, Parse, temp, `n, `r
-	{
-		script_lines := A_Index
-		script_chars += StrLen(A_LoopField)
-	}
-	temp := ""
-	FileDelete, lines.ahk
-	FileAppend, % "script_lines := " script_lines "`nscript_chars := " script_chars, lines.ahk
-}
-;@Ahk2Exe-IgnoreEnd
 if(UseAPI){
 	hModule := DllCall("LoadLibrary", Str, A_AppData "\sBinder\Open-SAMP-API.dll")
 	if(hModule == -1 || hModule == 0){
@@ -2426,7 +2411,7 @@ return
 BuildGUIs:
 ;AboutGUI
 Gui, AboutGUI:Add, Picture, x0 y5, %A_AppData%\sBinder\bg.png
-Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: IcedWave`nCopyright © 2012-2015 IcedWave`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion "`n`nAktuelle Länge des Quellcodes: " number_format(script_chars) " Zeichen in " number_format(script_lines) " Zeilen"
+Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: IcedWave`nCopyright © 2012-2015 IcedWave`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion
 Gui, AboutGUI:Menu, MenuBar
 ;SettingsGUI
 Gui, SettingsGUI:Add, Tab2, -Background +Theme -Wrap x5 y5 w525 h340 vSettingsTab, Seite 1|Seite 2|Seite 3|Erweiterte Optionen
