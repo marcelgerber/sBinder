@@ -1331,7 +1331,9 @@ SetWB(wb, html, useheader=1, bgColor="FFFFFF"){
 	}
 	wb.Document.open()
 	if(useheader){
-		global UseDesign
+		global UseDesign, AppliedDPI	
+		zoomlevel := (AppliedDPI / 96) ** 2 * 100
+		wb.ExecWB(OLECMDID_OPTICAL_ZOOM:=63, OLECMDEXECOPT_DODEFAULT:=0, Round(zoomlevel))
 		html := RegExReplace(html, "`a)`n", "<br>")
 		if(UseDesign = 3){
 			html =
@@ -1756,6 +1758,9 @@ return
 Open:
 RegRead, SAMPName, HKCU, Software\SAMP, playername
 RegRead, Fp, HKCU, Software\sBinder, Fp
+RegRead, AppliedDPI, HKCU, Control Panel\Desktop\WindowMetrics, AppliedDPI
+if ErrorLevel
+	AppliedDPI := 96 ; default DPI
 IniRead, samppath, %INIFile%, Settings, SAMPPath, 0
 IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
@@ -2296,6 +2301,8 @@ else{
 	_mainGUI.Navigate(A_Temp "\sBinder\design_t.html")
 	while(_mainGUI.readyState != 4 && A_Index < 40)
 		Sleep, 20
+	zoomlevel := (AppliedDPI / 96) ** 2 * 100
+	_mainGUI.ExecWB(OLECMDID_OPTICAL_ZOOM:=63, OLECMDEXECOPT_DODEFAULT:=0, Round(zoomlevel))
 	if(!InStr(_mainGUI.document.getElementById("FrakGUI").className, "disabled"))
 		_mainGUI.document.getElementById("FrakGUI").className .= " disabled"
 	_mainGUI.document.getElementById("FrakGUI").href := "#"
