@@ -6,7 +6,7 @@ AddChatMessage-Akzentfarbe: {88aa62} olivgrün (wird auch von API selbst verwend
 ListLines Off
 SetBatchLines -1
 if(!A_IsCompiled AND !InStr(A_ScriptName, ".exe"))
-	Menu, Tray, Icon, %A_MyDocuments%\AutoHotkey\favicon.ico
+	Menu, Tray, Icon, %A_ScriptDir%\logo.ico
 else{
 	Menu, Tray, UseErrorLevel
 	Menu, Tray, Icon, %A_ScriptFullPath%, 1
