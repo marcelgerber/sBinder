@@ -254,7 +254,7 @@ IsPlayerInAnyVehicle(){
 	return DllCall(IsPlayerInAnyVehicle_func)
 }
 SendChat(Text, spamcount=3){
-	global UseAPI, SendChat_func
+	global UseAPI, SendChat_func, UseTimerActive
 	static lastsend, count
 	if(spamcount){
 		if(A_TickCount - lastsend < 900){
@@ -268,6 +268,10 @@ SendChat(Text, spamcount=3){
 			count := 0
 	}
 	lastsend := A_TickCount
+	
+	if (UseTimerActive AND (Text = "/use gold" OR Text = "/use donut" OR Text = "/use green" OR Text = "/use lsd"))
+		gosub :b0:%Text%
+	
 	if(UseAPI AND !WinActive("ahk_class AutoHotkeyGUI"))
 		res := DllCall(SendChat_func, AStr, Text)
 	else{
@@ -2164,6 +2168,7 @@ fBinds_max := 13
 jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 1
+UseTimerActive := 1
 Hotstrings := 26
 hotstringsactive := []
 Notes := 8
@@ -4356,6 +4361,44 @@ AddChatMessage("Geldbörse: {88AA62}$" number_format(chat1))
 AddChatMessage("Bankguthaben: {88AA62}$" number_format(chat2))
 AddChatMessage("Gesamt: {88AA62}$" number_format(chat1 + chat2))
 return
+
+#if UseTimerActive AND WinActive("ahk_group GTASA")
+:b0:/use lsd::
+Suspend Permit
+if (!UseTimerActive)
+	return
+SetTimer, LsdEffects, Off
+SetTimer, LsdEffects, -84500
+SetTimer, CanUseLsd, Off
+SetTimer, CanUseLsd, -120500
+return
+:b0:/use green::
+:b0:/use donut::
+:b0:/use gold::
+Suspend Permit
+if (!UseTimerActive)
+	return
+if (InStr(A_ThisHotkey, "gold"))
+	time := 60500
+else
+	time := 45500
+SetTimer, CanUseGreenDonutGold, Off
+SetTimer, CanUseGreenDonutGold, % - time
+return
+LsdEffects:
+if (WinActive("ahk_group GTASA"))
+	AddChatMessage("Achtung! In 5 Sekunden treten die LSD-Nebenwirkungen ein!")
+return
+CanUseLsd:
+if (WinActive("ahk_group GTASA"))
+	AddChatMessage("Du kannst jetzt wieder LSD zu dir nehmen.")
+return
+CanUseGreenDonutGold:
+if (WinActive("ahk_group GTASA"))
+	AddChatMessage("Du kannst jetzt wieder Green/Gold/Donuts zu dir nehmen.")
+return
+
+; Frakbinds
 #If IsFrak(5) AND WinActive("ahk_group GTASA")
 ::/sg::
 Suspend Permit
