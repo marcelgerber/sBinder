@@ -1802,6 +1802,7 @@ if(!IsIP(TSIP))
 	TSIP := "ts.nes-newlife.de"
 IniRead, WaitFor, %INIFile%, Settings, WaitFor, 90
 IniRead, GTAProcessName, %IniFile%, Settings, GTAProcessName, gta_sa.exe
+IniRead, UseTimerActive, %IniFile%, Settings, UseTimerActive, 1
 IniRead, xBind1, %INIFile%, Binds, xBind1, %A_Space%
 IniRead, xBind2, %INIFile%, Binds, xBind2, %A_Space%
 IniRead, wBind1, %INIFile%, Binds, wBind1, %A_Space%
@@ -1899,6 +1900,7 @@ IniWrite, %TrayMinimize%, %INIFile%, Settings, MinimizeToTray
 IniWrite, %TruckPics%, %INIFile%, Settings, TruckPics
 IniWrite, %WaitFor%, %INIFile%, Settings, WaitFor
 IniWrite, %GTAProcessName%, %IniFile%, Settings, GTAProcessName
+IniWrite, %UseTimerActive%, %IniFile%, Settings, UseTimerActive
 IniWrite, %AutoHitsound%, %INIFile%, Settings, AutoHitsound
 IniWrite, %HitsoundText%, %INIFile%, Settings, HitsoundText
 IniWrite, %AFKBox%, %INIFile%, Settings, AFKBox
@@ -2168,7 +2170,6 @@ fBinds_max := 13
 jBinds_max := 9
 MaxOverlays := 3
 OverlayActive := 1
-UseTimerActive := 1
 Hotstrings := 26
 hotstringsactive := []
 Notes := 8
@@ -2451,7 +2452,8 @@ Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp29, ?
 y += 45
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h205 w510 vIngameSettings c000000", Ingame-Einstellungen
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vhmv Checked%hmv%, Doppelhupe = /mv
-Gui, SettingsGUI:Add, Checkbox, x155 y%y% h20 vmeTexte Checked%meTexte%, /me-Texte bei Animationen
+Gui, SettingsGUI:Add, Checkbox, x140 y%y% h20 vmeTexte Checked%meTexte%, /me-Texte bei Animationen
+Gui, SettingsGUI:Add, Checkbox, x300 y%y% h20 vUseTimerActive Checked%UseTimerActive%, Timer für /use [lsd/green/donut/gold]
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp12, ?
 y += 25
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vAutoHitsound Checked%AutoHitsound% gHitsoundChanged, Beim Login automatisch eingeben:
@@ -3518,7 +3520,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier findest du die Aufträge für Trucker.`n`nDu kannst sie auch ingame mit /trucking abrufen. Außerdem kannst du die Bilder der Orte in den Einstellungen deaktivieren."
 , "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen.`n`n`nName des GTA-Prozesses:`nDer Name des GTA San Andreas-Prozesses. Dieser wird benötigt, damit der sBinder richtig funktioniert.`nGib hier keinen Pfad an, nur den Namen der .exe-Datei. Standardmäßig heißt diese gta_sa.exe`n(Erfordert einen Neustart)"
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
-, "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden."
+, "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden.`n`n`nTimer für /use [lsd/green/donut/gold]`nZeigt dir im Spiel an, wann du LSD/Green/Gold/Donuts wieder einnehmen kannst bzw. warnt dich im Fall von LSD zusätzlich, kurz bevor die Nebenwirkungen eintreten."
 , "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
 , "Du kannst ingame /trucking nutzen, um dir die aktuell verfügbaren Aufträge anzeigen zu lassen.`n`n`nNur Aufträge für Level anzeigen:`nDamit kannst du einstellen, bis zu welcher Grenze des Truckerlevels du die Aufträge angezeigt bekommst. Es gibt im Grunde diese Werte:`n-1: Zeigt ALLE Werte an, auch, wenn du das Level für diese Aufträge noch gar nicht erreicht hast.`n0: Zeigt nur die Aufträge deines aktuellen Levels an.`n1-10: Zeigt auch Aufträge von n niedrigeren Leveln an. Wenn du es also auf 2 stellst und du aktuell Truckerlevel 5 bist, zeigt es dir Aufträge von Level 3, 4 und 5 an. Der Wert 1 ist bei dieser Einstellung empfehlenswert (Standardwert)."
 , "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nSAMP-Pfad ändern:`nDu kannst den Pfad zu SAMP angeben, um direkt im sBinder auf den Server zu verbinden (mit dem Button ""SAMP starten"")."
