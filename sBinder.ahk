@@ -253,7 +253,7 @@ IsPlayerInAnyVehicle(){
 	global IsPlayerInAnyVehicle_func
 	return DllCall(IsPlayerInAnyVehicle_func)
 }
-SendChat(Text, spamcount=3){
+SendChat(Text, spamcount=3, GoToTextbinds=1){
 	global UseAPI, SendChat_func, UseTimerActive
 	static lastsend, count
 	if(spamcount){
@@ -269,7 +269,7 @@ SendChat(Text, spamcount=3){
 	}
 	lastsend := A_TickCount
 	
-	if (UseTimerActive AND (Text = "/use gold" OR Text = "/use donut" OR Text = "/use green" OR Text = "/use lsd"))
+	if (GoToTextbinds AND UseTimerActive AND (Text = "/use gold" OR Text = "/use donut" OR Text = "/use green" OR Text = "/use lsd"))
 		gosub :b0:%Text%
 	
 	if(UseAPI AND !WinActive("ahk_class AutoHotkeyGUI"))
@@ -421,10 +421,8 @@ BindReplace(String){
 					gosub, % "::/" textbind2
 					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
 				}
-				else if(IsLabel(":b0:/" textbind2)){
+				else if(IsLabel(":b0:/" textbind2))
 					gosub, % ":b0:/" textbind2
-					StringReplace, BindOutput, BindOutput, t/%textbind2%{enter}
-				}
 			}
 			KeyWait, Enter
 			SendInput, %BindOutput%
@@ -443,10 +441,12 @@ BindReplace(String){
 			}
 			if(IsLabel("::" currentPart) AND !A_IsSuspended)
 				gosub % "::" currentPart
-			else if(IsLabel(":b0:" currentPart) AND !A_IsSuspended)
-				gosub % ":b0:" currentPart
-			else if(!A_IsSuspended AND currentPart != "")
-				SendChat(Trim(currentPart))
+			else {
+				if(IsLabel(":b0:" currentPart) AND !A_IsSuspended)
+					gosub % ":b0:" currentPart
+				if (!A_IsSuspended AND currentPart != "")
+					SendChat(Trim(currentPart),, 0)
+			}
 		}
 	}
 }
