@@ -1023,7 +1023,7 @@ number_format(num){
 }
 OverlayReplace(text, InVehicle){
 	static called, GetPlayerHealth_func, GetPlayerArmor_func, GetPlayerId_func, GetPlayerMoney_func, GetZoneName_func, GetCityName_func, GetVehicleHealth_func, GetFramerate_func, GetVehicleSpeed_func, GetVehicleModelId_func, GetVehicleModelName_func, IsVehicleLocked_func, IsVehicleEngineEnabled_func, IsVehicleLightEnabled_func, old_id
-	global UseAPI, Nickname, hModule
+	global UseAPI, Nickname, hModule, LastUseLsd, NextUseGreenDonutGold
 	if(!UseAPI)
 		return
 	if(!called){
@@ -1105,6 +1105,32 @@ OverlayReplace(text, InVehicle){
 	}
 	if(InStr(text, "[Name]"))
 		StringReplace, text, text, [Name], % Nickname ? Nickname : SAMPName, All
+	if(InStr(text, "[LsdTimer]")){
+		replaceText := "-"
+		if (LastUseLsd > 0){
+			diff := Round((A_TickCount - LastUseLSD) / 1000)
+			if(diff < 90)
+				replaceText := "Nachwirkungen " (90 - diff) "s/Use " (120 - diff) "s"
+			else if(diff < 120)
+				replaceText := "Use möglich in " (120 - diff) "s"
+			else if (diff < 180)
+				replaceText := "(Use möglich)"
+		}
+		StringReplace, text, text, [LsdTimer], %replaceText%, All
+	}
+	if(InStr(text, "[GreenTImer]") OR InStr(text, "[DonutTimer]") OR InStr(text, "[GoldTImer]")){
+		replaceText := "-"
+		if (NextUseGreenDonutGold > 0){
+			diff := Round((NextUseGreenDonutGold - A_TickCount) / 1000)
+			if(diff > 0)
+				replaceText := "Use möglich in " diff "s"
+			else if (diff > -60)
+				replaceText := "(Use möglich)"
+		}
+		StringReplace, text, text, [GreenTimer], %replaceText%, All
+		StringReplace, text, text, [DonutTimer], %replaceText%, All
+		StringReplace, text, text, [GoldTimer], %replaceText%, All
+	}
 	charMap := {"Ä": "Ae", "ä": "ae", "Ö": "oe", "ö": "oe", "Ü": "Ue", "ü": "ue", "ß": "ss"}
 	for char in charMap
 		text := RegExReplace(text, "i)" char, charMap[char])
@@ -3535,7 +3561,7 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den TS-Server connectet werden soll."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit Fraps gestartet werden soll.`nEventuell musst du dazu den Pfad von Fraps angeben."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit ein weiteres Programm gestartet werden soll.`nDu musst den Pfad dieses Programms angeben."
-, "Hier kannst du deine Overlays (maximal " MaxOverlays ") kofigurieren. Du kannst die Schriftfarbe wählen, die Schriftgröße und -art einstellen und natürlich einen individuellen Text wählen, der durch einige Variablen (siehe unten) ergänzt werden kann. Außerdem kannst du festlegen, dass ein Overlay nur in einem Fahrzeug angezeigt werden soll.`n`nHier findest du alle Variablen, die du nutzen kannst:`n[Armor]: Deine aktuelle Rüstung (0 falls nicht vorhanden)`n[CarHeal]: Dein aktuelles Carheal (wie bei /dl)`n[CarLight]: ""an"" oder ""aus"", je nachdem, ob das Licht an ist`n[CarLock]: Zeigt dir ""aufgeschlossen"" oder ""abgeschlossen"" an (bei Fraktionsfahrzeugen immer ""aufgeschlossen"")`n[CarModel]: Die Model-ID des aktuellen Fahrzeugs (nicht die Car-ID!)`n[CarMotor]: ""an"" oder ""aus"", je nachdem, ob der Motor an ist`n[CarName]: Der Name des aktuellen Fahrzeugs`n[CarSpeed]: Anzeige der Geschwindigkeit des Fahrzeugs in km/h (schneller als der Server-Tacho)`n[City]: Die Stadt, in der du dich aktuell aufhältst`n[Date]: Datum im Format dd.mm.yyyy`n[FPS]: Aktuelle FPS-Anzahl`n[HP]: Dein aktuelles Heal`n[Money]: Dein aktuelles Geld (auf der Hand)`n[Name]: Der unter ""Dein Name"" angegebene Name`n[NL]: Nähester Ort auf Nova, zum Beispiel ""Stadthalle SF""`n[NLDistance]: Entfernung zum nächsten Ort auf Nova`n[Time]: Uhrzeit im Format hh:mm:ss`n[Zone]: Die Zone, in der du dich aktuell aufhältst"
+, "Hier kannst du deine Overlays (maximal " MaxOverlays ") kofigurieren. Du kannst die Schriftfarbe wählen, die Schriftgröße und -art einstellen und natürlich einen individuellen Text wählen, der durch einige Variablen (siehe unten) ergänzt werden kann. Außerdem kannst du festlegen, dass ein Overlay nur in einem Fahrzeug angezeigt werden soll.`n`nHier findest du alle Variablen, die du nutzen kannst:`n[Armor]: Deine aktuelle Rüstung (0 falls nicht vorhanden)`n[CarHeal]: Dein aktuelles Carheal (wie bei /dl)`n[CarLight]: ""an"" oder ""aus"", je nachdem, ob das Licht an ist`n[CarLock]: Zeigt dir ""aufgeschlossen"" oder ""abgeschlossen"" an (bei Fraktionsfahrzeugen immer ""aufgeschlossen"")`n[CarModel]: Die Model-ID des aktuellen Fahrzeugs (nicht die Car-ID!)`n[CarMotor]: ""an"" oder ""aus"", je nachdem, ob der Motor an ist`n[CarName]: Der Name des aktuellen Fahrzeugs`n[CarSpeed]: Anzeige der Geschwindigkeit des Fahrzeugs in km/h (schneller als der Server-Tacho)`n[City]: Die Stadt, in der du dich aktuell aufhältst`n[Date]: Datum im Format dd.mm.yyyy`n[FPS]: Aktuelle FPS-Anzahl`n[HP]: Dein aktuelles Heal`n[Money]: Dein aktuelles Geld (auf der Hand)`n[Name]: Der unter ""Dein Name"" angegebene Name`n[NL]: Nähester Ort auf Nova, zum Beispiel ""Stadthalle SF""`n[NLDistance]: Entfernung zum nächsten Ort auf Nova`n[Time]: Uhrzeit im Format hh:mm:ss`n[Zone]: Die Zone, in der du dich aktuell aufhältst`n[LsdTimer]: Zeit, bis nach /use lsd die Nachwirkungen eintreten bzw. bis du das nächste Mal LSD usen kannst`n[GreenTImer] / [DonutTimer] / [GoldTimer]: Zeit, bis du das nächste Mal Green/Donuts/Gold zu dir nehmen kannst"
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
@@ -4369,6 +4395,7 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
+LastUseLsd := A_TickCount
 SetTimer, LsdEffects, Off
 SetTimer, LsdEffects, -84500
 SetTimer, CanUseLsd, Off
@@ -4380,10 +4407,14 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
-if (InStr(A_ThisHotkey, "gold"))
+if (InStr(A_ThisHotkey, "gold")){
 	time := 60500
-else
+	NextUseGreenDonutGold := A_TickCount + 60000
+}
+else {
 	time := 45500
+	NextUseGreenDonutGold := A_TickCount + 45000
+}
 SetTimer, CanUseGreenDonutGold, Off
 SetTimer, CanUseGreenDonutGold, % - time
 return
