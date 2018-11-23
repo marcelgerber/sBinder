@@ -2880,7 +2880,7 @@ car_info := [0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0
 shop_name := ["GS Autohaus an der Ostküste", "Truckstop Autohaus zwischen LS und SF", "Oldtimer Autohaus in BlueBerry", "NewComer Autohaus in Las Venturas", "Otto's Autohaus in San Fierro", "Strandautohaus Nähe Los Santos Pier", "Bikeladen in San Fierro", "Wohnmobilekaufhaus nahe Los Santos", "Bootsanlegesteg in San Fierro", "Airshop San Fierro Airport", "Premium Autohaus San Fierro Schiff", "Caligula's Autohaus in LV", "Gewerbliches Autohaus East Los Santos", "Autohaus Los Santos am Hotel", "El Corrona Autohaus (nähe LS Airport)", "Prestige Autohaus in San Fierro (nahe Nova Tel AG)"]
 ;carhealprices := [0, 258500, 487000, 687000, 887000, 1287000, 1687000, 1987000, 2487000]
 ;carhealprices := [0, 258500, 745500, 1432500, 2319500, 3606500, 5293500, 7280500, 9767500]
-carhealprices := [0, 10000, 15000, 20000, 25000]
+carhealprices := [0, 10000, 25000, 45000, 70000] ; cumulative! Second is first + second
 GuiControl, % "CarCalcGUI:" (Diesel ? "Disable" : "Enable"), LPG
 GuiControl, % "CarCalcGUI:" (LPG ? "Disable" : "Enable"), Diesel
 /*if(value){
