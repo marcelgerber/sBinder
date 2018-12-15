@@ -2212,6 +2212,8 @@ IniRead, LastUsedBuild, %INIFile%, Settings, LastUsedBuild, 0
 AESPassword := "OmX5VSeNwiyUL6gB6XW1V71vYznXvUl5AEX81oAs9fjGGT0l9Shb6j5dizJIM8Iz"
  ; Use in Run commands to run another program if and only if the sBinder itself has admin privileges (don't show a UAC dialog!)
 RunPrivileges := A_IsAdmin ? "*RunAs " : ""
+
+ShowDialogWorking := 0
 return
 GetArgs:
 Args := Object(), FullArgs := FullArgsQuoted := ""
@@ -4168,7 +4170,7 @@ else if(InStr(notenum, "all")){
 	notenum := ""
 	loop, %Notes%
 	{
-		if(!UseAPI){
+		if(!UseAPI OR !ShowDialogWorking){
 			notenum := "Notiz " A_Index ": "
 			if(Note%A_Index%)
 				notenum .= SubStr(Note%A_Index%, 1, 90) (StrLen(Note%A_Index%) > 90 ? " ..." : "")
@@ -4184,7 +4186,7 @@ else if(InStr(notenum, "all")){
 				notenum .= "{AA0000}Leer"
 		}
 	}
-	if(UseAPI)
+	if(UseAPI AND ShowDialogWorking)
 		ShowDialog(0, "sBinder: {00AA00}Notizen", SubStr(notenum, 2))
 	notenum := ""
 }
@@ -4719,7 +4721,7 @@ if(A_ThisLabel = "::/textbinds")
 	AddChatMessage("Die speziellen Textbinds siehst du mit {88AA62}/kcmd{FFFFFF}!")
 else{
 	RegExMatch(A_ThisLabel, "::/textbinds (\d)", chat)
-	if(UseAPI){
+	if(UseAPI AND ShowDialogWorking){
 		helptexts := ["Zuerst werdet ihr nach der Nummer (1-8) der zu bearbeitenden Notiz gefragt.`nNach der Eingabe dieser wird euch der aktuelle Inhalt der Notiz in der Chatleiste angezeigt, ihr könnt ihn durch ganz normales Schreiben ändern."
 	, "Mit diesem Befehl könnt ihr eine einfach Rechnung rechnen lassen. Unterstützt werden die Operatoren {999999}+ - * / ^{FFFFFF}.`nAuch Punkt-vor-Strich und Klammern werden beachtet. Allerdings ist das System noch in der Beta-Phase, es kann also zu Fehlern beim Ergebnis kommen."
 	, "Dieser Befehl ermöglicht es dir, dein n-tes Fahrzeug auf- bzw. abzuschließen. So schließt /car lock 2 z.B. das Fahrzeug auf oder ab, das als zweites im /car lock-Dialog aufgeführt wird."
@@ -5877,10 +5879,10 @@ return
 #if (IsFrak(2) OR IsFrak(3) OR IsFrak(11)) AND WinActive("ahk_group GTASA")
 ::/wpbinds::
 Suspend Permit
-;if(!UseAPI)
+if(!UseAPI OR !ShowDialogWorking)
 	List(["/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/bsg", "/beleidigung", "/beamtenverweigerung (/bv)", "/bdj (/bjustiz)", "/bvl (/blösch)", "/bpassv", "/craub", "/diebstahl", "/c4dieb", "/drohung", "/drogen (/drogen1)", "/drogen2", "/drogen3", "/lsdwp", "/drogentransport (/dtrans)", "/seinbruch", "/peinbruch", "/erschleichen", "/flucht", "/geiselnahme", "/ggs", "/bhack", "/ihandel", "/itätigkeit", "/waffen", "/waffenhandel", "/waffenhandel2", "/kv", "/mord", "/ntl", "/anschlag", "/raubwp", "/gefährdung (/staatsgefährdung)", "/schießen", "/lstvo", "/sstvo", "/smord", "/lsflug", "/ticketv", "/vmord", "/vertuschung", "/materialien", "/iwerben", "/dicewp"],, 1)
-;else
-	;ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines Sperrgebietes (40 WPs)`n{0022FF}/bsg{FFFFFF}: Beschuss im Sperrgebiet (61 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von staatseigenen Waffen (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen (/drogen1){FFFFFF}: Drogenbesitz (bis 250g) (10 WPs)`n{0022FF}/drogen2{FFFFFF}: Drogenbesitz (251g bis 500g) (15 WPs)`n{0022FF}/drogen3{FFFFFF}: Drogenbesitz (ab 501g) (20 WPs)`n{0022FF}/lsdwp{FFFFFF}: Besitz von LSD (10 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Arbeitslosengeld (15 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen (15 WPs)`n{0022FF}/itätigkeit{FFFFFF}: Illegale Ausübung einer genehmigungspflichtigen Tätigkeit (20 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/waffenhandel2{FFFFFF}: Illegaler Waffenhandel ohne Lizenz (20 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/anschlag{FFFFFF}: Anschlag auf ein Staatsoberhaupt (61 WPs)`n{0022FF}/raubwp{FFFFFF}: Gewalttätiger Raub (20 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/lsflug{FFFFFF}: Landen/Starten auf öffentlichen Straßen (10 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Materialien oder Mord (15 WPs)`n{0022FF}/materialien{FFFFFF}: Materialien ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten/Produkte (20 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
+else
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines Sperrgebietes (40 WPs)`n{0022FF}/bsg{FFFFFF}: Beschuss im Sperrgebiet (61 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bdj (/bjustiz){FFFFFF}: Behinderung der Justiz (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von staatseigenen Waffen (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen (/drogen1){FFFFFF}: Drogenbesitz (bis 250g) (10 WPs)`n{0022FF}/drogen2{FFFFFF}: Drogenbesitz (251g bis 500g) (15 WPs)`n{0022FF}/drogen3{FFFFFF}: Drogenbesitz (ab 501g) (20 WPs)`n{0022FF}/lsdwp{FFFFFF}: Besitz von LSD (10 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in staatliche Institutionen (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Arbeitslosengeld (15 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht/Fluchtversuch (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierung gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen (15 WPs)`n{0022FF}/itätigkeit{FFFFFF}: Illegale Ausübung einer genehmigungspflichtigen Tätigkeit (20 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/waffenhandel{FFFFFF}: Illegaler Waffenhandel (15 WPs)`n{0022FF}/waffenhandel2{FFFFFF}: Illegaler Waffenhandel ohne Lizenz (20 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/anschlag{FFFFFF}: Anschlag auf ein Staatsoberhaupt (61 WPs)`n{0022FF}/raubwp{FFFFFF}: Gewalttätiger Raub (20 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/lsflug{FFFFFF}: Landen/Starten auf öffentlichen Straßen (10 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung von Drogen, Materialien oder Mord (15 WPs)`n{0022FF}/materialien{FFFFFF}: Materialien ab 100g (Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten/Produkte (20 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)")
 return
 ::/braub::
 Suspend Permit
