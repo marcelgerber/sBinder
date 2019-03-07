@@ -5843,10 +5843,6 @@ return
 Suspend Permit
 SendChat("/me tanzt.")
 return
-:?b0:/fucku::
-Suspend Permit
-SendChat("/me ist wütend.")
-return
 :?b0:/medic::
 Suspend Permit
 SendChat("/me tut alles, um die Person wiederzubeleben.")
