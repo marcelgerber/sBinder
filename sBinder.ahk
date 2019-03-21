@@ -4413,9 +4413,9 @@ if (!UseTimerActive)
 	return
 waitForText := ""
 if (InStr(A_ThisHotkey, "gold"))
-	waitForText := "Acapulco Gold benutzt"
+	waitForText := "Acapulco Gold benutzt!"
 else if (InStr(A_ThisHotkey, "green"))
-	waitForText := "Hawaiian Green benutzt"
+	waitForText := "Hawaiian Green benutzt!"
 else if (InStr(A_ThisHotkey, "donut"))
 	waitForText := "Du hast" ; Don't actually know the text; hope this works?
 if (!WaitForChatLine(0, waitForText))
