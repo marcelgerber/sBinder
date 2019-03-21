@@ -4397,6 +4397,8 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
+if (!WaitForChatLine(0, "Du hast LSD Pillen eingenommen"))
+	return
 LastUseLsd := A_TickCount
 SetTimer, LsdEffects, Off
 SetTimer, LsdEffects, -84500
@@ -4409,6 +4411,17 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
+waitForText := ""
+if (InStr(A_ThisHotkey, "gold"))
+	waitForText := "Acapulco Gold benutzt"
+else if (InStr(A_ThisHotkey, "green"))
+	waitForText := "Hawaiian Green benutzt"
+else if (InStr(A_ThisHotkey, "donut"))
+	waitForText := "Du hast" ; Don't actually know the text; hope this works?
+if (!WaitForChatLine(0, waitForText))
+	return
+	
+
 if (InStr(A_ThisHotkey, "gold")){
 	time := 60500
 	NextUseGreenDonutGold := A_TickCount + 60000
