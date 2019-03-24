@@ -4397,13 +4397,8 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
-if (!WaitForChatLine(0, "Du hast LSD Pillen eingenommen"))
-	return
-LastUseLsd := A_TickCount
-SetTimer, LsdEffects, Off
-SetTimer, LsdEffects, -84500
-SetTimer, CanUseLsd, Off
-SetTimer, CanUseLsd, -120500
+DrugContext := "lsd"
+SetTimer, DrugHandlerAsync, -1
 return
 :b0:/use green::
 :b0:/use donut::
@@ -4411,27 +4406,46 @@ return
 Suspend Permit
 if (!UseTimerActive)
 	return
-waitForText := ""
 if (InStr(A_ThisHotkey, "gold"))
-	waitForText := "Acapulco Gold benutzt!"
+	DrugContext := "gold"
 else if (InStr(A_ThisHotkey, "green"))
-	waitForText := "Hawaiian Green benutzt!"
+	DrugContext := "green"
 else if (InStr(A_ThisHotkey, "donut"))
+	DrugContext := "donut"
+SetTimer, DrugHandlerAsync, -1
+return
+DrugHandlerAsync:
+SetTimer, DrugHandlerAsync, Off
+waitForText := ""
+if (DrugContext == "lsd")
+	waitForText := "Du hast LSD Pillen eingenommen"
+else if (IDrugContext == "gold")
+	waitForText := "Acapulco Gold benutzt!"
+else if (DrugContext == "green")
+	waitForText := "Hawaiian Green benutzt!"
+else if DrugContext == "donut")
 	waitForText := "Du hast" ; Don't actually know the text; hope this works?
 if (!WaitForChatLine(0, waitForText))
 	return
 	
-
-if (InStr(A_ThisHotkey, "gold")){
-	time := 60500
-	NextUseGreenDonutGold := A_TickCount + 60000
+if (DrugContext == "lsd") {	
+	LastUseLsd := A_TickCount
+	SetTimer, LsdEffects, Off
+	SetTimer, LsdEffects, -84500
+	SetTimer, CanUseLsd, Off
+	SetTimer, CanUseLsd, -120500
+} else {
+	if (DrugContext == "gold"){
+		time := 60500
+		NextUseGreenDonutGold := A_TickCount + 60000
+	}
+	else {
+		time := 45500
+		NextUseGreenDonutGold := A_TickCount + 45000
+	}
+	SetTimer, CanUseGreenDonutGold, Off
+	SetTimer, CanUseGreenDonutGold, % - time
 }
-else {
-	time := 45500
-	NextUseGreenDonutGold := A_TickCount + 45000
-}
-SetTimer, CanUseGreenDonutGold, Off
-SetTimer, CanUseGreenDonutGold, % - time
 return
 LsdEffects:
 if (WinActive("ahk_group GTASA"))
