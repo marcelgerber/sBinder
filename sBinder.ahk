@@ -507,10 +507,6 @@ clearping(host, timeout=500){
 	if(ping = -7)
 		return "Der Host ist nicht erreichbar"
 }
-CloseProcess(pid){
-	Process, Close, %pid%
-	return ErrorLevel
-}
 date(time, null=0, seconds=1){
 	if(!time){
 		if(null = 1)
