@@ -4428,78 +4428,6 @@ return
 
 ; Frakbinds
 #If IsFrak(5) AND WinActive("ahk_group GTASA")
-::/sg::
-Suspend Permit
-List(["/sg add", "/sg delete", "/sg list", "/sg bezahlt"], "/sg-Befehle: ", 1)
-return
-::/sg add::
-Suspend Permit
-while((prob2 := StrLen(id1 := PlayerInput("Gib den Namen des Spielers ein: "))) AND (!between(prob2, 3, 20) OR (prob1 := RegExMatch(id1, "i)[^\w\d\._\[\]\(\)\$=]", chat))))
-	AddChatMessage("Gib den Namen nochmals ein! Erkanntes Problem: " (prob2 < 3 ? "Zu kurz (min. 3 Zeichen)" : prob2 > 20 ? "Zu lang (max. 20 Zeichen)" : prob1 ? "Ungültiges Zeichen: ""{88AA62}" chat "{FFFFFF}""" : "Unbekannt"))
-if(prob2 AND id2 := toMoney(PlayerInput("Gib das Schutzgeld ein: "))){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=add&n=" URLEncode(id1) "&m=" URLEncode(id2) "&u=" URLEncode(Nickname)) > 0)
-		AddChatMessage("Der Spieler wurde erfolgreich hinzugefügt")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten!")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/sg delete::
-Suspend Permit
-if(id1 := PlayerInput("Gib den Namen des Spielers ein: ")){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=delete&n=" URLEncode(id1) "&u=" URLEncode(Nickname)) > 0)
-		AddChatMessage("Der Spieler wurde erfolgreich gelöscht")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten! Evtl. wurde der Spieler bereits gelöscht")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/sg bezahlt::
-Suspend Permit
-if(id1 := PlayerInput("Gib den Namen des Spielers ein: ")){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=paid&n=" URLEncode(id1) "&u=" URLEncode(Nickname)) > 0)
-		AddChatMessage("Der Spieler wurde erfolgreich als bezahlt eingetragen")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten!")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/sg reset::
-Suspend Permit
-if(id1 := PlayerInput("Gib den Namen des Spielers ein: ")){
-	if(HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=reset&n=" URLEncode(id1) "&u=" URLEncode(Nickname)) > 0)
-		AddChatMessage("Der Spieler wurde erfolgreich zurückgesetzt")
-	else
-		AddChatMessage("Ein Fehler ist aufgetreten!")
-}
-else
-	AddChatMessage("Du hast nichts eingegeben")
-return
-::/sg list::
-Suspend Permit
-data := HTTPData("http://saplayer.lima-city.de/sBinder/lcn/sg.php?a=list2.1&u=" URLEncode(Nickname),,, 1)
-arr := Object()
-i := 0
-loop, Parse, data, `n, `r
-{
-	if(RegExMatch(A_LoopField, "^(.+)\|(.+)\|(\d+)\|(\d)\|(.+)\|(.*)$", regex)){
-		AddChatMessage(regex1 "{FFFFFF}: seit " regex2 " -> $" number_format(regex3) (regex5 ? " (zuletzt bezahlt am " regex5 " bei " (regex6 ? regex6 : "?") ")" : ""), (regex4 ? 0x00AA00 : 0xFF1100))
-		i++
-		if(!regex4)
-			arr.Insert(regex1)
-	}
-}
-if(!i)
-	AddChatMessage("Die Liste ist leer")
-else{
-	for i, k in arr
-		SendChat("/id " k)
-}
-data := arr := ""
-return
 ::/slsd::
 Suspend Permit
 if((id1 := PlayerInput("Gib den Namen oder die ID des Spielers ein: ")) != ""){
@@ -4703,7 +4631,7 @@ if(IsFrak(2))
 else if(IsFrak(3))
 	FrakCmd := ["/vs"]
 else if(IsFrak(5))
-	FrakCmd := ["/sg", "/slsd", "/slsdme", "/ssp"]
+	FrakCmd := ["/slsd", "/slsdme", "/ssp"]
 else if(IsFrak(8))
 	FrakCmd := ["/mixWord"]
 else if(IsFrak(11))
