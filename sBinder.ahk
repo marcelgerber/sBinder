@@ -718,42 +718,6 @@ GetPlayerNameById(id){
 		chat1 := id
 	return chat1
 }
-HashFromAddr(pData, len, algid, key=0){ ;http://www.autohotkey.com/board/topic/89237-bentschis-funktion-hash-von-strings-erweitert-um-sha2-klassen/ //Bentschi, erweitert von jNizM
-	hProv := size := hHash := hash := ""
-	if (DllCall("advapi32\CryptAcquireContext","Ptr*",hProv,"Uint",0,"Uint",0,"Uint",24,"UInt",0xF0000000)) {
-		if (DllCall("advapi32\CryptCreateHash","Ptr",hProv,"Uint",algid,"Uint",0,"Uint",0,"Ptr*",hHash )) {
-			if (DllCall("advapi32\CryptHashData", "Ptr", hHash, "Ptr", pData, "Uint", len, "Uint", 0)) {
-				if (DllCall("advapi32\CryptGetHashParam", "Ptr", hHash, "Uint", 2, "Uint", 0, "UintP", size, "Uint", 0)) {
-					VarSetCapacity(bhash, size, 0)
-					DllCall("advapi32\CryptGetHashParam", "Ptr", hHash, "Uint", 2, "Uint", &bhash, "UintP", size, "Uint", 0)
-				}
-			}
-			DllCall("advapi32\CryptDestroyHash", "Ptr", hHash)
-		}
-		DllCall("advapi32\CryptReleaseContext", "Ptr", hProv, "Uint", 0)
-	}
-	int := A_FormatInteger
-	SetFormat, Integer, h
-	Loop, % size
-	{
-		v := substr(NumGet(bhash, A_Index-1, "uchar") "", 3)
-		while (strlen(v)<2)
-		v := "0" v
-		hash .= v
-	}
-	SetFormat, Integer, % int
-	return hash
-}
-HashFromString(string, algid, key=0){ ;http://www.autohotkey.com/board/topic/89237-bentschis-funktion-hash-von-strings-erweitert-um-sha2-klassen/ //Bentschi, erweitert von jNizM
-	len := strlen(string)
-	if (A_IsUnicode) {
-		VarSetCapacity(data, len)
-		StrPut(string, &data, len, "cp0")
-		return HashFromAddr(&data, len, algid, key)
-	}
-	data := string
-	return HashFromAddr(&data, len, algid, key)
-}
 HTTPData(url, default="", encoding="cp1250", brton=0){
 	global DownloadMode
 	static useragent := "AutoHotkey/" A_AhkVersion
@@ -964,9 +928,6 @@ mixWord(input, level=3){
 		}
 	} until output != input OR A_Index > 5
 	return output
-}
-MD5(string){ ;http://www.autohotkey.com/de/forum/viewtopic.php?t=8295 //Bentschi
-  return HashFromString(string, 0x8003)
 }
 NewHotkey(Hotkey, Label){
 	global OldHotkeys, OldHotkeyLabels
@@ -1315,11 +1276,6 @@ SB_SetTextEx(text){
 	SB_SetText(text)
 	Gui, +LastFound
 	SendMessage, 0x410, 0, % """" text """", msctls_statusbar321
-}
-SSMD5(data){
-  l := MD5(data "rgvzn")
-  r := MD5("cqkl" data)
-  return MD5("klm" data l r "jnkl")
 }
 SendHKey(Hkey=""){
 	SendInput, % RegExReplace(RegExReplace((HKey ? HKey : A_ThisHotkey), "i)[^\^\+!#]{2,}", "{$L0}"), "\w", "$L0")
@@ -1821,7 +1777,6 @@ IniRead, TruckPics, %INIFile%, Settings, TruckPics, 1
 IniRead, Job, %INIFile%, Settings, Job, 1
 IniRead, TruckingSort, %INIFile%, Settings, TruckSort, 1
 IniRead, TruckingSortOrder, %INIFile%, Settings, TruckSortOrder, 1
-IniRead, TruckEPUpload, %INIFile%, Settings, TruckEPUpload, 0
 IniRead, AutoHitsound, %INIFile%, Settings, AutoHitsound, 0
 IniRead, HitsoundText, %INIFile%, Settings, HitsoundText, %A_Space%
 IniRead, chatlogpath, %INIFile%, Settings, ChatlogPath, %A_MyDocuments%\GTA San Andreas User Files\SAMP\chatlog.txt
@@ -1942,7 +1897,6 @@ IniWrite, %AFKBox%, %INIFile%, Settings, AFKBox
 IniWrite, %UseAPI%, %INIFile%, Settings, UseAPI
 IniWrite, %TruckingSort%, %INIFile%, Settings, TruckSort
 IniWrite, %TruckingSortOrder%, %INIFile%, Settings, TruckSortOrder
-IniWrite, %TruckEPUpload%, %INIFile%, Settings, TruckEPUpload
 IniWrite, %Tel%, %INIFile%, Telefon, Active
 IniWrite, %pText%, %INIFile%, Telefon, p
 IniWrite, %hText%, %INIFile%, Telefon, h
@@ -2532,9 +2486,6 @@ Gui, SettingsGUI:Add, Text, x15 y%y% h20, Aufträge sortieren nach
 Gui, SettingsGUI:Add, DDL, x130 y%y% w180 Choose%TruckingSort% vTruckingSort gTruckingSortChange AltSubmit, Trucklevel||Erfahrung|Einkaufspreis|Verkaufspreis|Gewinn|Gewicht|Entfernung zum Kaufort (Luftlinie)
 Gui, SettingsGUI:Add, DDL, x320 y%y% w80 Choose%TruckingSortOrder% vTruckingSortOrder AltSubmit, aufsteigend||absteigend
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp28, ?
-y += 25
-Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vTruckEPUpload Checked%TruckEPUpload%, Erfahrungspunkte automatisch in die Top 50 eintragen
-Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp31, ?
 ;Help!
 y += 45
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vRadioSlotSettings c000000", /radio-Slots
@@ -3546,8 +3497,8 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
-, "Mit dieser Option werden deine aktuellen Erfahrungspunkte automatisch online zwischengespeichert, damit sie dann in das ""Trucker Ranking Top 50"" (im Forum unter Community -> Unterhaltung -> Mehr oder weniger Sinnvolles) eingetragen werden können. In diesem Thread kannst du die Anzahl deiner Erfahrungspunkte mit anderen Truckern vergleichen."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", "/trucking: Upload in die Top 50"] ;32
+, ""]
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", ""] ;32
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
@@ -4839,7 +4790,6 @@ return
 ::/trucking input::
 Suspend Permit
 GuiControlGet, TruckLevelLimit, SettingsGUI:
-TruckEP := ""
 if(TruckLevelLimit != -1 AND A_ThisLabel != "::/trucking input")
 	SendChat("/truckinfo")
 else if(A_ThisLabel = "::/trucking input")
@@ -4849,14 +4799,11 @@ gosub TruckReload
 if(TruckDDOS)
 	return
 Gui, TruckerGUI:Default
-if(TruckLevelLimit != -1 OR TruckEPUpload){
+if(TruckLevelLimit != -1){
 	Sleep, 15
 	chat := ChatLine(0, "Trucklevel")
 	chat2 := ""
 	RegExMatch(chat, "^\s*Trucklevel: (\d+?) \(Erfahrungspunkte: (\d+)( / \d+ bis Level \d+)?\)", chat)
-	if(chat2 != ""){
-		TruckEP := chat2
-	}
 	if(LV_GetCount() AND (A_ThisLabel = "::/trucking input" OR !chat1) AND !(chat1 := Trim(PlayerInput("Gib " (A_ThisLabel = "::/trucking input" ? "das" : "dein aktuelles") " Trucklevel ein: ")))){
 		TruckLevelLimit := -1
 		chat1 := 100
@@ -4925,16 +4872,6 @@ else
 	AddChatMessage("Fehler beim Herunterladen der Trucker-Missionen!")
 LV_Truck := Truck_LV := ""
 Gui, 1:Default
-GuiControlGet, TruckLevelLimit, SettingsGUI:
-if(TruckEPUpload AND TruckEP != ""){
-	StringReplace, TruckEP, TruckEP, .,, All
-	if(temp := (SAMPName ? SAMPName : Nickname)){
-		if(data := HTTPData("http://saplayer.lima-city.de/sBinder_get.php?nl&a=trucking-ep&name=" URLEncode(temp) "&ep=" TruckEP "&check=" SSMD5(TruckEP*2 temp TruckEP))){
-			RegExMatch(data, "^(\d+)\|(\d+)$", data)
-			AddChatMessage("Du bist derzeit Platz " data1 " von " data2 " der Trucker Top 50.")
-		}
-	}
-}
 return
 ::/music::
 Suspend Permit
