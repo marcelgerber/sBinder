@@ -1752,9 +1752,19 @@ if(InStr(FullArgs, "--just-updated")){
 	Gui, TempGUI2:Add, Button, gTempGUI2GuiClose y50 x220 w80, Schließen
 	Gui, TempGUI2:Show, % (WinActive("ahk_group GTASA") ? "NA" : ""), Update abgeschlossen
 }
+
+; Enable FrakGui from the start since frak passwords are no longer required
+gosub FrakGuiBuild
+if(UseHTMLGUI){
+	_mainGUI.Document.getElementById("FrakGUI").className := "button"
+	_mainGUI.Document.getElementById("FrakGUI").href := "sBinder://g/FrakGUI"
+}
+else
+	GuiControl, 1:Enable, FrakGUI
+gosub FrakChangeGuiBuild
+
 gosub HotkeysDefine
 gosub Downloads
-gosub HotkeysDefine ; Call again for frak binds
 if(OverlayActive AND UseAPI)
 	SetTimerNow("Overlay", 500)
 Sleep, 20
@@ -2041,14 +2051,6 @@ if(pingsuccessful || FileExist(datacachefile)){
 	}
 	vVersion := RegExFileRead(data, "V")
 	vSize := RegExFileRead(data, "S", 100) * 1000
-	gosub FrakGuiBuild
-	if(UseHTMLGUI){
-		_mainGUI.Document.getElementById("FrakGUI").className := "button"
-		_mainGUI.Document.getElementById("FrakGUI").href := "sBinder://g/FrakGUI"
-	}
-	else
-		GuiControl, 1:Enable, FrakGUI
-	gosub FrakChangeGuiBuild
 	Info_ := RegExFileRead(data, "I2", "Die Informationen konnten nicht abgerufen werden :(`n`nFehler: " data)
 	StringReplace, Info_, Info_, ``n, `n, All
 	StringReplace, Info_, Info_, ``t, `t, All
@@ -3028,14 +3030,10 @@ FrakGUIBuild:
 Gui, FrakGui:Destroy
 Gui, FrakGUI:Add, Text, x10 y5 h20, Aktuelle Fraktion:
 Gui, FrakGUI:Font, underline
-if(vBuild){
-	if(IsFrak(Frak) AND Frak > 1)
-		Gui, FrakGUI:Add, Text, x+5 y5 h20 c009900, % Fraknames[Frak]
-	else
-		Gui, FrakGUI:Add, Text, x+5 y5 h20 cAA0000, % Fraknames[1]
-}
+if(IsFrak(Frak) AND Frak > 1)
+	Gui, FrakGUI:Add, Text, x+5 y5 h20 c009900, % Fraknames[Frak]
 else
-	Gui, FrakGUI:Add, Text, x+5 y5 h20 cAA0000, Problem mit der Internetverbindung
+	Gui, FrakGUI:Add, Text, x+5 y5 h20 cAA0000, % Fraknames[1]
 Gui, FrakGUI:Font
 Gui, FrakGUI:Add, Button, y5 h20 w120 gFrakChangeGUI, Fraktion ändern
 if(IsFrak(2))
