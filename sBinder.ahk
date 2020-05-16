@@ -2042,10 +2042,10 @@ return
 Arrays:
 loop, %MaxOverlay%
 	Ov[A_Index] := -1
-Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Triaden", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Purple Ice Ballas", "Los Vagos", "FBI", "Scarfo Family"]
+Fraknames := ["Keine Fraktion", "Los Santos Polizei", "San Andreas Rettungsdienst", "Triaden", "La Cosa Nostra", "Yakuza", "Grove Street", "San Andreas Media AG", "Ballas Family", "Los Vagos", "FBI", "Scarfo Family"]
 Fraks := Fraknames._maxIndex() - 1
 Jobnames := ["Kein Beruf", "Anwalt", "Busfahrer", "Detektiv", "Dieb", "Erzarbeiter & Erzlieferant", "Farmer & Getreidelieferant", "Lieferant", "Mechaniker", "Reinigungsdienst", "Tankstellenlieferant", "Wartungsservice", "Taxifahrer", "Hochseefischer", "Gärtner", "Holzfäller", "Jäger", "Müllmann", "Pizzabote", "Drogendealer & Drogenschieber", "Waffenhändler", "Fastfood AG"]
-FrakRegEx := ["Police|Polizei|\bPD\b|Bullen|Cops", "F\.B\.I|FBI|Federal|Bureau|Investigation|Geheimdienst", "Army|Bundeswehr|Corps", "SARD|Krankenhaus|Arzt|Ärzte|Rettung|Medic", "Ndrangheta|Cosa|Nostra|LCN", "Yakuza", "Regierung|Gov|White House|Weißes Haus",, "SAM|\bAG\b|Media|\bTV\b|Reporter|News",, "Scarfo|Auto|Rennen|Race",, "Ballas", "Grove|\bGS\b",,,, "Triade", "Mara|Salvatrucha"]
+FrakRegEx := ["Police|Polizei|\bPD\b|Bullen|Cops", "F\.B\.I|FBI|Federal|Bureau|Investigation|Geheimdienst", "Army|Bundeswehr|Corps", "SARD|Krankenhaus|Arzt|Ärzte|Rettung|Medic", "Ndrangheta|Cosa|Nostra|LCN", "Yakuza", "Regierung|Gov|White House|Weißes Haus",, "SAM|\bAG\b|Media|\bTV\b|Reporter|News",, "Scarfo|Auto|Rennen|Race",, "Ballas", "Grove|\bGS\b",,, "Shanghai|Syndikat|\bSS\b", "Jerkov|\bJF\b", "Los|Vagos|\bLV\b"]
 FrakNums := [0, 1, 4, 18, 5, 6, 14, 9, 13, 19, 2, 11]
 Designs := [{name: "Standard", file: "", url: "", version: ""}, {name: "Epic White", file: "ewhite.html", url: "http://saplayer.lima-city.de/sBinder/design/ewhite/1_3.html", version: "1.3"}, {name: "Graphite", file: "graphite.html", url: "http://saplayer.lima-city.de/sBinder/design/graphite/1_2.html", version: "1.2"}, {name: "Custom", file: "custom.html", url: "", version: ""}]
 
