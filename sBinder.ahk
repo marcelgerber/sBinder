@@ -828,7 +828,7 @@ IsFrak(fraknum, tog=0){
 	global
 	if(!frakbinds AND tog)
 		return 0
-	else if(fraknum = 1 OR (Frak = fraknum AND Fp = Fp%fraknum%))
+	else if(Frak = fraknum)
 		return 1
 	return 0
 }
@@ -1787,7 +1787,6 @@ ExitApp
 return
 Open:
 RegRead, SAMPName, HKCU, Software\SAMP, playername
-RegRead, Fp, HKCU, Software\sBinder, Fp
 RegRead, AppliedDPI, HKCU, Control Panel\Desktop\WindowMetrics, AppliedDPI
 if ErrorLevel
 	AppliedDPI := 96 ; default DPI
@@ -2042,11 +2041,6 @@ if(pingsuccessful || FileExist(datacachefile)){
 	}
 	vVersion := RegExFileRead(data, "V")
 	vSize := RegExFileRead(data, "S", 100) * 1000
-	loop, %Fraks%
-	{
-		num := A_Index + 1
-		fp%num% := RegExFileRead(data, num)
-	}
 	gosub FrakGuiBuild
 	if(UseHTMLGUI){
 		_mainGUI.Document.getElementById("FrakGUI").className := "button"
@@ -3011,11 +3005,6 @@ LV_Truck := ""
 Clipboard := str
 ToolTip("Die Daten der ausgewählten Missionen wurden erfolgreich in die Zwischenablage kopiert.", 4000)
 return
-ShowPass:
-GuiControlGet, ShowPass, FrakChangeGUI:
-GuiControl, % "FrakChangeGUI:" (ShowPass ? "-" : "+") "Password•", NewFp
-GuiControl, FrakChangeGUI:Focus, NewFp
-return
 FrakChangeGuiBuild:
 Gui, FrakChangeGUI:Destroy
 RealFrak := 1
@@ -3029,18 +3018,11 @@ loop, %Fraks%
 ddl := ""
 for i, k in Fraknames
 	ddl .= "|" k
-Gui, FrakChangeGUI:Add, DDL, Choose%RealFrak% vNewFrak gFrakChangeRadio AltSubmit, % SubStr(ddl, 2)
+Gui, FrakChangeGUI:Add, DDL, Choose%RealFrak% vNewFrak AltSubmit, % SubStr(ddl, 2)
 ddl := ""
-Gui, FrakChangeGUI:Add, Text,, Fraktionspasswort:
-Gui, FrakChangeGUI:Add, Edit, vNewFp Password• Lowercase
-Gui, FrakChangeGUI:Add, Checkbox, gShowPass x+10 vShowPass, Passwort anzeigen
-Gui, FrakChangeGUI:Add, Button, y80 x10 gFrakChangeGUISave Default, Speichern
-Gui, FrakChangeGUI:Add, Button, y80 x80 gFrakChangeGuiCancel, Abbrechen
+Gui, FrakChangeGUI:Add, Button, y40 x10 gFrakChangeGUISave Default, Speichern
+Gui, FrakChangeGUI:Add, Button, y40 x80 gFrakChangeGuiCancel, Abbrechen
 Gui, FrakChangeGUI:+OwnerFrakGui
-FrakChangeRadio:
-Gui, FrakChangeGUI:Submit, Nohide
-GuiControl, % "FrakChangeGUI:" (NewFrak = 1 ? "Dis" : "En") "able", NewFp
-GuiControl, % "FrakChangeGUI:" (NewFrak = 1 ? "Dis" : "En") "able", ShowPass
 return
 FrakGUIBuild:
 Gui, FrakGui:Destroy
@@ -3190,7 +3172,6 @@ if(NewJob != Job){
 gosub HotkeysDefine
 return
 FrakChangeGuiCancel:
-GuiControl, FrakChangeGUI:, NewFp
 Gui, FrakChangeGUI:Cancel
 return
 Info:
@@ -3540,7 +3521,7 @@ Help32:
 helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova-eSports NewLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
-, "In den Fraktionsbinds kannst du Tasten für vordefinierte, einheitliche Aktionen setzen.`nDafür musst du erst deine Fraktion auswählen und mit dem Passwort, das du normalerweise vom Leader bekommst, bestätigen.`n`nWenn deine Fraktion noch nicht vertreten ist, kannst du, oder z.B. einer eurer Leader, mich kontaktieren, dass auch deine Fraktion integriert wird."
+, "In den Fraktionsbinds kannst du Tasten für vordefinierte, einheitliche Aktionen setzen.`nDafür musst du erst deine Fraktion auswählen.`n`nWenn deine Fraktion noch nicht vertreten ist, kannst du, oder z.B. einer eurer Leader, mich kontaktieren, dass auch deine Fraktion integriert wird."
 , "In den Notizen kannst du persönliche Aufgaben für dich speichern, die du auch im Spiel anzeigen, bearbeiten und löschen kannst."
 , "Der Fahrzeugrechner kann euch die Preise der Fahrzeuge auf Nova anzeigen. Er wurde von mir entworfen."
 , "Du kannst hier deinen Nova-Nickname eingeben. In den eigenen Binds wird dann [Name] mit diesem Namen ersetzt."
@@ -3739,7 +3720,7 @@ if(Del1){
 		return
 }
 if(Del2){
-	MsgBox, 35, Registry-Daten wirklich löschen?, Willst du die Registry-Daten wirklich löschen?`n`nDabei wird der Registry-Schlüssel HKEY_CURRENT_USER\Software\sBinder gelöscht, in ihm wird das Fraktionspasswort gespeichert.
+	MsgBox, 35, Registry-Daten wirklich löschen?, Willst du die Registry-Daten wirklich löschen?`n`nDabei wird der Registry-Schlüssel HKEY_CURRENT_USER\Software\sBinder gelöscht.
 	IfMsgBox, Yes
 		RegDelete, HKCU, Software\sBinder
 	IfMsgBox, No
@@ -4065,23 +4046,8 @@ return
 FrakChangeGUISave:
 Gui, FrakChangeGUI:Submit, Nohide
 Frak := NewFrak
-Fp := SSMD5(NewFp)
-StrSense_old := A_StringCaseSense
-StringCaseSense, On
-if(Fp != Fp%Frak% AND Frak > 1){
-	GuiControl, FrakChangeGui:, NewFp
-	Frak := 1
-	gosub FrakChangeRadio
-	MsgBox, 21, Falsches Passwort, Das Passwort war falsch!, 5
-	IfMsgBox, Retry
-		return
-}
-else
-	MsgBox, 64, Fraktion geändert, Die Fraktion wurde erfolgreich geändert, 1
-StringCaseSense, %StrSense_old%
-RegWrite, REG_SZ, HKCU, Software\sBinder, Fp, %Fp%
+MsgBox, 64, Fraktion geändert, Die Fraktion wurde erfolgreich geändert, 1
 IniWrite, %Frak%, %INIFile%, Settings, Fraktion
-GuiControl, FrakChangeGUI:, NewFp
 Gui, FrakChangeGUI:Destroy
 Gui, FrakGUI:Destroy
 gosub FrakGUIBuild
