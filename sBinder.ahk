@@ -53,7 +53,6 @@ if(LastUsedBuild = 0){
 			FileSelectFolder, newfolder,, 3, Wähle den neuen Ordner des sBinders:
 			if(!ErrorLevel){
 				FileCreateShortcut, %A_ScriptName%, sBinder.lnk, %newfolder%, sBinder by IcedWave
-				FileCreateDir, %musicfolder%
 				FileDelete, sBinder_move.bat
 				FileAppend, @echo off`nping 1.1.1.1 -n 1 -w 800`nmove "%A_ScriptFullPath%" "%newfolder%\%A_ScriptName%"`nping 1.1.1.1 -n 1 -w 800`nstart "" "%newfolder%\%A_ScriptName%"`ndel "%A_ScriptDir%\sBinder_move.bat", sBinder_move.bat
 				Run, %RunPrivileges%sBinder_move.bat
@@ -767,85 +766,6 @@ IsURL(url){
 	if(RegExMatch(url, "i)^https?://.*\..*"))
 		return 1
 	return 0
-}
-json(i){ ;http://www.autohotkey.com/board/topic/91700-funktion-json-encode-und-decode/ //Bentschi
-  if (isobject(i))
-	{
-	  o := ""
-	  a := 1
-		x := 1
-	  for k,v in i
-		{
-		  if (k!=x)
-			{
-			  a := 0
-				break
-			}
-			x += 1
-		}
-		o .= (a) ? "[" : "{"
-		f := 1
-		for k,v in i
-		{
-		  o .= ((f) ? "" : ",")((a) ? "" : """" k """:")
-			o .= (isobject(v)) ? json(v) : ((v+0=v) ? v : """" v """")
-			f := 0
-		}
-		o .= (a) ? "]" : "}"
-		return o
-	}
-	if (regexmatch(i, "s)^__chr(A|W):(.*)", m))
-	{
-	  VarSetCapacity(b, 4, 0)
-		NumPut(m2, b, 0, "int")
-		return StrGet(&b, 1, (m1="A") ? "cp28591" : "utf-16")
-	}
-	if (regexmatch(i, "s)^__str:""((\\""|[^""])*)""", m))
-	{
-	  str := m1
-		for p,r in {b:"`b", f:"`f", n:"`n", 0:"", r:"`r", t:"`t", v:"`v", "'":"'", """":""""}
-			str := regexreplace(str, "\\" p, r)
-		while (regexmatch(str, "s)^(.*?)\\x([0-9a-fA-F]{2})(.*)", m))
-		  str := m1 json("__chrA:0x" m2) m3
-		while (regexmatch(str, "s)^(.*?)\\u([0-9a-fA-F]{4})(.*)", m))
-		  str := m1 json("__chrW:0x" m2) m3
-		while (regexmatch(str, "s)^(.*?)\\([0-9]{1,3})(.*)", m))
-		  str := m1 json("__chrA:" m2) m3
-		return regexreplace(str, "\\\\", "\")
-	}
-	o := {}
-	while (regexmatch(i, "s)(\{|\])([^\{\}\[\]]*)\}|(\[)([^\{\}\[\]]*)\]", m))
-	{
-	  x := {}
-		a := (m1="{") ? 0 : 1
-		b := (a) ? m4 : m2
-		while (b && regexmatch(b, "s)^\s*" ((a) ? "" : "(?P<k>(""(\\""|[^""])*""|[^:])*)\s*:\s*") "(?P<v>(""(\\""|[^""])*""|[^,])*)\s*,?\s*((?P<p>.*))?", m))
-		{
-			k := (a) ? ((x.insert("")) ? 1 : 0)*x.maxIndex() : regexreplace(mk, "(^\s*|\s*$)", "")
-			v := regexreplace(mv, "(^\s*|\s*$)", "")
-			b := mp
-			if (!a && regexmatch(k, "s)(""(\\""|[^""])*"")", m))
-				k := json("__str:" m1)
-			else if (!a)
-				k := regexreplace(k, "\s", "")
-			if (regexmatch(v, "s)(""(\\""|[^""])*"")", m))
-				v := json("__str:" m1)
-			else if (regexmatch(v, "i)null"))
-				v := ""
-			else if (regexmatch(v, "i)true"))
-				v := 1
-			else if (regexmatch(v, "i)false"))
-				v := 0
-			else if (regexmatch(v, "__obj([0-9]+)", m))
-				v := o[m1]
-			else
-				v := regexreplace(v, "\s", "")
-			x[k] := v
-		}
-		o.insert(x)
-		i := regexreplace(i, "s)(\{|\])([^\{\}\[\]]*)\}|(\[)([^\{\}\[\]]*)\]", "__obj" o.maxIndex(), "", 1)
-	}
-	return o[o.maxIndex()]
 }
 LeadingZero(num, zeros=2){
 	loop, % (zeros-StrLen(num))
@@ -1728,8 +1648,6 @@ IniRead, reloaded, %INIFile%, Settings, Reload, 0
 IniRead, Nickname, %INIFile%, Settings, Name, Name
 IniRead, Frak, %INIFile%, Settings, Fraktion, 1
 IniRead, hmv, %INIFile%, Settings, AutoMv, 0
-IniRead, vlc_Path, %INIFile%, Settings, VLCPath, %A_ProgramFiles%\VideoLAN\VLC\vlc.exe
-IniRead, musicfolder, %INIFile%, Settings, music, %A_ScriptDir%\sBinder_music
 IniRead, TruckLevelLimit, %INIFile%, Settings, TruckLevelLimit, 1
 IniRead, Design, %INIFile%, Settings, Design, 1
 UseDesign := Design
@@ -1771,8 +1689,6 @@ IniRead, Tel, %INIFile%, Telefon, Active, 0
 IniRead, pText, %INIFile%, Telefon, p, Guten Tag, mein Name ist [Name].~Was kann ich für Sie tun?
 IniRead, hText, %INIFile%, Telefon, h, Wiederhören.
 IniRead, abText, %INIFile%, Telefon, ab, Sie sprechen mit dem Anrufbeantworter von [Name].~Leider ist [Name] zur Zeit nicht erreichbar.~Versuchen Sie es bitte später erneut!
-loop, 3
-	IniRead, RadioSlot%A_Index%, %INIFile%, Radio, Slot%A_Index%, %A_Space%
 if(!WaitFor)
 	WaitFor := 70
 IniRead, AFKBoxX, %INIFile%, WindowPos, AFKBox_X, % A_ScreenWidth - 200
@@ -1845,8 +1761,6 @@ IniWrite, %RunAsAdmin%, %A_AppData%\sBinder\global.ini, RunAsAdmin, %A_ScriptFul
 ; Local
 IniWrite, %Nickname%, %INIFile%, Settings, Name
 IniWrite, %hmv%, %INIFile%, Settings, AutoMv
-IniWrite, %vlc_Path%, %INIFile%, Settings, VLCPath
-IniWrite, %musicfolder%, %INIFile%, Settings, music
 IniWrite, %TruckLevelLimit%, %INIFile%, Settings, TruckLevelLimit
 IniWrite, %Design%, %INIFile%, Settings, Design
 IniWrite, %meTexte%, %INIFile%, Settings, me
@@ -1868,8 +1782,6 @@ IniWrite, %Tel%, %INIFile%, Telefon, Active
 IniWrite, %pText%, %INIFile%, Telefon, p
 IniWrite, %hText%, %INIFile%, Telefon, h
 IniWrite, %abText%, %INIFile%, Telefon, ab
-loop, 3
-	IniWrite, % RadioSlot%A_Index%, %INIFile%, Radio, Slot%A_Index%
 if(AutoHitsound)
 	SetTimer, AutoHitsound, 1000
 else
@@ -2362,7 +2274,7 @@ Gui, AboutGUI:Add, Picture, x0 y5, %A_AppData%\sBinder\bg.png
 Gui, AboutGUI:Add, Link, x10, % "Version: " Version " (Build " Build ")`n`nEntwickler: IcedWave`nCopyright © 2012-2015 IcedWave`n`nProgrammiert mit <a href=""http://autohotkey.com"">Autohotkey</a> Version " A_AhkVersion
 Gui, AboutGUI:Menu, MenuBar
 ;SettingsGUI
-Gui, SettingsGUI:Add, Tab2, -Background +Theme -Wrap x5 y5 w525 h340 vSettingsTab, Seite 1|Seite 2|Seite 3|Erweiterte Optionen
+Gui, SettingsGUI:Add, Tab2, -Background +Theme -Wrap x5 y5 w525 h340 vSettingsTab, Seite 1|Seite 2|Erweiterte Optionen
 Gui, SettingsGUI:Tab, 1
 ;Tab 1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
@@ -2418,12 +2330,7 @@ Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp18, ?
 Gui, SettingsGUI:Tab, 2
 ;Tab 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
-Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vPathSettings c000000", Pfade
-Gui, SettingsGUI:Add, Text, x15 y%y% h20, /music:
-Gui, SettingsGUI:Add, Button, x55 y%y% h20 w120 gSelectMusic, Musikordner auswählen
-Gui, SettingsGUI:Add, Button, x185 y%y% h20 w120 gSelectVLC, VLC-Pfad ändern
-Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp13, ?
-y += 25
+Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h65 w510 vPathSettings c000000", Pfade
 Gui, SettingsGUI:Add, Button, x15 y%y% h20 gSelectCL, Chatlog-Pfad auswählen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w150 gChatlogSearch, Chatlog automatisch suchen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 w120 gSelectSAMP vSAMPSelect, SAMP-Pfad ändern
@@ -2443,19 +2350,7 @@ Gui, SettingsGUI:Add, Text, x15 y%y% h20, Aufträge sortieren nach
 Gui, SettingsGUI:Add, DDL, x130 y%y% w180 Choose%TruckingSort% vTruckingSort gTruckingSortChange AltSubmit, Trucklevel||Erfahrung|Einkaufspreis|Verkaufspreis|Gewinn|Gewicht|Entfernung zum Kaufort (Luftlinie)
 Gui, SettingsGUI:Add, DDL, x320 y%y% w80 Choose%TruckingSortOrder% vTruckingSortOrder AltSubmit, aufsteigend||absteigend
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp28, ?
-;Help!
 y += 45
-Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vRadioSlotSettings c000000", /radio-Slots
-Gui, SettingsGUI:Add, Button, x505 y%y% h70 w12 gHelp20, ?
-loop, 3
-{
-	Gui, SettingsGUI:Add, Text, x15 y%y% h20, Radio-Slot %A_Index%:
-	Gui, SettingsGUI:Add, Edit, y%y% x85 w400 vRadioSlot%A_Index%, % RadioSlot%A_Index%
-	y += 25
-}
-Gui, SettingsGUI:Tab, 3
-;Tab 3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h140 w510 vStartupProgramSettings c000000", Programme mitstarten
 Gui, SettingsGUI:Add, Checkbox, x15 y%y% h20 vStartup_SAMP Checked%Startup_SAMP% gStartupSettingsChange, SAMP mitstarten
 Gui, SettingsGUI:Add, Text, x190 y%y% vStartup_SAMP_Disable1, Verzögerung:
@@ -2490,8 +2385,8 @@ Gui, SettingsGUI:Add, Edit, x190 y%y% w210 h20 vStartup_Other_Path, %Startup_Oth
 Gui, SettingsGUI:Add, Button, x410 y%y% h20 vStartup_Other_Disable5 gStartup_Select_Other, Durchsuchen
 Gui, SettingsGUI:Add, Button, % "x505 y" y - 25 " h45 w12 gHelp26", ?
 gosub StartupSettingsChange
-Gui, SettingsGUI:Tab, 4
-;Tab 4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Gui, SettingsGUI:Tab, 3
+;Tab 3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 y := 50
 Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h115 w510 vOtherSettings c000000", Erweiterte Optionen
 Gui, SettingsGUI:Add, Text, x15 y%y% h20, Zeit zum Warten auf Chatlog (ms) (s. ?-Button):
@@ -2510,7 +2405,7 @@ Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp30, ?
 y += 30
 Gui, SettingsGUI:Tab
 Gui, SettingsGUI:Add, Text, x5, sBinder %Version%-%Build% by IcedWave
-Gui, SettingsGUI:Add, ListBox, x535 y25 w150 h320 gSettingsChangeTab vSettingsListBox AltSubmit Choose1 0x100, Allgemeine Einstellungen|Ingame-Einstellungen|   Telefontexte|Pfade|/trucking|/radio-Slots|Programme mitstarten|Erweiterte Optionen
+Gui, SettingsGUI:Add, ListBox, x535 y25 w150 h320 gSettingsChangeTab vSettingsListBox AltSubmit Choose1 0x100, Allgemeine Einstellungen|Ingame-Einstellungen|   Telefontexte|Pfade|/trucking|Programme mitstarten|Erweiterte Optionen
 Gui, SettingsGUI:Menu, MenuBar
 ;CreditsGUI
 Gui, CreditsGUI:Font, S15 bold
@@ -2715,8 +2610,8 @@ GTAActivate:
 WinActivate, ahk_group GTASA
 return
 SettingsChangeTab:
-pages := [1, 1, 1, 2, 2, 2, 3, 4]
-GroupBoxVars := ["GenericSettings", "IngameSettings", "TelSettings", "PathSettings", "TruckingSettings", "RadioSlotSettings", "StartupProgramSettings", "OtherSettings"]
+pages := [1, 1, 1, 2, 2, 2, 3]
+GroupBoxVars := ["GenericSettings", "IngameSettings", "TelSettings", "PathSettings", "TruckingSettings", "StartupProgramSettings", "OtherSettings"]
 Gui, SettingsGUI:Font, c000000
 for i, k in GroupBoxVars
 	GuiControl, SettingsGUI:Font, %k%
@@ -3434,14 +3329,14 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Ins Tray minimieren:`nWenn du diese Option aktivierst, wird der sBinder beim Minimieren in die Trayleiste verschoben - er erscheint also nicht mehr in der Taskleiste.`nDu kannst ihn in der Trayleiste wieder öffnen.`n`n`nName des GTA-Prozesses:`nDer Name des GTA San Andreas-Prozesses. Dieser wird benötigt, damit der sBinder richtig funktioniert.`nGib hier keinen Pfad an, nur den Namen der .exe-Datei. Standardmäßig heißt diese gta_sa.exe`n(Erfordert einen Neustart)"
 , "Bilder im Trucking-Fenster anzeigen:`nMit dieser Option kannst du kontrollieren, ob im Fenster der Trucking-Aufträge die Bilder der jeweiligen Orte angezeigt werden sollen.`n`n`nBox anzeigen, wenn du auf dem Desktop bist:`nWenn diese Option aktiviert ist, wird dir immer, wenn du gerade auf dem Desktop bist, eine (verschiebbare) Box angezeigt, die dir die Zeit, wie lange du auf dem Desktop bist, anzeigt."
 , "Doppelhupe = /mv:`nWenn diese Funktion aktiviert ist, bewirkt ein schnelles, doppeltes Betätigen der Hupe (Taste H), dass /mv (Tor öffnen/schließen) gesendet wird.`n`n`n/me-Texte bei Animationen:`nDie /me-Texte werden bei Animationen wie z.B. /gro gesendet.`nBeispiel: /gro -> /me setzt sich auf den Boden.`n`n`nTimer für /use [lsd/green/donut/gold]`nZeigt dir im Spiel an, wann du LSD/Green/Gold/Donuts wieder einnehmen kannst bzw. warnt dich im Fall von LSD zusätzlich, kurz bevor die Nebenwirkungen eintreten."
-, "Du kannst im Spiel auch Musik hören.`nDafür gibt es 3 Textbinds: /music, /youtube und /radio (/radio list für eine Liste aller verfügbaren Sender).`nSie benötigen alle den VLC Media Player in der Version 2.0 oder höher. Den Pfad zur vlc.exe kannst du hier angeben. Für /music musst du auch den Ordner angeben, in dem die Musikdateien gespeichert sind.`n`n/youtube streamt die Musik von YouTube, allerdings ohne Video. Dabei kann es zu Laggs kommen, sowohl im Spiel als auch bei der Musik."
+, ""
 , "Du kannst ingame /trucking nutzen, um dir die aktuell verfügbaren Aufträge anzeigen zu lassen.`n`n`nNur Aufträge für Level anzeigen:`nDamit kannst du einstellen, bis zu welcher Grenze des Truckerlevels du die Aufträge angezeigt bekommst. Es gibt im Grunde diese Werte:`n-1: Zeigt ALLE Werte an, auch, wenn du das Level für diese Aufträge noch gar nicht erreicht hast.`n0: Zeigt nur die Aufträge deines aktuellen Levels an.`n1-10: Zeigt auch Aufträge von n niedrigeren Leveln an. Wenn du es also auf 2 stellst und du aktuell Truckerlevel 5 bist, zeigt es dir Aufträge von Level 3, 4 und 5 an. Der Wert 1 ist bei dieser Einstellung empfehlenswert (Standardwert)."
 , "Chatlog-Pfad auswählen:`nWenn du Probleme beim Auslesen des Chats hast, dann kannst du hier den Pfad des Chatlogs ändern.`n`n`nSAMP-Pfad ändern:`nDu kannst den Pfad zu SAMP angeben, um direkt im sBinder auf den Server zu verbinden (mit dem Button ""SAMP starten"")."
 , "Diesen Wert solltest du nur ändern, wenn es wirklich nötig ist!`n`nDiese Zeit bestimmt, wie lange (in Millisekunden) zusätzlich zum aktuellen Ping zum Server auf eine neue Zeile im Chatlog gewartet werden soll.`nStandardwert ist 90, falls der Chatlog nicht ausgelesen werden kann (z.B. bei /paydaytime), solltest du diese Zeit erhöhen.`nEs sind Werte zwischen 20 und 200 möglich."
 , "Hier findest du einige Möglichkeiten zum Löschen der Daten/Dateien, die der sBinder erzeugt.`nEs ist also ähnlich wie eine Deinstallation."
 , "API nutzen:`nDie Open-SAMP-API.dll wird benutzt, um Daten, die für dich bestimmt sind, auch nur dir anzuzeigen. Außerdem wird der Spielablauf weniger blockiert und die Eingabe in Dialoge nicht gestört.`nAllerdings funktioniert die API nicht bei jedem richtig, deshalb ist ihre Nutzung optional. Du kannst sie jederzeit aktivieren und deaktivieren.`nHINWEIS: Nach einer Änderung dieser Option wird der sBinder evtl. neu gestartet!`n`n`nOverlay-Einstellungen:`nDu kannst im sBinder ein komplett konfigurierbares Overlay nutzen, das dir im Spiel wichtige Daten anzeigt.`nDabei kannst du den Text mit einigen Variablen gestalten, außerdem sind dir bei der Wahl der Farbe, Schriftart, Schriftgröße und Position keine Grenzen gesetzt.`nMehr Informationen dazu findest du beim Klick auf den ?-Button in den Overlay-Einstellungen."
 , "Die Telefontexte werden geschrieben, wenn du einen Anruf annimmst, auflegst oder auf den Anrufbeantworter (/ab) umleitest.`nDu kannst sie nutzen wie die eigenen Binds.`nSie werden durch /p (Annehmen), /h (Auflegen) und /ab (Anrufbeantworter) ausgelöst, sofern sie aktiviert sind."
-, "Hier kannst du eigene Radiosender definieren (bzw. deren URL angeben), die du später mit /radio aufrufen kannst.`nDu musst dafür als Name Slot 1, Slot 2 oder Slot 3 eingeben.`n`nHINWEIS: Die URL muss mit http:// oder https:// beginnen!"
+, ""
 , "Beim Login automatisch eingeben:`nWenn du diese Funktion aktivierst, wird nach dem Login automatisch der in dem nebenstehenden Textfeld angegebene Befehl eingegeben.`nDu kannst zum Beispiel /togphone oder /hitsound nutzen (oder eine Kombination aus beiden).`nHINWEIS: Damit die Funktion korrekt arbeitet, muss der Keybinder VOR dem Start von SAMP gestartet werden!"
 , "INI-Datei öffnen:`nIn der INI-Datei werden alle deine Einstellungen gespeichert. Du kannst sie dir mit diesem Button ansehen.`nHINWEIS: Falls du Daten in der INI-Datei geändert hast, musst du den sBinder neu starten, damit sie ausgelesen werden. Wenn du davor im Keybinder speicherst gehen deine Änderungen verloren.`n`n`nsBinder-Ordner öffnen:`nMit diesem Button kannst du den Ordner öffnen, in dem der sBinder gespeichert ist."
 , "Hier kannst du bestimmen, ob beim Starten des sBinders automatisch nach der angegebenen Zeit auf den Server connectet werden soll."
@@ -3452,30 +3347,10 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
 , "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren"] ;30
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren"] ;30
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
-return
-SelectMusic:
-Thread, NoTimers
-FileSelectFolder, temp, % (FileExist(musicfolder) ? "*" musicfolder : A_MyDocuments), 1, Wähle den Musikordner aus
-if(!ErrorLevel){
-	musicfolder := temp
-	IniWrite, %musicfolder%, %INIFile%, Settings, music
-	ToolTip("Der Musikodner wurde erfolgreich geändert.`nAusgewählter Ordner: " musicfolder, 5000)
-}
-Thread, NoTimers, false
-return
-SelectVLC:
-Thread, NoTimers
-FileSelectFile, temp, 1, % (FileExist(VLCPath) ? VLC_Path : A_ProgramFiles), Wähle die vlc.exe aus, *.exe
-if(!ErrorLevel){
-	VLC_Path := temp
-	IniWrite, %VLC_Path%, %INIFile%, Settings, VLCPath
-	ToolTip("Der VLC-Pfad wurde erfolgreich geändert.`nAusgewählte vlc.exe: " VLC_Path, 5000)
-}
-Thread, NoTimers, false
 return
 SelectSAMP:
 Thread, NoTimers
@@ -4511,7 +4386,7 @@ return
 ::/textbinds 4::
 ::/textbinds 5::
 Suspend Permit
-cmd := ArraySort(["/reconnect", "/kpayday (/kpd)", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/music", "/youtube", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/radio", "/radio list", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]", "/wolframalpha"])
+cmd := ArraySort(["/reconnect", "/kpayday (/kpd)", "/zeige notiz (/znotiz)", "/bearbeite notiz (/bnotiz)", "/lösche notiz (/lnotiz)", "/inettest", "/kdonut", "/kame (multi)", "/togfrakbinds", "/kcancel", "/paydaytime (/pdt)", "/respekt", "/kcall", "/ksms", "/kgeld", "/housewithdraw all", "/kcmd", "/cpu", "/timer", "/timermin", "/countdown", "/stoppuhr", "/uhr", "/clearchat", "/trucking", "/setmoney", "/showpolice", "/wetter", "/kme", "/membersonline (id) (/checkfrak (id))", "/myfrak", "/chatlogbackup", "/leaders (id)", "/playerinfo", "/setjob", "/ktzelle", "/calc", "/kbl", "/frakall", "/membersall", "/carvalue", "/car lock [1-20]"])
 if(A_ThisLabel = "::/textbinds"){
 	if(UseAPI){
 		loop, % Ceil(cmd._maxIndex()/10){
@@ -4571,12 +4446,9 @@ else{
 	, "Nachdem ihr die Nummer (1-8) der Notiz eingegeben habt wird der Inhalt der Notiz zurückgesetzt.`nIhr könnt auch 'all' eingeben, dann werden alle Notizen zurückgesetzt."
 	, "Zeigt alle Mitglieder der angegebenen Fraktion an.`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"")."
 	, "Zeigt die Mitglieder der angegebenen Fraktion an, die aktuell online sind.`nDer Fraktionsname kann jeder bekannte Name der Fraktion sein (Z.B. SARD: ""SARD"", ""SA:RD"", ""Medics"", ""Ärzte"", ""Krankenhaus"", ""Rettungsdienst"").`nMit {999999}/membersonline id{FFFFFF} bzw. {999999}/checkfrak id{FFFFFF} kannst du außerdem den /id-Befehl für jedes Fraktionsmitglied ausgeben lassen,`nso siehst du z.B., wer von ihnen auf dem Friedhof oder im Gefängnis ist."
-	, "Spielt Musik ab, ohne euch auf den Desktop zu werfen. Ihr benötigt dafür den VLC Media Player in der Version 2 oder höher.`nAußerdem müsst ihr in den Einstellungen den Ordner mit der zu spielenden Musik sowie eventuell den Pfad zur vlc.exe angeben."
 	, "Zeigt alle Mitglieder deiner Fraktion an, die aktuell online sind."
 	, "Der Textbind liest die /oldstats aus und rechnet aus diesen aus, wann der nächste Payday ist."
 	, "Dieser Textbind ermittelt einige Informationen über einen beliebigen Spieler. Dabei ist es vollkommen egal, ob dieser Spieler Zivilist ist oder einen Platz in einer Fraktion hat.`nAllerdings kann es sein, dass neue Spieler oder Spieler mit einem Namechange noch nicht gefunden werden."
-	, "Damit könnt ihr einen Radio-Stream starten, alle verfügbaren Streams könnt ihr über '/radio list' abrufen.`nIhr benötigt dafür den VLC Media Player in der Version 2 oder höher."
-	, "Mit diesem Textbind kannst du alle verfügbaren Radio-Streams für '/radio' abrufen."
 	, "Beendet die Sitzung auf Nova und verbindet neu."
 	, "Der Textbind liest die /oldstats aus und rechnet aus diesen aus, wie viele Respektpunkte du noch bis zum nächsten Level benötigst."
 	, "Mit diesem Textbind kannst du im Spiel deinen Beruf ändern. Gib auf die Frage nach deinem neuen Beruf einfach den Beruf ein und drücke danach J."
@@ -4589,8 +4461,6 @@ else{
 	, "Gibt euch ingame alle aktuell verfügbaren Truckermissionen bis zu eurem Truckerlevel aus. Dabei werden die Aufträge auch im Trucking-Fenster aktualisiert.`nDie Daten werden direkt von der Homepage heruntergeladen.`nFormat: {999999}Ort (Produkt) | Trucklevel | Erfahrung | Einkaufspreis -> Verkaufspreis (Gewinn) | Gewicht | (Anhänger){FFFFFF}`nEventuell funktioniert dieser Textbind bei Änderungen an der Homepage kurzzeitig nicht."
 	, "Zeigt dir die aktuelle Uhrzeit und das Datum."
 	, "Zeigt dir das Wetter in LS, SF, LV und der Umgebung."
-	, "Mit diesem Textbind kannst du dir das Ergebnis einer (englischen) Frage von der semantischen Suchmaschine Wolfram|Alpha liefern lassen. Achtung Informationsflut!"
-	, "Spielt den Sound eines YouTube-Videos über den VLC Player ab. Ihr benötigt dafür den VLC Media Player in der Version 2 oder höher.`nAußerdem müsst ihr in den Einstellungen eventuell den Pfad zur vlc.exe angeben.`nMit {999999}/youtube search{FFFFFF} kannst du dir außerdem 10 Ergebnisse einer Suche anzeigen lassen, aus denen du dann eines auswählen kannst."
 	, "Nach der Eingabe dieses Textbinds werdet ihr nach der Nummer (1-8) der Notiz gefragt. Nach der Eingabe der Nummer wird die Notiz ausgegeben.`nIhr könnt auch 'all' eingeben, dann werden alle Notizen im Chat ausgegeben."]
 		for i, k in cmd
 		{
@@ -4827,105 +4697,6 @@ else
 LV_Truck := Truck_LV := ""
 Gui, 1:Default
 return
-::/music::
-Suspend Permit
-if(!vlc){
-	if(!FileExist(vlc_path) OR !FileExist(musicfolder))
-		AddChatMessage("Bitte wähle erst deine vlc.exe und/oder deinen Musikordner in den Einstellungen aus!")
-	else{
-		while(CloseProcess("vlc.exe")){
-		}
-		Run, "%vlc_path%" "%musicfolder%" "--qt-start-minimized" "--no-video",,, vlc
-		Process, Wait, %vlc%, 5
-		if(ErrorLevel)
-			AddChatMessage("Musikwiedergabe gestartet")
-		else
-			AddChatMessage("Der VLC konnte nicht gestartet werden!")
-	}
-}
-else{
-	ErrorLevel := CloseProcess(vlc)
-	vlc := ""
-	if(ErrorLevel)
-		AddChatMessage("Musikwiedergabe beendet")
-	else
-		goto ::/music
-}
-return
-::/youtube::
-::/youtube search::
-Suspend Permit
-if(!vlc){
-	if(!FileExist(vlc_path))
-		AddChatMessage("Bitte wähle erst deine vlc.exe aus!")
-	else{
-		query := PlayerInput("Gib den Namen des Videos ein: ")
-		if(!query)
-			return
-		if(A_ThisLabel = "::/youtube search"){
-			AddChatMessage("Die Suchergebnisse werden geladen. Dies kann einige Sekunden dauern.")
-			data := HTTPData("https://www.googleapis.com/youtube/v3/search?key=AIzaSyDsLW8zCCV0HMrTma8mZoQWVQxMZaE3ZYM&prettyPrint=false&part=snippet&maxResults=10&type=video&q=" URLEncode(query),, "utf-8")
-			;data := json(HTTPData("https://www.googleapis.com/youtube/v3/search?key=AIzaSyDsLW8zCCV0HMrTma8mZoQWVQxMZaE3ZYM&prettyPrint=false&part=snippet&maxResults=10&type=video&q=" URLEncode(query),, "utf-8")).items
-			videos := Object()
-			;while((temp := data[A_Index]) AND A_Index <= 10)
-			while((pos := RegExMatch(data, "U`a),""videoId"":""(.+)""\}.+,""title"":""(.+)"",.+,""channelTitle"":""(.*)"",", match, pos + 1)) AND A_Index <= 10)
-				Videos[A_Index] := {id: match1, title: RegExReplace(match2, "\\""", """"), channel: match3}
-				;Videos[A_Index] := {id: temp.id.videoId, title: temp.snippet.title, channel: temp.snippet.channelTitle}
-			if(Videos._maxIndex()){
-				AddChatMessage(Videos._maxIndex() " Ergebnisse:")
-				for i, k in Videos
-				{
-					AddChatMessage(i ": {88AA62}" (StrLen(k["title"]) > 60 ? SubStr(k["title"], 1, 57) "..." : k["title"]) (k["channel"] != "" ? "{FFFFFF} von {88AA62}" k["channel"] : ""))
-				}
-				if(match2 := PlayerInput("Gib die Nummer des Videos (1 - " Videos._maxIndex() ") ein: ")){
-					if(!between(match2, 1, Videos._maxIndex())){
-						AddChatMessage("Ungültige Eingabe!")
-						return
-					}
-					match1 := Videos[match2, "id"]
-					match2 := Videos[match2, "title"]
-				}
-				else{
-					AddChatMessage("Ungültige Eingabe!")
-					return
-				}
-			}
-			else{
-				AddChatMessage("Es konnte kein Video für {88AA62}" query "{FFFFFF} gefunden werden.")
-				return
-			}
-		}
-		else{
-			AddChatMessage("Der YouTube-Stream wird geladen. Dies kann einige Sekunden dauern.")
-			;RegExMatch(HTTPData("http://www.youtube.com/results?search_query=" URLEncode(query),, "utf-8"), "U`a)<h3.*><a .*href=""/watch\?v=(.+)"".*>(.+)</a></h3>", match)
-			RegExMatch(HTTPData("https://www.googleapis.com/youtube/v3/search?key=AIzaSyDsLW8zCCV0HMrTma8mZoQWVQxMZaE3ZYM&prettyPrint=false&part=snippet&maxResults=1&type=video&q=" URLEncode(query),, "utf-8"), "U`a),""videoId"":""(.+)""\}.+,""title"":""(.+)"",", match)
-			if(!match1){
-				AddChatMessage("Es konnte kein Video für {88AA62}" query "{FFFFFF} gefunden werden.")
-				return
-			}
-			match1 := RegExReplace(match1, "\\""", """")
-		}
-		while(CloseProcess("vlc.exe")){
-		}
-		Run, "%vlc_path%" "http://www.youtube.com/watch?v=%match1%&fmt=18" "--qt-start-minimized" "--no-video" "--preferred-resolution=320",,, vlc
-		Process, Wait, %vlc%, 5
-		if(ErrorLevel){
-			StringReplace, match2, match2, \", ", All
-			AddChatMessage("YouTube-Wiedergabe gestartet. Du hörst: {88AA62}" (StrLen(match2) > 70 ? SubStr(match2, 1, 67) "..." : match2))
-		}
-		else
-			AddChatMessage("Der VLC Media Player konnte nicht gestartet werden!")
-	}
-}
-else{
-	ErrorLevel := CloseProcess(vlc)
-	vlc := ""
-	if(ErrorLevel)
-		AddChatMessage("YouTube-Wiedergabe beendet")
-	else
-		goto ::/youtube
-}
-return
 ::/setmoney::
 Suspend Permit
 num1 := toMoney(PlayerInput("Gib das Geld ein, das du auf der Hand haben willst: "))
@@ -5107,64 +4878,6 @@ else{
 	AddChatMessage("Davon ingame anwesend: " active "/" online " (" leaderactive "/" leaderonline " Leader)")
 }
 FrakWebsite := ""
-return
-::/radio::
-Suspend Permit
-if(!vlc){
-	if(!FileExist(vlc_path))
-		AddChatMessage("Bitte wähle erst deine vlc.exe aus!")
-	else{
-		if(!query := PlayerInput("Gib den Namen des Radiosenders oder die URL ein: "))
-			return
-		FrakWebsite := ["N-?Joy", "Top100", "Blackbeats", "Techno4ever", "89.0|RTL", "SAW", "big\.?fm", "ilove|i<3radio", "^\s*Slot.*1\s*$", "^\s*Slot.*2\s*$", "^\s*Slot.*3\s*$"]
-		RadioURL := ["http://www.ndr.de/resources/metadaten/audio/m3u/n-joy.m3u", "http://www.top100station.de/stream/winamp.pls", "http://blackbeats.fm/listen.m3u", "http://tunein.t4e.dj/main.pls", "http://sites.89.0rtl.de/streams/mp3_128k.pls", "http://stream.radiosaw.de/", "http://srv05.bigstreams.de/bigfm-mp3-96", "http://www.iloveradio.de/listen.m3u", RadioSlot1, RadioSlot2, RadioSlot3]
-		num2 := ArrayMatch(query, FrakWebsite)
-		if(!num2)
-			num1 := Trim(query)
-		else
-			num1 := RadioURL[num2]
-		if(!IsURL(num1)){
-			if(RegExMatch(query, "i)^\s*Slot.*([1-3])\s*$", num)){
-				if(RadioSlot%num1%)
-					AddChatMessage("Überprüfe die in Slot " num1 " angegebene URL (Sie muss mit http:// beginnen!)")
-				else
-					AddChatMessage("Slot " num1 " ist leer!")
-			}
-			else if(num2)
-				AddChatMessage("Ein Fehler ist aufgetreten! Das Radio kann nicht gestartet werden.")
-			else
-				AddChatMessage("Ungültiger Name oder ungültige URL eingegeben (Die URL muss mit http:// beginnen!)")
-			return
-		}
-		while(CloseProcess("vlc.exe")){
-		}
-		Run, "%vlc_path%" "%num1%" "--qt-start-minimized" "--no-video" "--preferred-resolution=320",,, vlc
-		Process, Wait, %vlc%, 5
-		if(ErrorLevel)
-			AddChatMessage("Radio gestartet")
-		else
-			AddChatMessage("Der VLC konnte nicht gestartet werden!")
-		WinWait, Fehler,, 5
-		if(!ErrorLevel AND WinExist("Fehler") AND WinExist("ahk_class QWidget")){
-			AddChatMessage("Ein Fehler ist aufgetreten!")
-			CloseProcess(vlc)
-			vlc := ""
-		}
-	}
-}
-else{
-	ErrorLevel := CloseProcess(vlc)
-	vlc := ""
-	if(ErrorLevel)
-		AddChatMessage("Radio beendet")
-	else
-		goto ::/radio
-}
-return
-::/radio list::
-Suspend Permit
-AddChatMessage("Du kannst das Radio mit /radio starten. Verfügbare Sender:")
-List(["N-Joy", "Top100Station", "BlackBeats.FM", "Techno4ever", "89.0 RTL", "radio SAW", "bigFM", "iloveradio", "Slot 1 (" (RadioSlot1 ? "belegt)" : "frei)"), "Slot 2 (" (RadioSlot2 ? "belegt)" : "frei)"), "Slot 3 (" (RadioSlot3 ? "belegt)" : "frei)")],, 1,, ", ")
 return
 ::/chatlogbackup::
 Suspend Permit
@@ -5519,27 +5232,6 @@ else{
 	Sleep, 5
 }
 SendInput, % "{down " SubStr(A_ThisLabel, -1) - 1 "}{enter}"
-return
-::/wolframalpha::
-Suspend Permit
-id1 := ""
-if((id1 := PlayerInput("Gib die (englische) Wolfam|Alpha-Anfrage ein: ")) = ""){
-	AddChatMessage("Du hast nichts eigegeben...")
- 	return
- }
- AddChatMessage("Daten werden von Wolfram|Alpha geladen...")
- data := HTTPData("http://api.wolframalpha.com/v2/query?appid=V7J8TL-982AKU5WVY&format=plaintext&input=" URLEncode(id1))
- pos := index := 0
- while(pos := RegExMatch(data, "Us`a)<pod title='(.+)'.+<plaintext>\s*(.*)\s*</plaintext>", regex, pos + 1)){
-	StringReplace, regex2, regex2, `{, «, All
-	StringReplace, regex2, regex2, `}, », All
- 	if(regex2 != ""){
-		index ++
-		AddChatMessage(regex1 ": {88AA62}" regex2,,, 1)
-	}
-}
-if(!index)
-	AddChatMessage("Für diese Anfrage konnte Wolfram|Alpha kein Ergebnis liefern.")
 return
 
 
