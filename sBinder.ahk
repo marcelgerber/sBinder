@@ -512,22 +512,6 @@ CloseProcess(pid){
 	Process, Close, %pid%
 	return ErrorLevel
 }
-Crypt_AES(pData, nSize, sPassword, SID=256, bEncrypt=true){ ;https://github.com/shajul/Autohotkey/blob/master/Live/Encrypt/Encrypt.ahk
-	CALG_AES_256 := 1 + CALG_AES_192 := 1 + CALG_AES_128 := 0x660E
-	CALG_SHA1 := 1 + CALG_MD5 := 0x8003
-	DllCall("advapi32\CryptAcquireContext", "UintP", hProv, "Uint", 0, "Uint", 0, "Uint", 24, "Uint", 0xF0000000)
-	DllCall("advapi32\CryptCreateHash", "Uint", hProv, "Uint", CALG_SHA1, "Uint", 0, "Uint", 0, "UintP", hHash)
-	DllCall("advapi32\CryptHashData", "Uint", hHash, "Uint", &sPassword
-	, "Uint", (A_IsUnicode ? StrLen(sPassword)*2 : StrLen(sPassword)), "Uint", 0)
-	DllCall("advapi32\CryptDeriveKey", "Uint", hProv, "Uint", CALG_AES_%SID%, "Uint", hHash, "Uint", SID<<16, "UintP", hKey)
-	DllCall("advapi32\CryptDestroyHash", "Uint", hHash)
-	bEncrypt
-	? DllCall("advapi32\CryptEncrypt", "Uint", hKey, "Uint", 0, "Uint", True, "Uint", 0, "Uint", pData, "UintP", nSize, "Uint", nSize+16)
-	: DllCall("advapi32\CryptDecrypt", "Uint", hKey, "Uint", 0, "Uint", True, "Uint", 0, "Uint", pData, "UintP", nSize)
-	DllCall("advapi32\CryptDestroyKey", "Uint", hKey)
-	DllCall("advapi32\CryptReleaseContext", "Uint", hProv, "Uint", 0)
-	return nSize
-}
 date(time, null=0, seconds=1){
 	if(!time){
 		if(null = 1)
@@ -640,23 +624,6 @@ DownloadToString(url, encoding="cp1250"){ ;http://www.autohotkey.com/board/topic
 	}
 	DllCall("wininet\InternetCloseHandle", "ptr", h)
 	return o
-}
-File_AES(sFileFr, sFileTo, sPassword, SID=256, bEncrypt=true){ ;https://github.com/shajul/Autohotkey/blob/master/Live/Encrypt/Encrypt.ahk
-	hFileFr := FileOpen(sFileFr,"r -r")
-	if not hFileFr
-		return "File not found!"
-	nSize := hFileFr.Length
-	VarSetCapacity(sData, nSize + (bEncrypt ? 16 : 0))
-	hFileFr.Seek(0)
-	hFileFr.RawRead(sData, nSize)
-	hFileFr.Close()
-	hFileTo := FileOpen(sFileTo,"w -r")
-	if not hFileTo
-		return "File not created/opened!"
-	nSize := Crypt_AES(&sData, nSize, sPassword, SID, bEncrypt)
-	hFileTo.RawWrite(sData, nSize)
-	hFileTo.Close()
-		return nSize
 }
 FormatTime(stamp="", format=""){
 	FormatTime, out, %stamp%, %format%
@@ -1961,7 +1928,6 @@ loop, %MaxOverlays%
 return
 Downloads:
 inetconn := UpdateAvailable := 0
-datacachefile := A_AppData "\sBinder\cache.bin"
 errortext := ""
 if(UseAPI AND !FileExist(A_WinDir "\System32\D3DX9_43.dll"))
 	errortext .= "<li>Die d3dx9_43.dll konnte auf dem Computer nicht gefunden werden. Sie gehört zu DirectX und wird von der API benötigt. <a href='http://www.microsoft.com/de-de/download/details.aspx?id=35'>DirectX-Installer herunterladen</a></li>"
@@ -1994,14 +1960,6 @@ if(pingsuccessful || FileExist(datacachefile)){
 		data := ""
 	if(vBuild := RegExFileRead(data, "B", 0)){
 		inetconn := 1
-		FileDelete, %datacachefile%
-		FileAppend, %data%, %datacachefile%
-		File_AES(datacachefile, datacachefile, AESPassword,, true)
-	}
-	else if(FileExist(datacachefile)){
-		File_AES(datacachefile, datacachefile, AESPassword,, false)
-		FileRead, data, %datacachefile%
-		vBuild := RegExFileRead(data, "B", 0)
 	}
 	vVersion := RegExFileRead(data, "V")
 	vSize := RegExFileRead(data, "S", 100) * 1000
@@ -2067,7 +2025,7 @@ if(pingsuccessful || FileExist(datacachefile)){
 	data := ""
 }
 if(!inetconn){
-	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a>" (Frak > 1 && !vBuild ? "<br><b>Fraktionsbinds können nicht genutzt werden!</b>" : "") (vBuild ? "<br><i>Es werden gecachte Daten genutzt.</i>" : "") "<br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
+	errortext := "<li>Die Informationen konnten nicht heruntergeladen werden :(<br><a href='sBinder://g/Downloads'>Versuche es in ein paar Minuten erneut</a><br>Fehler: <b><span style='color:#F10'>" clearping(ping) "</span></b></li>" errortext
 	SetWB(Inf, "<span style='color:#F10'>Es sind Fehler aufgetreten!</span><br><ul>" errortext "</ul><br><b>Hinweis:</b> <div class='hint'>Diese Seite aktualisiert sich nicht automatisch. <a href='sBinder://g/Downloads'>Jetzt aktualisieren</a></div>",, InfoColor)
 	GuiControl, 1:Disable, LastInfo
 	GuiControl, 1:Disable, NextInfo
@@ -2159,7 +2117,6 @@ EnvGet, ProcessorCount, NUMBER_OF_PROCESSORS
 EnvGet, UserProfile, UserProfile
 IniRead, UseAPI, %INIFile%, Settings, UseAPI, 0
 IniRead, LastUsedBuild, %INIFile%, Settings, LastUsedBuild, 0
-AESPassword := "OmX5VSeNwiyUL6gB6XW1V71vYznXvUl5AEX81oAs9fjGGT0l9Shb6j5dizJIM8Iz"
  ; Use in Run commands to run another program if and only if the sBinder itself has admin privileges (don't show a UAC dialog!)
 RunPrivileges := A_IsAdmin ? "*RunAs " : ""
 
@@ -2476,7 +2433,7 @@ Gui, SettingsGUI:Add, Button, x15 y%y% h20 gOpenINI, INI-Datei öffnen
 Gui, SettingsGUI:Add, Button, x+15 y%y% h20 gOpenDir, sBinder-Ordner öffnen
 Gui, SettingsGUI:Add, Button, x505 y%y% h20 w12 gHelp22, ?
 y += 45
-Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h90 w510 vTruckingSettings c000000", /trucking
+Gui, SettingsGUI:Add, GroupBox, % "x10 y" y-15 " h65 w510 vTruckingSettings c000000", /trucking
 Gui, SettingsGUI:Add, Text, x15 y%y% h20, Nur Aufträge für Level anzeigen (s. ?-Button):
 Gui, SettingsGUI:Add, Edit, y%y% x235 w45
 Gui, SettingsGUI:Add, UpDown, vTruckLevelLimit Range-1-10, %TruckLevelLimit%
@@ -3465,8 +3422,6 @@ Help27:
 Help28:
 Help29:
 Help30:
-Help31:
-Help32:
 helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder alles, was Nova-eSports NewLife bietet (TeamSpeak, SAMP-Server und Forum), mit nur einem Klick erreichen kannst.`nProbier es aus!"
 , "In den Eigenen Binds kannst du Texte oder Befehle festlegen, die beim Drücken einer festgelegten Taste an GTA:SA:MP gesendet werden. Du kannst mehrere Befehle/Texte durch das Zeichen ""~"" (ohne Anführungszeichen) trennen.`nBeispiel: /sell fisch 1~/sell fisch 2~/sell fisch 3~/sell fisch 4~/sell fisch 5~`n`nAußerdem kannst du eine Pause zwischen den einzelnen Befehlen einfügen, indem du dort ein ""[Wait XXX]"" (ohne Anführungszeichen) einfügst.`nBeispiel: /fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~[Wait 5000]/fish~`nDieses Beispiel gibt ""/fish"" ein, wartet 5 Sekunden (5000 Millisekunden) und gibt dann wieder ""/fish"" ein (insgesamt 5 mal).`n`nDu kannst auch das Wort [Name] nutzen, dieses wird durch den unter ""Dein Name"" angegebenen Namen ersetzt.`n`nAußerdem kannst du auch ID-Binds nutzen, Beispiel dazu: ""/d ID [ID 1] | [ID 2] WPs | [ID 3] | bitte best.~/su [ID 1] [ID 2] [ID 3]"" Bei diesem Beispiel wirst du 3mal nach der ID gefragt, wenn du dann zum Beispiel die Daten 99, 15 und schwere StVO eingibst, wird Folgendes gesendet:`n/d ID 99 | 15 WPs | schwere StVO | bitte best.~/su 99 15 schwere StVO`n`nDu kannst am Anfang der eigenen Binds auch [InputMode] schreiben, dann wird der Text ""normal"" gesendet (somit muss am Anfang t stehen und ~ wird zu einem Enter, außerdem kannst du Tasten wie z.B. {F6} nutzen).`nBitte beachte: Manche Eingaben, wie z.B. Dialoge, kannst du NUR per [InputMode] nutzen!`n`nACHTUNG: Vergiss nicht, die Eigenen Binds zu speichern!`n`nHINWEIS: Die Maustasten 4/5 sowie das Kippen des Mausrads werden nicht bei jeder Maus korrekt erkannt. Es kann auch sein, dass das Kippen des Mausrads als Taste 4/5 erkannt wird, oder auch gar nicht."
 , "Hier findest du die Binds für die Befehle aller Berufe auf dem Server. Du kannst sie dir selbst definieren."
@@ -3496,9 +3451,8 @@ helptexts := ["Die Connect-Funktionen ermöglichen dir, dass du mit dem sBinder 
 , "Hier kannst du deine Overlays (maximal " MaxOverlays ") kofigurieren. Du kannst die Schriftfarbe wählen, die Schriftgröße und -art einstellen und natürlich einen individuellen Text wählen, der durch einige Variablen (siehe unten) ergänzt werden kann. Außerdem kannst du festlegen, dass ein Overlay nur in einem Fahrzeug angezeigt werden soll.`n`nHier findest du alle Variablen, die du nutzen kannst:`n[Armor]: Deine aktuelle Rüstung (0 falls nicht vorhanden)`n[CarHeal]: Dein aktuelles Carheal (wie bei /dl)`n[CarLight]: ""an"" oder ""aus"", je nachdem, ob das Licht an ist`n[CarLock]: Zeigt dir ""aufgeschlossen"" oder ""abgeschlossen"" an (bei Fraktionsfahrzeugen immer ""aufgeschlossen"")`n[CarModel]: Die Model-ID des aktuellen Fahrzeugs (nicht die Car-ID!)`n[CarMotor]: ""an"" oder ""aus"", je nachdem, ob der Motor an ist`n[CarName]: Der Name des aktuellen Fahrzeugs`n[CarSpeed]: Anzeige der Geschwindigkeit des Fahrzeugs in km/h (schneller als der Server-Tacho)`n[City]: Die Stadt, in der du dich aktuell aufhältst`n[Date]: Datum im Format dd.mm.yyyy`n[FPS]: Aktuelle FPS-Anzahl`n[HP]: Dein aktuelles Heal`n[Money]: Dein aktuelles Geld (auf der Hand)`n[Name]: Der unter ""Dein Name"" angegebene Name`n[NL]: Nähester Ort auf Nova, zum Beispiel ""Stadthalle SF""`n[NLDistance]: Entfernung zum nächsten Ort auf Nova`n[Time]: Uhrzeit im Format hh:mm:ss`n[Zone]: Die Zone, in der du dich aktuell aufhältst`n[LsdTimer]: Zeit, bis nach /use lsd die Nachwirkungen eintreten bzw. bis du das nächste Mal LSD usen kannst`n[GreenTimer] / [DonutTimer] / [GoldTimer]: Zeit, bis du das nächste Mal Green/Donuts/Gold zu dir nehmen kannst"
 , "Hier kannst du bestimmen, nach welchem Kriterium die Aufträge sortiert werden (standardmäßig nach Trucklevel). Wenn du zum Beispiel ""Erfahrung"" wählst, wird dir der Auftrag mit der höchsten Erfahrung oben (absteigend) bzw. unten (aufsteigend) angezeigt."
 , "Hier kannst du das Aussehen deines sBinders anpassen. Das betrifft nur das Hauptfenster des sBinders, alle anderen Fenster (z.B. Eigene Binds, Einstellungen) erscheinen im gewohnten Anblick.`n`nDu kannst aus einigen vorgefertigten Designs wählen oder dir sogar ein eigenes erstellen (sofern du HTML kannst). Wähle dazu die entsprechende Option aus, speichere und starte den sBinder neu."
-, "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."
-, ""]
-helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren", ""] ;32
+, "Hier kannst du das aktuell genutzte Design aktualisieren, falls es irgendwelche kleineren Änderungen gab. Normalerweise musst du diese Funktion nicht nutzen, sofern du nicht darauf hingewiesen wurdest."]
+helptitles := ["Connect-Funktionen", "Eigene Binds", "Wichtige Binds", "Fraktionsbinds", "Notizen", "Fahrzeugrechner", "Nickname", "Mit Adminrechten starten", "Trucking", "Ins Tray minimieren + Effekt beim Schließen", "Bilder der Trucking-Orte + Box anzeigen", "Doppelhupe + /me-Texte", "Musik", "/trucking", "Chatlog-Pfad + SAMP-Pfad", "Chatlog-Wartezeit", "Löschen der Daten und Dateien", "API nutzen + Overlay-Einstellungen", "Telefontexte", "Radio-Slots", "Beim Login automatisch eingeben", "INI-Datei öffnen + sBinder-Ordner öffnen", "Programm mitstarten: SAMP", "Programm mitstarten: TS³", "Programm mitstarten: Fraps", "Programm mitstarten: Anderes Programm" , "Overlays", "/trucking: Sortierung der Aufträge", "Designs", "Design manuell aktualisieren"] ;30
 help := helptexts[SubStr(A_ThisLabel, 5)]
 MsgBox, 64, % "sBinder-Hilfe: " helptitles[SubStr(A_ThisLabel, 5)], %help%
 helptexts := helptitles := help := error := ""
