@@ -5374,9 +5374,9 @@ return
 ::/wpbinds::
 Suspend Permit
 if(!UseAPI OR !ShowDialogWorking)
-	List(["/anmaßung", "/anschlag", "/itätigkeit", "/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bvl (/blösch)", "/bpassv", "/craub", "/diebstahl", "/c4dieb", "/drohung", "/drogen (/drogen1)", "/drogen2", "/drogen3", "/drogentransport (/dtrans)", "/seinbruch", "/peinbruch", "/erschleichen", "/flucht", "/itüv", "/geiselnahme", "/ggs", "/gkennzeichen", "/bhack", "/ihandel", "/hetze", "/whetze", "/waffen", "/isf (/ibs)", "/kv", "/mord", "/ntl", "/pstörung", "/raubwp", "/gefährdung (/staatsgefährdung)", "/schießen", "/lstvo", "/sstvo", "/smord", "/ticketv", "/vmord", "/vertuschung", "/werkstoffe (/materialien)", "/iwerben", "/dicewp", "/wtransport"],, 1)
+	List(["/anmaßung", "/anschlag", "/itätigkeit", "/braub", "/bflucht (/bhzf)", "/bsgen", "/sperrgebiet (/sg)", "/beleidigung", "/beamtenverweigerung (/bv)", "/bvl (/blösch)", "/bpassv", "/craub", "/diebstahl", "/c4dieb", "/drohung", "/drogen (/drogen1)", "/drogen2", "/drogen3", "/drogentransport (/dtrans)", "/seinbruch", "/peinbruch", "/erpressg", "/erschleichen", "/irpg", "/flucht", "/itüv", "/geiselnahme", "/ggs", "/bhack", "/ihandel", "/hetze", "/whetze", "/waffen", "/isf (/ibs)", "/kv", "/mord", "/ntl", "/pstörung", "/psv", "/raubwp", "/sachb", "/gefährdung (/staatsgefährdung)", "/schießen", "/lstvo", "/sstvo", "/smord", "/ticketv", "/vmord", "/vertuschung", "/vertuschungd", "/werkstoffe (/materialien)", "/iwerben", "/dicewp", "/wtransport"],, 1)
 else
-	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/anmaßung{FFFFFF}: Amtsanmaßung (15 WPs)`n{0022FF}/anschlag{FFFFFF}: Anschlag auf ein Staatsoberhaupt (61 WPs)`n{0022FF}/itätigkeit{FFFFFF}: Ausübung von besonderen Tätigkeiten ohne staatliche Genehmigung (20 WPs)`n{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines vorübergehend ausgerufenen Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von C4 (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen (/drogen1){FFFFFF}: Drogenbesitz (Green >= 51g, Gold >= 21g, LSD >= 1) (10 WPs)`n{0022FF}/drogen2{FFFFFF}: Drogenbesitz (Green >= 251g, Gold >= 50g, LSD >= 3) (15 WPs)`n{0022FF}/drogen3{FFFFFF}: Drogenbesitz (Green >= 501g, Gold >= 100g, LSD >= 5) (20 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in institutionen des Staates (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins State Prison (61 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Sozialleistungen (15 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht oder Fluchtversuch (15 WPs)`n{0022FF}/itüv{FFFFFF}: Führen eines Kraftfahrzeuges mit gefälschter TÜV-Plakette (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierungen gegen den Staat (40 WPs)`n{0022FF}/gkennzeichen{FFFFFF}: Gefälschtes Kennzeichen (15 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen / Waffen (15 WPs)`n{0022FF}/hetze{FFFFFF}: Hetze gegen den Staat (20 WPs)`n{0022FF}/whetze{FFFFFF}: Hetze gegen den Staat (in Verbindung mit Waffengewalt) (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/isf (/ibs){FFFFFF}: Illegaler Aufenthalt (San Fierro oder Bayside) (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/pstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/raubwp{FFFFFF}: Gewalttätiger Raub (20 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung (Drogen, Werkstoffe oder Mord) (15 WPs)`n{0022FF}/werkstoffe (/materialien){FFFFFF}: Werkstoffe (ab 100g, Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (20 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)`n{0022FF}/wtransport{FFFFFF}: Waffentransport (20 WPs)")
+	ShowDialog(0, "sBinder: {0022FF}WP-Textbinds", "{0022FF}/anmaßung{FFFFFF}: Amtsanmaßung (15 WPs)`n{0022FF}/anschlag{FFFFFF}: Anschlag auf ein Staatsoberhaupt (61 WPs)`n{0022FF}/itätigkeit{FFFFFF}: Ausübung von besonderen Tätigkeiten ohne staatliche Genehmigung (20 WPs)`n{0022FF}/braub{FFFFFF}: Bankraub (40 WPs)`n{0022FF}/bflucht (/bhzf){FFFFFF}: Beihilfe zur Flucht (15 WPs)`n{0022FF}/bsgen{FFFFFF}: Beschädigung von Stromgeneratoren (20 WPs)`n{0022FF}/sperrgebiet (/sg){FFFFFF}: Betreten eines Sperrgebietes (40 WPs)`n{0022FF}/beleidigung{FFFFFF}: Beleidigung (10 WPs)`n{0022FF}/beamtenverweigerung (/bv){FFFFFF}: Beamtenverweigerung (5 WPs)`n{0022FF}/bvl (/blösch){FFFFFF}: Behinderung von Löscharbeiten (20 WPs)`n{0022FF}/bpassv{FFFFFF}: Beschuss während des Passverkaufes (40 WPs)`n{0022FF}/craub{FFFFFF}: Casinoraub (40 WPs)`n{0022FF}/diebstahl{FFFFFF}: Diebstahl (15 WPs)`n{0022FF}/c4dieb{FFFFFF}: Diebstahl von C4 (61 WPs)`n{0022FF}/drohung{FFFFFF}: Drohung (10 WPs)`n{0022FF}/drogen (/drogen1){FFFFFF}: Drogenbesitz (Green >= 51g, Gold >= 21g, LSD >= 1) (10 WPs)`n{0022FF}/drogen2{FFFFFF}: Drogenbesitz (Green >= 251g, Gold >= 50g, LSD >= 3) (15 WPs)`n{0022FF}/drogen3{FFFFFF}: Drogenbesitz (Green >= 501g, Gold >= 100g, LSD >= 5) (20 WPs)`n{0022FF}/drogentransport (/dtrans){FFFFFF}: Drogentransport (20 WPs)`n{0022FF}/seinbruch{FFFFFF}: Einbruch in institutionen des Staates (20 WPs)`n{0022FF}/peinbruch{FFFFFF}: Einbruch ins Alcatraz (61 WPs)`n{0022FF}/erpressg{FFFFFF}: Erpressung eines Geschäftes (10 WPs)`n{0022FF}/erschleichen{FFFFFF}: Erschleichen von Sozialleistungen (15 WPs)`n{0022FF}/irpg{FFFFFF}: Führen von illegalen Waffen (Raketenwerfer (61 WPs)`n{0022FF}/flucht{FFFFFF}: Flucht oder Fluchtversuch (15 WPs)`n{0022FF}/itüv{FFFFFF}: Führen eines Kfz mit abgelaufener/fehlender TÜV-Plakette (15 WPs)`n{0022FF}/geiselnahme{FFFFFF}: Geiselnahme (30 WPs)`n{0022FF}/ggs{FFFFFF}: Gruppierungen gegen den Staat (40 WPs)`n{0022FF}/bhack{FFFFFF}: Hacken des Banksystems (40 WPs)`n{0022FF}/ihandel{FFFFFF}: Handel mit illegalen Substanzen / Waffen (15 WPs)`n{0022FF}/hetze{FFFFFF}: Hetze gegen den Staat (20 WPs)`n{0022FF}/whetze{FFFFFF}: Hetze gegen den Staat (in Verbindung mit Waffengewalt) (40 WPs)`n{0022FF}/waffen{FFFFFF}: Illegaler Waffenbesitz (10 WPs)`n{0022FF}/isf (/ibs){FFFFFF}: Illegaler Aufenthalt (San Fierro oder Bayside) (15 WPs)`n{0022FF}/kv{FFFFFF}: Körperverletzung (15 WPs)`n{0022FF}/mord{FFFFFF}: Mord (35 WPs)`n{0022FF}/ntl{FFFFFF}: Null-Toleranz-Liste (Beschuss auf Staatsbeamte) (69 WPs)`n{0022FF}/pstörung{FFFFFF}: Prüfungsstörung (20 WPs)`n{0022FF}/psv{FFFFFF}: Parken innerhalb eines permanenten Sperrgebietes (40 WPs)`n{0022FF}/raubwp{FFFFFF}: Raub (20 WPs)`n{0022FF}/sachb{FFFFFF}: Sachbeschädigung (10 WPs)`n{0022FF}/gefährdung (/staatsgefährdung){FFFFFF}: Staatsgefährdung (61 WPs)`n{0022FF}/schießen{FFFFFF}: Schießen in der Öffentlichkeit (10 WPs)`n{0022FF}/lstvo{FFFFFF}: Leichtes StVO-Vergehen (9 WPs)`n{0022FF}/sstvo{FFFFFF}: Schweres StVO-Vergehen (10 WPs)`n{0022FF}/smord{FFFFFF}: Serienmord (40 WPs)`n{0022FF}/ticketv{FFFFFF}: Ticketverweigerung (10 WPs)`n{0022FF}/vmord{FFFFFF}: Versuchter Mord (25 WPs)`n{0022FF}/vertuschung{FFFFFF}: Vertuschung (Werkstoffe oder Mord) (15 WPs)`n{0022FF}/vertuschungd{FFFFFF}: Vertuschung (Drogen) (20 WPs)`n{0022FF}/werkstoffe (/materialien){FFFFFF}: Werkstoffe (ab 100g, Eisen) (15 WPs)`n{0022FF}/iwerben{FFFFFF}: Werben für illegale Aktivitäten (20 WPs)`n{0022FF}/dicewp{FFFFFF}: Würfeln außerhalb des Casinos (10 WPs)`n{0022FF}/wtransport{FFFFFF}: Illegaler Waffentransport (20 WPs)")
 return
 ::/anmaßung::
 Suspend Permit
@@ -5406,7 +5406,7 @@ return
 ::/sperrgebiet::
 ::/sg::
 Suspend Permit
-SendWPs("Betreten eines vorübergehend ausgerufenen Sperrgebietes", 40)
+SendWPs("Betreten eines Sperrgebietes", 40)
 return
 ::/beleidigung::
 Suspend Permit
@@ -5466,11 +5466,19 @@ SendWPs("Einbruch in institutionen des Staates", 20)
 return
 ::/peinbruch::
 Suspend Permit
-SendWPs("Einbruch ins State Prison", 61)
+SendWPs("Einbruch ins Alcatraz", 61)
+return
+::/erpressg::
+Suspend Permit
+SendWPs("Erpressung eines Geschäftes", 10)
 return
 ::/erschleichen::
 Suspend Permit
 SendWPs("Erschleichen von Sozialleistungen", 15)
+return
+::/irpg::
+Suspend Permit
+SendWPs("Führen von illegalen Waffen (Raketenwerfer", 61)
 return
 ::/flucht::
 Suspend Permit
@@ -5478,7 +5486,7 @@ SendWPs("Flucht oder Fluchtversuch", 15)
 return
 ::/itüv::
 Suspend Permit
-SendWPs("Führen eines Kraftfahrzeuges mit gefälschter TÜV-Plakette", 15)
+SendWPs("Führen eines Kfz mit abgelaufener/fehlender TÜV-Plakette", 15)
 return
 ::/geiselnahme::
 Suspend Permit
@@ -5487,10 +5495,6 @@ return
 ::/ggs::
 Suspend Permit
 SendWPs("Gruppierungen gegen den Staat", 40)
-return
-::/gkennzeichen::
-Suspend Permit
-SendWPs("Gefälschtes Kennzeichen", 15)
 return
 ::/bhack::
 Suspend Permit
@@ -5533,9 +5537,17 @@ return
 Suspend Permit
 SendWPs("Prüfungsstörung", 20)
 return
+::/psv::
+Suspend Permit
+SendWPs("Parken innerhalb eines permanenten Sperrgebietes", 40)
+return
 ::/raubwp::
 Suspend Permit
-SendWPs("Gewalttätiger Raub", 20)
+SendWPs("Raub", 20)
+return
+::/sachb::
+Suspend Permit
+SendWPs("Sachbeschädigung", 10)
 return
 ::/gefährdung::
 ::/staatsgefährdung::
@@ -5568,7 +5580,11 @@ SendWPs("Versuchter Mord", 25)
 return
 ::/vertuschung::
 Suspend Permit
-SendWPs("Vertuschung (Drogen, Werkstoffe oder Mord)", 15)
+SendWPs("Vertuschung (Werkstoffe oder Mord)", 15)
+return
+::/vertuschungd::
+Suspend Permit
+SendWPs("Vertuschung (Drogen)", 20)
 return
 ::/werkstoffe::
 ::/materialien::
@@ -5585,7 +5601,7 @@ SendWPs("Würfeln außerhalb des Casinos", 10)
 return
 ::/wtransport::
 Suspend Permit
-SendWPs("Waffentransport", 20)
+SendWPs("Illegaler Waffentransport", 20)
 return
 
 ;Ende der WPs
